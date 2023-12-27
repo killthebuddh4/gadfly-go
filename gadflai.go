@@ -12,7 +12,7 @@ func main() {
 	args := os.Args
 
 	if len(args) > 2 {
-		fmt.Println("Usage: gadfly [script]")
+		fmt.Println("Usage: gadflai [script]")
 		fmt.Println(len(args))
 	} else if len(args) == 2 {
 		runFile(args[1])
