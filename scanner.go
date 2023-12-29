@@ -5,11 +5,26 @@ import (
 	"fmt"
 )
 
-type Token struct {
-	Type   string
-	Line   int
-	Start  int
-	Length int
+func Scan(source string) ([]Token, error) {
+	scanner := Scanner{
+		Source:  source,
+		Tokens:  []Token{},
+		Start:   0,
+		Current: 0,
+	}
+
+	for !scanner.isAtEnd() {
+		scanner.Start = scanner.Current
+		scanner.scanToken()
+	}
+
+	scanner.Tokens = append(scanner.Tokens, Token{
+		Type:   "EOF",
+		Start:  len(scanner.Source),
+		Length: 0,
+	})
+
+	return scanner.Tokens, nil
 }
 
 type Scanner struct {
@@ -17,21 +32,6 @@ type Scanner struct {
 	Tokens  []Token
 	Start   int
 	Current int
-	Line    int
-}
-
-func (s *Scanner) Scan() {
-	for !s.isAtEnd() {
-		s.Start = s.Current
-		s.scanToken()
-	}
-
-	s.Tokens = append(s.Tokens, Token{
-		Type:   "EOF",
-		Line:   s.Line,
-		Start:  len(s.Source),
-		Length: 0,
-	})
 }
 
 func (s *Scanner) scanToken() error {
@@ -136,7 +136,6 @@ func (s *Scanner) scanToken() error {
 		s.addToken("NUMBER")
 	case '\n':
 		s.advance()
-		s.Line++
 	case ' ', '\r', '\t':
 		s.advance()
 	case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z':
@@ -162,7 +161,6 @@ func (s *Scanner) addToken(tokenType string) {
 		Type:   tokenType,
 		Start:  s.Start,
 		Length: s.Current - s.Start,
-		Line:   s.Line,
 	})
 }
 
@@ -280,13 +278,6 @@ func (s Scanner) readNext() (rune, error) {
 
 func (s Scanner) isAtEnd() bool {
 	return s.Current >= len(s.Source)
-}
-
-func (s Scanner) printTokens() {
-	for _, token := range s.Tokens {
-		lexeme := s.Source[token.Start : token.Start+token.Length]
-		fmt.Printf("Type: %s, Lexeme: <%s> \n", token.Type, lexeme)
-	}
 }
 
 func isIdentifierChar(c rune) bool {

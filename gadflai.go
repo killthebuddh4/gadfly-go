@@ -6,6 +6,12 @@ import (
 	"os"
 )
 
+type Interpreter struct {
+	source string
+	lexed  []Token
+	parsed Expression
+}
+
 func main() {
 	args := os.Args
 
@@ -38,25 +44,26 @@ func main() {
 			Tokens:  []Token{},
 			Start:   0,
 			Current: 0,
-			Line:    1,
 		}
 
-		scanner.Scan()
+		tokens, scanErr := Scan(string(data))
 
-		scanner.printTokens()
-
-		parser := Parser{
-			Tokens:  scanner.Tokens,
-			Current: 0,
+		if scanErr != nil {
+			fmt.Println("Error scanning: ", scanErr)
+			return
 		}
 
-		expression, parseErr := parser.Parse()
+		for _, token := range tokens {
+			PrintToken(scanner.Source, token)
+		}
+
+		expression, parseErr := Parse(tokens)
 
 		if parseErr != nil {
 			fmt.Println("Error parsing: ", parseErr)
 			return
 		}
 
-		expression.print()
+		PrintExpression(string(data), expression)
 	}
 }

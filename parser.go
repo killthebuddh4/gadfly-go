@@ -5,20 +5,20 @@ import (
 	"fmt"
 )
 
-type Expression struct {
-	Operator Token
-	Inputs   []Expression
-}
-
 type Parser struct {
 	Tokens  []Token
 	Current int
 }
 
-func (p *Parser) Parse() (Expression, error) {
+func Parse(tokens []Token) (Expression, error) {
+	parser := Parser{
+		Tokens:  tokens,
+		Current: 0,
+	}
+
 	fmt.Println("Parsing")
 
-	return p.expression()
+	return parser.expression()
 }
 
 func (p *Parser) expression() (Expression, error) {
@@ -37,7 +37,7 @@ func (p *Parser) equality() (Expression, error) {
 	}
 
 	for p.accept([]string{"bang_equal", "equal_equal"}) {
-		operator := p.read()
+		operator := p.previous()
 
 		right, err := p.comparison()
 
@@ -64,7 +64,7 @@ func (p *Parser) comparison() (Expression, error) {
 	}
 
 	for p.accept([]string{"GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL"}) {
-		operator := p.read()
+		operator := p.previous()
 
 		right, err := p.term()
 
@@ -91,7 +91,7 @@ func (p *Parser) term() (Expression, error) {
 	}
 
 	for p.accept([]string{"MINUS", "PLUS"}) {
-		operator := p.read()
+		operator := p.previous()
 
 		right, err := p.factor()
 
@@ -118,7 +118,7 @@ func (p *Parser) factor() (Expression, error) {
 	}
 
 	for p.accept([]string{"SLASH", "STAR"}) {
-		operator := p.read()
+		operator := p.previous()
 
 		right, err := p.unary()
 
@@ -139,7 +139,7 @@ func (p *Parser) unary() (Expression, error) {
 	fmt.Println("Parsing unary")
 
 	if p.accept([]string{"BANG", "MINUS"}) {
-		operator := p.read()
+		operator := p.previous()
 
 		right, err := p.unary()
 
@@ -160,7 +160,9 @@ func (p *Parser) atom() (Expression, error) {
 	fmt.Println("Parsing atom")
 
 	if p.accept([]string{"TRUE", "FALSE", "NIL", "NUMBER", "STRING"}) {
-		operator := p.read()
+		operator := p.previous()
+
+		fmt.Println("Parsing literal of type ", operator.Type)
 
 		return Expression{
 			Operator: operator,
@@ -212,19 +214,10 @@ func (p Parser) read() Token {
 	return p.Tokens[p.Current]
 }
 
-func (p Parser) isAtEnd() bool {
-	return p.Current >= len(p.Tokens)
+func (p Parser) previous() Token {
+	return p.Tokens[p.Current-1]
 }
 
-func (exp Expression) print() {
-	str := fmt.Sprintf("Operator: %s ", exp.Operator.Type)
-	for _, input := range exp.Inputs {
-		str += fmt.Sprintf("Input: %s ", input.Operator.Type)
-	}
-
-	fmt.Println(str)
-
-	for _, input := range exp.Inputs {
-		input.print()
-	}
+func (p Parser) isAtEnd() bool {
+	return p.Current >= len(p.Tokens)
 }
