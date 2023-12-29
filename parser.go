@@ -36,7 +36,7 @@ func (p *Parser) equality() (Expression, error) {
 		return Expression{}, err
 	}
 
-	for p.accept([]string{"bang_equal", "equal_equal"}) {
+	for p.accept([]string{"BANG_EQUAL", "EQUAL_EQUAL"}) {
 		operator := p.previous()
 
 		right, err := p.comparison()

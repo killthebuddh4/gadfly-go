@@ -8,11 +8,11 @@ type Token struct {
 	Length int
 }
 
-func GetLexemeForToken(source string, token Token) string {
-	return source[token.Start : token.Start+token.Length]
+func GetLexemeForToken(token Token) string {
+	return GetSource()[token.Start : token.Start+token.Length]
 }
 
-func PrintToken(source string, token Token) {
-	lexeme := GetLexemeForToken(source, token)
+func PrintToken(token Token) {
+	lexeme := GetLexemeForToken(token)
 	fmt.Printf("Type: %s, Lexeme: <%s> \n", token.Type, lexeme)
 }
