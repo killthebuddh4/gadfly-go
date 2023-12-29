@@ -79,19 +79,7 @@ func EvaluateBangEqual(exp Expression) (Value, error) {
 		return nil, errors.New("error evaluating inputs")
 	}
 
-	leftV, ok := left.(bool)
-
-	if !ok {
-		return nil, errors.New("left operand is not a boolean")
-	}
-
-	rightV, ok := right.(bool)
-
-	if !ok {
-		return nil, errors.New("right operand is not a boolean")
-	}
-
-	return leftV != rightV, nil
+	return left != right, nil
 }
 
 func EvaluateEqualEqual(exp Expression) (Value, error) {
