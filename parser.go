@@ -227,7 +227,7 @@ func (p *Parser) unary() (Expression, error) {
 func (p *Parser) atom() (Expression, error) {
 	fmt.Println("Parsing atom")
 
-	if p.accept([]string{"TRUE", "FALSE", "NIL", "NUMBER", "STRING"}) {
+	if p.accept([]string{"TRUE", "FALSE", "NIL", "NUMBER", "STRING", "IDENTIFIER"}) {
 		operator := p.previous()
 
 		fmt.Println("Parsing literal of type ", operator.Type)

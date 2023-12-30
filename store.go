@@ -29,3 +29,13 @@ func GetProgram() []Expression {
 func SetProgram(p []Expression) {
 	program = &p
 }
+
+var symbols = make(map[string]Value)
+
+func GetSymbol(name string) Value {
+	return symbols[name]
+}
+
+func SetSymbol(name string, value Value) {
+	symbols[name] = value
+}

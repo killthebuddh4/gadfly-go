@@ -353,13 +353,22 @@ func EvaluateString(exp Expression) (Value, error) {
 }
 
 func EvaluateLet(exp Expression) (Value, error) {
-	// Set value in symbol table?
-	return Evaluate(exp.Inputs[1])
+	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
+
+	val, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, errors.New("error evaluating value")
+	}
+
+	SetSymbol(identifier, val)
+
+	return val, nil
 }
 
 func EvaluateIdentifier(exp Expression) (Value, error) {
-	// Lookup symbol table?
-	return "TODO", nil
+	identifier := GetLexemeForToken(exp.Operator)
+	return GetSymbol(identifier), nil
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
