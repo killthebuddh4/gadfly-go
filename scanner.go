@@ -300,7 +300,7 @@ func isKeyword(text string) bool {
 		"SUPER":  "super",
 		"THIS":   "this",
 		"TRUE":   "true",
-		"VAR":    "var",
+		"LET":    "let",
 		"WHILE":  "while",
 	}
 

@@ -35,7 +35,7 @@ func (p *Parser) program() ([]Expression, error) {
 	expressions := []Expression{left}
 
 	for !p.isAtEnd() {
-		fmt.Println("PEEK", p.read().Type)
+		fmt.Println("PEEK in PROGRAM", p.read().Type)
 		left, err = p.expression()
 
 		if err != nil {
@@ -51,7 +51,7 @@ func (p *Parser) program() ([]Expression, error) {
 func (p *Parser) expression() (Expression, error) {
 	fmt.Println("Parsing expression")
 
-	expression, err := p.equality()
+	expression, err := p.declaration()
 
 	if err != nil {
 		return Expression{}, err
@@ -62,6 +62,37 @@ func (p *Parser) expression() (Expression, error) {
 	}
 
 	return expression, nil
+}
+
+func (p *Parser) declaration() (Expression, error) {
+	fmt.Println("Parsing declaration")
+
+	if p.accept([]string{"let"}) {
+		fmt.Println("Parsing let")
+		operator := p.previous()
+
+		if !p.accept([]string{"IDENTIFIER"}) {
+			return Expression{}, errors.New("expected identifier after let")
+		}
+
+		identifier := p.previous()
+
+		value, err := p.equality()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		return Expression{
+			Operator: operator,
+			Inputs: []Expression{{
+				Operator: identifier,
+				Inputs:   []Expression{},
+			}, value},
+		}, nil
+	}
+
+	return p.equality()
 }
 
 func (p *Parser) equality() (Expression, error) {

@@ -69,6 +69,10 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateString
 	case "LEFT_PAREN":
 		eval = EvaluateLeftParen
+	case "IDENTIFIER":
+		eval = EvaluateIdentifier
+	case "let":
+		eval = EvaluateLet
 	default:
 		return nil, errors.New("unknown operator")
 	}
@@ -346,6 +350,16 @@ func EvaluateNumber(exp Expression) (Value, error) {
 
 func EvaluateString(exp Expression) (Value, error) {
 	return GetLexemeForToken(exp.Operator), nil
+}
+
+func EvaluateLet(exp Expression) (Value, error) {
+	// Set value in symbol table?
+	return Evaluate(exp.Inputs[1])
+}
+
+func EvaluateIdentifier(exp Expression) (Value, error) {
+	// Lookup symbol table?
+	return "TODO", nil
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
