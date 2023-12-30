@@ -50,22 +50,32 @@ func main() {
 
 		expression, parseErr := Parse(GetTokens())
 
-		SetExpression(expression)
+		SetProgram(expression)
 
 		if parseErr != nil {
 			fmt.Println("Error parsing: ", parseErr)
 			return
 		}
 
-		PrintExpression(GetSource(), GetExpression())
-
-		val, evalErr := Evaluate(GetExpression())
-
-		if evalErr != nil {
-			fmt.Println("Error evaluating: ", evalErr)
-			return
+		for _, expression := range GetProgram() {
+			PrintExpression(GetSource(), expression)
 		}
 
-		fmt.Println("Result: ", val)
+		values := []Value{}
+
+		for _, expression := range GetProgram() {
+			val, evalErr := Evaluate(expression)
+
+			if evalErr != nil {
+				fmt.Println("Error evaluating: ", evalErr)
+				return
+			}
+
+			values = append(values, val)
+		}
+
+		for _, val := range values {
+			fmt.Println("Result: ", val)
+		}
 	}
 }

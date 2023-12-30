@@ -20,12 +20,12 @@ func SetTokens(t []Token) {
 	tokens = &t
 }
 
-var expression *Expression
+var program *[]Expression
 
-func GetExpression() Expression {
-	return *expression
+func GetProgram() []Expression {
+	return *program
 }
 
-func SetExpression(e Expression) {
-	expression = &e
+func SetProgram(p []Expression) {
+	program = &p
 }

@@ -30,45 +30,50 @@ func PrintExpression(source string, exp Expression) {
 	}
 }
 
+type Evaluator func(Expression) (Value, error)
+
 func Evaluate(exp Expression) (Value, error) {
+	var eval Evaluator
 	switch exp.Operator.Type {
 	case "BANG_EQUAL":
-		return EvaluateBangEqual(exp)
+		eval = EvaluateBangEqual
 	case "EQUAL_EQUAL":
-		return EvaluateEqualEqual(exp)
+		eval = EvaluateEqualEqual
 	case "GREATER":
-		return EvaluateGreater(exp)
+		eval = EvaluateGreater
 	case "GREATER_EQUAL":
-		return EvaluateGreaterEqual(exp)
+		eval = EvaluateGreaterEqual
 	case "LESS":
-		return EvaluateLess(exp)
+		eval = EvaluateLess
 	case "LESS_EQUAL":
-		return EvaluateLessEqual(exp)
+		eval = EvaluateLessEqual
 	case "MINUS":
-		return EvaluateMinus(exp)
+		eval = EvaluateMinus
 	case "PLUS":
-		return EvaluatePlus(exp)
+		eval = EvaluatePlus
 	case "SLASH":
-		return EvaluateSlash(exp)
+		eval = EvaluateSlash
 	case "STAR":
-		return EvaluateStar(exp)
+		eval = EvaluateStar
 	case "BANG":
-		return EvaluateBang(exp)
+		eval = EvaluateBang
 	case "TRUE":
-		return EvaluateTrue(exp)
+		eval = EvaluateTrue
 	case "FALSE":
-		return EvaluateFalse(exp)
+		eval = EvaluateFalse
 	case "NIL":
-		return EvaluateNil(exp)
+		eval = EvaluateNil
 	case "NUMBER":
-		return EvaluateNumber(exp)
+		eval = EvaluateNumber
 	case "STRING":
-		return EvaluateString(exp)
+		eval = EvaluateString
 	case "LEFT_PAREN":
-		return EvaluateLeftParen(exp)
+		eval = EvaluateLeftParen
 	default:
 		return nil, errors.New("unknown operator")
 	}
+
+	return eval(exp)
 }
 
 func EvaluateBangEqual(exp Expression) (Value, error) {

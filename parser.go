@@ -10,7 +10,7 @@ type Parser struct {
 	Current int
 }
 
-func Parse(tokens []Token) (Expression, error) {
+func Parse(tokens []Token) ([]Expression, error) {
 	parser := Parser{
 		Tokens:  tokens,
 		Current: 0,
@@ -18,13 +18,50 @@ func Parse(tokens []Token) (Expression, error) {
 
 	fmt.Println("Parsing")
 
-	return parser.expression()
+	return parser.program()
+}
+
+func (p *Parser) program() ([]Expression, error) {
+	fmt.Println("Parsing program")
+
+	left, err := p.expression()
+
+	fmt.Println("HERE")
+
+	if err != nil {
+		return []Expression{}, err
+	}
+
+	expressions := []Expression{left}
+
+	for !p.isAtEnd() {
+		fmt.Println("PEEK", p.read().Type)
+		left, err = p.expression()
+
+		if err != nil {
+			return []Expression{}, err
+		}
+
+		expressions = append(expressions, left)
+	}
+
+	return expressions, nil
 }
 
 func (p *Parser) expression() (Expression, error) {
 	fmt.Println("Parsing expression")
 
-	return p.equality()
+	expression, err := p.equality()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	if !p.accept([]string{"SEMICOLON"}) {
+		return Expression{}, errors.New("expected semicolon after expression")
+	}
+
+	return expression, nil
 }
 
 func (p *Parser) equality() (Expression, error) {
@@ -181,10 +218,10 @@ func (p *Parser) atom() (Expression, error) {
 			return Expression{}, errors.New("expected right paren")
 		}
 
-		// TODO, The book uses a grouping expression here, but I don't know how
-		// we'll use it.
 		return expr, nil
 	}
+
+	fmt.Println("Peek", p.read().Type)
 
 	return Expression{}, errors.New("expected expression")
 }
@@ -219,5 +256,5 @@ func (p Parser) previous() Token {
 }
 
 func (p Parser) isAtEnd() bool {
-	return p.Current >= len(p.Tokens)
+	return p.Current >= len(p.Tokens)-1
 }
