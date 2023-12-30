@@ -24,19 +24,10 @@ func Parse(tokens []Token) ([]Expression, error) {
 func (p *Parser) program() ([]Expression, error) {
 	fmt.Println("Parsing program")
 
-	left, err := p.expression()
-
-	fmt.Println("HERE")
-
-	if err != nil {
-		return []Expression{}, err
-	}
-
-	expressions := []Expression{left}
+	expressions := []Expression{}
 
 	for !p.isAtEnd() {
-		fmt.Println("PEEK in PROGRAM", p.read().Type)
-		left, err = p.expression()
+		left, err := p.expression()
 
 		if err != nil {
 			return []Expression{}, err
@@ -51,48 +42,90 @@ func (p *Parser) program() ([]Expression, error) {
 func (p *Parser) expression() (Expression, error) {
 	fmt.Println("Parsing expression")
 
-	expression, err := p.declaration()
-
-	if err != nil {
-		return Expression{}, err
-	}
-
-	if !p.accept([]string{"SEMICOLON"}) {
-		return Expression{}, errors.New("expected semicolon after expression")
-	}
-
-	return expression, nil
-}
-
-func (p *Parser) declaration() (Expression, error) {
-	fmt.Println("Parsing declaration")
-
 	if p.accept([]string{"let"}) {
-		fmt.Println("Parsing let")
-		operator := p.previous()
-
-		if !p.accept([]string{"IDENTIFIER"}) {
-			return Expression{}, errors.New("expected identifier after let")
-		}
-
-		identifier := p.previous()
-
-		value, err := p.equality()
+		return p.declaration()
+	} else if p.accept([]string{"do"}) {
+		return p.block()
+	} else {
+		exp, err := p.equality()
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		return Expression{
-			Operator: operator,
-			Inputs: []Expression{{
-				Operator: identifier,
-				Inputs:   []Expression{},
-			}, value},
-		}, nil
+		if !p.accept([]string{"SEMICOLON"}) {
+			return Expression{}, errors.New("expected semicolon after expression")
+		}
+
+		return exp, nil
+	}
+}
+
+func (p *Parser) declaration() (Expression, error) {
+	fmt.Println("Parsing declaration")
+
+	operator := p.previous()
+
+	if !p.accept([]string{"IDENTIFIER"}) {
+		return Expression{}, errors.New("expected identifier after let")
 	}
 
-	return p.equality()
+	identifier := p.previous()
+
+	var value Expression
+
+	if p.accept([]string{"do"}) {
+		v, err := p.block()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		value = v
+	} else {
+		v, err := p.equality()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		if !p.accept([]string{"SEMICOLON"}) {
+			return Expression{}, errors.New("expected semicolon after declaration")
+		}
+
+		value = v
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs: []Expression{{
+			Operator: identifier,
+			Inputs:   []Expression{},
+		}, value},
+	}, nil
+}
+
+func (p *Parser) block() (Expression, error) {
+	fmt.Println("Parsing block")
+
+	operator := p.previous()
+
+	expressions := []Expression{}
+
+	for !p.accept([]string{"end"}) {
+		expression, err := p.expression()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		expressions = append(expressions, expression)
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs:   expressions,
+	}, nil
 }
 
 func (p *Parser) equality() (Expression, error) {

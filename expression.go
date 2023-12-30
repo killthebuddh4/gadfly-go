@@ -73,6 +73,8 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateIdentifier
 	case "let":
 		eval = EvaluateLet
+	case "do":
+		eval = EvaluateDo
 	default:
 		return nil, errors.New("unknown operator")
 	}
@@ -377,4 +379,25 @@ func EvaluateIdentifier(exp Expression) (Value, error) {
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
 	return nil, nil
+}
+
+func EvaluateDo(exp Expression) (Value, error) {
+	PushEnvironment()
+
+	var val Value
+
+	for _, input := range exp.Inputs {
+		v, err := Evaluate(input)
+
+		val = v
+
+		if err != nil {
+			PopEnvironment()
+			return nil, err
+		}
+	}
+
+	PopEnvironment()
+
+	return val, nil
 }

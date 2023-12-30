@@ -51,12 +51,6 @@ func (s *Scanner) scanToken() error {
 	case ')':
 		s.advance()
 		s.addToken("RIGHT_PAREN")
-	case '{':
-		s.advance()
-		s.addToken("LEFT_BRACE")
-	case '}':
-		s.advance()
-		s.addToken("RIGHT_BRACE")
 	case ',':
 		s.advance()
 		s.addToken("COMMA")
@@ -302,6 +296,8 @@ func isKeyword(text string) bool {
 		"TRUE":   "true",
 		"LET":    "let",
 		"WHILE":  "while",
+		"DO":     "do",
+		"END":    "end",
 	}
 
 	for _, v := range KEYWORDS {
