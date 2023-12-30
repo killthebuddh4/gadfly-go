@@ -1,5 +1,9 @@
 package main
 
+import (
+	"errors"
+)
+
 var source *string
 
 func GetSource() string {
@@ -32,10 +36,24 @@ func SetProgram(p []Expression) {
 
 var symbols = make(map[string]Value)
 
-func GetSymbol(name string) Value {
-	return symbols[name]
+func GetSymbol(name string) (Value, error) {
+	value, ok := symbols[name]
+
+	if !ok {
+		return nil, errors.New("symbol not found")
+	}
+
+	return value, nil
 }
 
-func SetSymbol(name string, value Value) {
+func SetSymbol(name string, value Value) error {
+	_, ok := symbols[name]
+
+	if ok {
+		return errors.New("symbol already exists")
+	}
+
 	symbols[name] = value
+
+	return nil
 }

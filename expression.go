@@ -361,14 +361,18 @@ func EvaluateLet(exp Expression) (Value, error) {
 		return nil, errors.New("error evaluating value")
 	}
 
-	SetSymbol(identifier, val)
+	setSymbolErr := SetSymbol(identifier, val)
+
+	if setSymbolErr != nil {
+		return nil, setSymbolErr
+	}
 
 	return val, nil
 }
 
 func EvaluateIdentifier(exp Expression) (Value, error) {
 	identifier := GetLexemeForToken(exp.Operator)
-	return GetSymbol(identifier), nil
+	return GetSymbol(identifier)
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
