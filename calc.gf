@@ -5,12 +5,13 @@ let x do
   y + 4;
 end
 
-let y do
-  if a > 10 then
-    10;
-  else
-    20;
-  end
+let y x + 1;
+
+let z if false or false or x > 10000000 then
+  10000;
+else
+  1-100000;
 end
 
-x + y;
+
+x + y + z;

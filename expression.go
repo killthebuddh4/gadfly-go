@@ -57,9 +57,9 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateStar
 	case "BANG":
 		eval = EvaluateBang
-	case "TRUE":
+	case "true":
 		eval = EvaluateTrue
-	case "FALSE":
+	case "false":
 		eval = EvaluateFalse
 	case "NIL":
 		eval = EvaluateNil
@@ -77,6 +77,8 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateDo
 	case "if":
 		eval = EvaluateIf
+	case "and", "or":
+		eval = EvaluateLogical
 	default:
 		return nil, errors.New("unknown operator " + exp.Operator.Type)
 	}
@@ -458,4 +460,42 @@ func EvaluateIf(exp Expression) (Value, error) {
 	} else {
 		return Evaluate(exp.Inputs[2])
 	}
+}
+
+func EvaluateLogical(exp Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Inputs[0])
+
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	leftV, ok := left.(bool)
+
+	if !ok {
+		return nil, errors.New("left operand is not a boolean")
+	}
+
+	if exp.Operator.Type == "and" {
+		if !leftV {
+			return false, nil
+		}
+	} else if exp.Operator.Type == "or" {
+		if leftV {
+			return true, nil
+		}
+	}
+
+	right, rightErr := Evaluate(exp.Inputs[1])
+
+	if rightErr != nil {
+		return nil, rightErr
+	}
+
+	rightV, ok := right.(bool)
+
+	if !ok {
+		return nil, errors.New("right operand is not a boolean")
+	}
+
+	return rightV, nil
 }

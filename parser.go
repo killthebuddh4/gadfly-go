@@ -49,7 +49,7 @@ func (p *Parser) expression() (Expression, error) {
 	} else if p.accept([]string{"if"}) {
 		return p.parseIf()
 	} else {
-		exp, err := p.equality()
+		exp, err := p.logical()
 
 		if err != nil {
 			return Expression{}, err
@@ -68,7 +68,7 @@ func (p *Parser) parseIf() (Expression, error) {
 
 	operator := p.previous()
 
-	condition, err := p.equality()
+	condition, err := p.logical()
 
 	if err != nil {
 		return Expression{}, err
@@ -129,7 +129,7 @@ func (p *Parser) declaration() (Expression, error) {
 
 		value = v
 	} else {
-		v, err := p.equality()
+		v, err := p.logical()
 
 		if err != nil {
 			return Expression{}, err
@@ -174,6 +174,33 @@ func (p *Parser) block() (Expression, error) {
 		Operator: operator,
 		Inputs:   expressions,
 	}, nil
+}
+
+func (p *Parser) logical() (Expression, error) {
+	fmt.Println("Parsing logical")
+
+	left, err := p.equality()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	for p.accept([]string{"and", "or"}) {
+		operator := p.previous()
+
+		right, err := p.equality()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		left = Expression{
+			Operator: operator,
+			Inputs:   []Expression{left, right},
+		}
+	}
+
+	return left, nil
 }
 
 func (p *Parser) equality() (Expression, error) {
@@ -308,7 +335,7 @@ func (p *Parser) unary() (Expression, error) {
 func (p *Parser) atom() (Expression, error) {
 	fmt.Println("Parsing atom")
 
-	if p.accept([]string{"TRUE", "FALSE", "NIL", "NUMBER", "STRING", "IDENTIFIER"}) {
+	if p.accept([]string{"true", "false", "nil", "NUMBER", "STRING", "IDENTIFIER"}) {
 		operator := p.previous()
 
 		fmt.Println("Parsing literal of type ", operator.Type)
