@@ -73,10 +73,12 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateIdentifier
 	case "let":
 		eval = EvaluateLet
-	case "do":
+	case "do", "then", "else":
 		eval = EvaluateDo
+	case "if":
+		eval = EvaluateIf
 	default:
-		return nil, errors.New("unknown operator")
+		return nil, errors.New("unknown operator " + exp.Operator.Type)
 	}
 
 	return eval(exp)
@@ -86,8 +88,12 @@ func EvaluateBangEqual(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	return left != right, nil
@@ -97,8 +103,12 @@ func EvaluateEqualEqual(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	return left == right, nil
@@ -108,8 +118,12 @@ func EvaluateGreater(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -131,8 +145,12 @@ func EvaluateGreaterEqual(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -154,8 +172,12 @@ func EvaluateLess(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -177,8 +199,12 @@ func EvaluateLessEqual(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -208,8 +234,12 @@ func EvaluateMinusBinary(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -231,7 +261,7 @@ func EvaluateMinusUnary(exp Expression) (Value, error) {
 	right, rightErr := Evaluate(exp.Inputs[1])
 
 	if rightErr != nil {
-		return nil, errors.New("error evaluating inputs")
+		return nil, rightErr
 	}
 
 	rightV, ok := right.(float64)
@@ -247,8 +277,12 @@ func EvaluatePlus(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -270,8 +304,12 @@ func EvaluateSlash(exp Expression) (Value, error) {
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
-	if (leftErr != nil) || (rightErr != nil) {
-		return nil, errors.New("error evaluating inputs")
+	if leftErr != nil {
+		return nil, leftErr
+	}
+
+	if rightErr != nil {
+		return nil, rightErr
 	}
 
 	leftV, ok := left.(float64)
@@ -360,7 +398,7 @@ func EvaluateLet(exp Expression) (Value, error) {
 	val, err := Evaluate(exp.Inputs[1])
 
 	if err != nil {
-		return nil, errors.New("error evaluating value")
+		return nil, err
 	}
 
 	setSymbolErr := SetSymbol(identifier, val)
@@ -400,4 +438,24 @@ func EvaluateDo(exp Expression) (Value, error) {
 	PopEnvironment()
 
 	return val, nil
+}
+
+func EvaluateIf(exp Expression) (Value, error) {
+	condition, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	conditionVal, ok := condition.(bool)
+
+	if !ok {
+		return nil, errors.New("condition is not a boolean")
+	}
+
+	if conditionVal {
+		return Evaluate(exp.Inputs[1])
+	} else {
+		return Evaluate(exp.Inputs[2])
+	}
 }

@@ -293,6 +293,7 @@ func isKeyword(text string) bool {
 		"RETURN": "return",
 		"SUPER":  "super",
 		"THIS":   "this",
+		"THEN":   "then",
 		"TRUE":   "true",
 		"LET":    "let",
 		"WHILE":  "while",

@@ -1,6 +1,16 @@
-let a 10;
+let a 11;
 
 let x do
+  let y 10;
   y + 4;
 end
-a + x;
+
+let y do
+  if a > 10 then
+    10;
+  else
+    20;
+  end
+end
+
+x + y;

@@ -46,6 +46,8 @@ func (p *Parser) expression() (Expression, error) {
 		return p.declaration()
 	} else if p.accept([]string{"do"}) {
 		return p.block()
+	} else if p.accept([]string{"if"}) {
+		return p.parseIf()
 	} else {
 		exp, err := p.equality()
 
@@ -54,11 +56,47 @@ func (p *Parser) expression() (Expression, error) {
 		}
 
 		if !p.accept([]string{"SEMICOLON"}) {
-			return Expression{}, errors.New("expected semicolon after expression")
+			return Expression{}, errors.New("expected semicolon after expression. Got " + p.read().Type)
 		}
 
 		return exp, nil
 	}
+}
+
+func (p *Parser) parseIf() (Expression, error) {
+	fmt.Println("Parsing if")
+
+	operator := p.previous()
+
+	condition, err := p.equality()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	fmt.Println("Peek", p.read().Type)
+	fmt.Println("Peek", GetLexemeForToken(p.read()))
+
+	if !p.accept([]string{"then"}) {
+		return Expression{}, errors.New("expected then after condition")
+	}
+
+	thenExp, err := p.block()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	elseExp, err := p.block()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs:   []Expression{condition, thenExp, elseExp},
+	}, nil
 }
 
 func (p *Parser) declaration() (Expression, error) {
@@ -76,6 +114,14 @@ func (p *Parser) declaration() (Expression, error) {
 
 	if p.accept([]string{"do"}) {
 		v, err := p.block()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		value = v
+	} else if p.accept([]string{"if"}) {
+		v, err := p.parseIf()
 
 		if err != nil {
 			return Expression{}, err
@@ -112,7 +158,7 @@ func (p *Parser) block() (Expression, error) {
 
 	expressions := []Expression{}
 
-	for !p.accept([]string{"end"}) {
+	for !p.accept([]string{"end", "else"}) {
 		expression, err := p.expression()
 
 		if err != nil {
@@ -121,6 +167,8 @@ func (p *Parser) block() (Expression, error) {
 
 		expressions = append(expressions, expression)
 	}
+
+	fmt.Println("Block DONE", p.read().Type)
 
 	return Expression{
 		Operator: operator,
