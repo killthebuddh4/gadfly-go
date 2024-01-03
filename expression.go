@@ -75,6 +75,8 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateLet
 	case "do", "then", "else":
 		eval = EvaluateDo
+	case "fn":
+		eval = EvaluateFn
 	case "if":
 		eval = EvaluateIf
 	case "and", "or":
@@ -395,7 +397,11 @@ func EvaluateString(exp Expression) (Value, error) {
 }
 
 func EvaluateLet(exp Expression) (Value, error) {
+	fmt.Println("Evaluating let")
+
 	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
+
+	fmt.Println("let identifier ", identifier)
 
 	val, err := Evaluate(exp.Inputs[1])
 
@@ -412,13 +418,64 @@ func EvaluateLet(exp Expression) (Value, error) {
 	return val, nil
 }
 
-func EvaluateIdentifier(exp Expression) (Value, error) {
-	identifier := GetLexemeForToken(exp.Operator)
-	return GetSymbol(identifier)
+func EvaluateFn(exp Expression) (Value, error) {
+	return exp, nil
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
-	return nil, nil
+	fmt.Println("Evaluating Left Paren")
+
+	PushEnvironment()
+
+	fv, err := Evaluate(exp.Inputs[0])
+
+	fn, ok := fv.(Expression)
+
+	if !ok {
+		return nil, errors.New("function is not an expression")
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	parameters := fn.Inputs[0]
+	arguments := exp.Inputs[1:]
+
+	if len(parameters.Inputs) > 0 {
+		for i, parameter := range parameters.Inputs {
+			identifier := GetLexemeForToken(parameter.Operator)
+
+			val, err := Evaluate(arguments[i])
+
+			if err != nil {
+				return nil, err
+			}
+
+			setSymbolErr := SetSymbol(identifier, val)
+
+			if setSymbolErr != nil {
+				return nil, setSymbolErr
+			}
+		}
+	}
+
+	body := fn.Inputs[1]
+
+	val, err := Evaluate(body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	PopEnvironment()
+
+	return val, nil
+}
+
+func EvaluateIdentifier(exp Expression) (Value, error) {
+	identifier := GetLexemeForToken(exp.Operator)
+	return GetSymbol(identifier)
 }
 
 func EvaluateDo(exp Expression) (Value, error) {

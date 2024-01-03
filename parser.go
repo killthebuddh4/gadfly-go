@@ -44,6 +44,8 @@ func (p *Parser) expression() (Expression, error) {
 
 	if p.accept([]string{"let"}) {
 		return p.declaration()
+	} else if p.accept([]string{"fn"}) {
+		return p.fun()
 	} else if p.accept([]string{"do"}) {
 		return p.block()
 	} else if p.accept([]string{"if"}) {
@@ -73,9 +75,6 @@ func (p *Parser) parseIf() (Expression, error) {
 	if err != nil {
 		return Expression{}, err
 	}
-
-	fmt.Println("Peek", p.read().Type)
-	fmt.Println("Peek", GetLexemeForToken(p.read()))
 
 	if !p.accept([]string{"then"}) {
 		return Expression{}, errors.New("expected then after condition")
@@ -128,6 +127,14 @@ func (p *Parser) declaration() (Expression, error) {
 		}
 
 		value = v
+	} else if p.accept([]string{"fn"}) {
+		v, err := p.fun()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		value = v
 	} else {
 		v, err := p.logical()
 
@@ -151,10 +158,58 @@ func (p *Parser) declaration() (Expression, error) {
 	}, nil
 }
 
+func (p *Parser) fun() (Expression, error) {
+	fmt.Println("Parsing function")
+
+	operator := p.previous()
+
+	var parameters Expression
+
+	if p.accept([]string{"PIPE"}) {
+		pipe := p.previous()
+
+		identifiers := []Expression{}
+
+		for p.accept([]string{"IDENTIFIER"}) {
+			fmt.Println("ACCEPTING A PARAM OF TYPE" + p.previous().Type)
+
+			identifiers = append(identifiers, Expression{
+				Operator: p.previous(),
+				Inputs:   []Expression{},
+			})
+
+			p.accept([]string{"COMMA"})
+		}
+
+		if !p.accept([]string{"PIPE"}) {
+			return Expression{}, errors.New("expected closing pipe")
+		}
+
+		parameters = Expression{
+			Operator: pipe,
+			Inputs:   identifiers,
+		}
+	}
+
+	block, err := p.block()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs:   []Expression{parameters, block},
+	}, nil
+}
+
 func (p *Parser) block() (Expression, error) {
 	fmt.Println("Parsing block")
 
 	operator := p.previous()
+
+	// TOOD
+	operator.Type = "do"
 
 	expressions := []Expression{}
 
@@ -329,7 +384,42 @@ func (p *Parser) unary() (Expression, error) {
 		}, nil
 	}
 
-	return p.atom()
+	return p.call()
+}
+
+func (p *Parser) call() (Expression, error) {
+	fmt.Println("Parsing call")
+
+	left, err := p.atom()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	for p.accept([]string{"LEFT_PAREN"}) {
+		operator := p.previous()
+
+		arguments := []Expression{}
+
+		for !p.accept([]string{"RIGHT_PAREN"}) {
+			argument, err := p.expression()
+
+			if err != nil {
+				return Expression{}, err
+			}
+
+			arguments = append(arguments, argument)
+
+			p.accept([]string{"COMMA"})
+		}
+
+		left = Expression{
+			Operator: operator,
+			Inputs:   append([]Expression{left}, arguments...),
+		}
+	}
+
+	return left, nil
 }
 
 func (p *Parser) atom() (Expression, error) {

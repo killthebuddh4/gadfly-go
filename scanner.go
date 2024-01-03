@@ -69,6 +69,9 @@ func (s *Scanner) scanToken() error {
 	case '*':
 		s.advance()
 		s.addToken("STAR")
+	case '|':
+		s.advance()
+		s.addToken("PIPE")
 	case '!':
 		n, _ := s.readNext()
 
@@ -281,22 +284,17 @@ func isIdentifierChar(c rune) bool {
 func isKeyword(text string) bool {
 	var KEYWORDS = map[string]string{
 		"AND":    "and",
-		"CLASS":  "class",
 		"ELSE":   "else",
 		"FALSE":  "false",
-		"FUN":    "fun",
+		"fn":     "fn",
 		"FOR":    "for",
 		"IF":     "if",
 		"NIL":    "nil",
 		"OR":     "or",
-		"PRINT":  "print",
 		"RETURN": "return",
-		"SUPER":  "super",
-		"THIS":   "this",
 		"THEN":   "then",
 		"TRUE":   "true",
 		"LET":    "let",
-		"WHILE":  "while",
 		"DO":     "do",
 		"END":    "end",
 	}

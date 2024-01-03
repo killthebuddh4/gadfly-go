@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 var source *string
@@ -63,7 +64,14 @@ func PopEnvironment() {
 }
 
 func GetSymbol(name string) (Value, error) {
-	return getSymbol(env, name)
+	val, err := getSymbol(env, name)
+
+	if err != nil {
+		PrintEnvironment()
+		return nil, err
+	}
+
+	return val, nil
 }
 
 func getSymbol(e *Environment, name string) (Value, error) {
@@ -71,7 +79,7 @@ func getSymbol(e *Environment, name string) (Value, error) {
 
 	if !ok {
 		if e.parent == nil {
-			return nil, errors.New("symbol not found")
+			return nil, errors.New("symbol not found " + name)
 		} else {
 			return getSymbol(e.parent, name)
 		}
@@ -90,4 +98,18 @@ func SetSymbol(name string, value Value) error {
 	env.values[name] = value
 
 	return nil
+}
+
+func PrintEnvironment() {
+	e := env
+
+	for e != nil {
+		println("Environment: " + e.name)
+
+		for k, v := range e.values {
+			println("  " + k + " = " + fmt.Sprintf("%v", v))
+		}
+
+		e = e.parent
+	}
 }

@@ -1,17 +1,16 @@
-let a 11;
+let x 300;
 
-let x do
-  let y 10;
-  y + 4;
-end
+let y 200;
 
-let y x + 1;
-
-let z if false or false or x > 10000000 then
-  10000;
+let f if x < y then
+  fn |x|
+    x * 10;
+  end
 else
-  1-100000;
+  fn |x|
+    x * 20;
+  end
 end
 
 
-x + y + z;
+f(100;);
