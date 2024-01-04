@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	InitializeStdLib()
+
 	args := os.Args
 
 	if len(args) != 2 {
@@ -14,8 +16,6 @@ func main() {
 		fmt.Println(len(args))
 	} else {
 		pathToFile := args[1]
-
-		fmt.Println("Running file: ", pathToFile)
 
 		file, openFileErr := os.Open(pathToFile)
 
@@ -44,10 +44,6 @@ func main() {
 			return
 		}
 
-		for _, token := range GetTokens() {
-			PrintToken(token)
-		}
-
 		expression, parseErr := Parse(GetTokens())
 
 		SetProgram(expression)
@@ -55,10 +51,6 @@ func main() {
 		if parseErr != nil {
 			fmt.Println("Error parsing: ", parseErr)
 			return
-		}
-
-		for _, expression := range GetProgram() {
-			PrintExpression(GetSource(), expression)
 		}
 
 		values := []Value{}
@@ -72,10 +64,6 @@ func main() {
 			}
 
 			values = append(values, val)
-		}
-
-		for _, val := range values {
-			fmt.Println("Result: ", val)
 		}
 	}
 }

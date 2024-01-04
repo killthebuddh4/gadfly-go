@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Parser struct {
@@ -16,14 +15,10 @@ func Parse(tokens []Token) ([]Expression, error) {
 		Current: 0,
 	}
 
-	fmt.Println("Parsing")
-
 	return parser.program()
 }
 
 func (p *Parser) program() ([]Expression, error) {
-	fmt.Println("Parsing program")
-
 	expressions := []Expression{}
 
 	for !p.isAtEnd() {
@@ -40,8 +35,6 @@ func (p *Parser) program() ([]Expression, error) {
 }
 
 func (p *Parser) expression() (Expression, error) {
-	fmt.Println("Parsing expression")
-
 	if p.accept([]string{"let"}) {
 		return p.declaration()
 	} else if p.accept([]string{"fn"}) {
@@ -57,17 +50,11 @@ func (p *Parser) expression() (Expression, error) {
 			return Expression{}, err
 		}
 
-		if !p.accept([]string{"SEMICOLON"}) {
-			return Expression{}, errors.New("expected semicolon after expression. Got " + p.read().Type)
-		}
-
 		return exp, nil
 	}
 }
 
 func (p *Parser) parseIf() (Expression, error) {
-	fmt.Println("Parsing if")
-
 	operator := p.previous()
 
 	condition, err := p.logical()
@@ -99,8 +86,6 @@ func (p *Parser) parseIf() (Expression, error) {
 }
 
 func (p *Parser) declaration() (Expression, error) {
-	fmt.Println("Parsing declaration")
-
 	operator := p.previous()
 
 	if !p.accept([]string{"IDENTIFIER"}) {
@@ -142,10 +127,6 @@ func (p *Parser) declaration() (Expression, error) {
 			return Expression{}, err
 		}
 
-		if !p.accept([]string{"SEMICOLON"}) {
-			return Expression{}, errors.New("expected semicolon after declaration")
-		}
-
 		value = v
 	}
 
@@ -159,8 +140,6 @@ func (p *Parser) declaration() (Expression, error) {
 }
 
 func (p *Parser) fun() (Expression, error) {
-	fmt.Println("Parsing function")
-
 	operator := p.previous()
 
 	var parameters Expression
@@ -171,8 +150,6 @@ func (p *Parser) fun() (Expression, error) {
 		identifiers := []Expression{}
 
 		for p.accept([]string{"IDENTIFIER"}) {
-			fmt.Println("ACCEPTING A PARAM OF TYPE" + p.previous().Type)
-
 			identifiers = append(identifiers, Expression{
 				Operator: p.previous(),
 				Inputs:   []Expression{},
@@ -204,8 +181,6 @@ func (p *Parser) fun() (Expression, error) {
 }
 
 func (p *Parser) block() (Expression, error) {
-	fmt.Println("Parsing block")
-
 	operator := p.previous()
 
 	// TOOD
@@ -223,8 +198,6 @@ func (p *Parser) block() (Expression, error) {
 		expressions = append(expressions, expression)
 	}
 
-	fmt.Println("Block DONE", p.read().Type)
-
 	return Expression{
 		Operator: operator,
 		Inputs:   expressions,
@@ -232,8 +205,6 @@ func (p *Parser) block() (Expression, error) {
 }
 
 func (p *Parser) logical() (Expression, error) {
-	fmt.Println("Parsing logical")
-
 	left, err := p.equality()
 
 	if err != nil {
@@ -259,8 +230,6 @@ func (p *Parser) logical() (Expression, error) {
 }
 
 func (p *Parser) equality() (Expression, error) {
-	fmt.Println("Parsing equality")
-
 	left, err := p.comparison()
 
 	if err != nil {
@@ -286,8 +255,6 @@ func (p *Parser) equality() (Expression, error) {
 }
 
 func (p *Parser) comparison() (Expression, error) {
-	fmt.Println("Parsing comparison")
-
 	left, err := p.term()
 
 	if err != nil {
@@ -313,8 +280,6 @@ func (p *Parser) comparison() (Expression, error) {
 }
 
 func (p *Parser) term() (Expression, error) {
-	fmt.Println("Parsing term")
-
 	left, err := p.factor()
 
 	if err != nil {
@@ -340,8 +305,6 @@ func (p *Parser) term() (Expression, error) {
 }
 
 func (p *Parser) factor() (Expression, error) {
-	fmt.Println("Parsing factor")
-
 	left, err := p.unary()
 
 	if err != nil {
@@ -367,8 +330,6 @@ func (p *Parser) factor() (Expression, error) {
 }
 
 func (p *Parser) unary() (Expression, error) {
-	fmt.Println("Parsing unary")
-
 	if p.accept([]string{"BANG", "MINUS"}) {
 		operator := p.previous()
 
@@ -388,8 +349,6 @@ func (p *Parser) unary() (Expression, error) {
 }
 
 func (p *Parser) call() (Expression, error) {
-	fmt.Println("Parsing call")
-
 	left, err := p.atom()
 
 	if err != nil {
@@ -423,12 +382,8 @@ func (p *Parser) call() (Expression, error) {
 }
 
 func (p *Parser) atom() (Expression, error) {
-	fmt.Println("Parsing atom")
-
 	if p.accept([]string{"true", "false", "nil", "NUMBER", "STRING", "IDENTIFIER"}) {
 		operator := p.previous()
-
-		fmt.Println("Parsing literal of type ", operator.Type)
 
 		return Expression{
 			Operator: operator,
@@ -449,8 +404,6 @@ func (p *Parser) atom() (Expression, error) {
 
 		return expr, nil
 	}
-
-	fmt.Println("Peek", p.read().Type)
 
 	return Expression{}, errors.New("expected expression")
 }

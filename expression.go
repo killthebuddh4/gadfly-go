@@ -397,11 +397,7 @@ func EvaluateString(exp Expression) (Value, error) {
 }
 
 func EvaluateLet(exp Expression) (Value, error) {
-	fmt.Println("Evaluating let")
-
 	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
-
-	fmt.Println("let identifier ", identifier)
 
 	val, err := Evaluate(exp.Inputs[1])
 
@@ -419,50 +415,79 @@ func EvaluateLet(exp Expression) (Value, error) {
 }
 
 func EvaluateFn(exp Expression) (Value, error) {
-	return exp, nil
+	fn := func(arguments ...Value) (Value, error) {
+		PushEnvironment()
+
+		parameters := exp.Inputs[0]
+
+		if len(arguments) != len(parameters.Inputs) {
+			return nil, errors.New("wrong number of arguments")
+		}
+
+		if len(parameters.Inputs) > 0 {
+			for i, parameter := range parameters.Inputs {
+				identifier := GetLexemeForToken(parameter.Operator)
+
+				val := arguments[i]
+
+				setSymbolErr := SetSymbol(identifier, val)
+
+				if setSymbolErr != nil {
+					return nil, setSymbolErr
+				}
+			}
+		}
+
+		body := exp.Inputs[1]
+
+		val, err := Evaluate(body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		PopEnvironment()
+
+		return val, nil
+	}
+
+	return fn, nil
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
-	fmt.Println("Evaluating Left Paren")
-
 	PushEnvironment()
 
-	fv, err := Evaluate(exp.Inputs[0])
+	fnExp := exp.Inputs[0]
 
-	fn, ok := fv.(Expression)
+	argsExps := exp.Inputs[1:]
 
-	if !ok {
-		return nil, errors.New("function is not an expression")
-	}
+	fnVal, err := Evaluate(fnExp)
 
 	if err != nil {
 		return nil, err
 	}
 
-	parameters := fn.Inputs[0]
-	arguments := exp.Inputs[1:]
+	fn, ok := fnVal.(func(args ...Value) (Value, error))
 
-	if len(parameters.Inputs) > 0 {
-		for i, parameter := range parameters.Inputs {
-			identifier := GetLexemeForToken(parameter.Operator)
+	if !ok {
+		return nil, errors.New("not a function of the right sig")
+	}
 
-			val, err := Evaluate(arguments[i])
+	args := []Value{}
+
+	if len(argsExps) > 0 {
+		for _, argExp := range argsExps {
+			arg, err := Evaluate(argExp)
 
 			if err != nil {
 				return nil, err
 			}
 
-			setSymbolErr := SetSymbol(identifier, val)
-
-			if setSymbolErr != nil {
-				return nil, setSymbolErr
-			}
+			args = append(args, arg)
 		}
 	}
 
-	body := fn.Inputs[1]
-
-	val, err := Evaluate(body)
+	val, err := fn(args...)
 
 	if err != nil {
 		return nil, err

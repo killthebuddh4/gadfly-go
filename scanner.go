@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 func Scan(source string) ([]Token, error) {
@@ -37,8 +36,6 @@ type Scanner struct {
 func (s *Scanner) scanToken() error {
 
 	c, err := s.readCurrent()
-
-	fmt.Println("Scanning token, current is: ", string(c))
 
 	if err != nil {
 		return err
@@ -141,7 +138,6 @@ func (s *Scanner) scanToken() error {
 		lexeme := s.readLexeme()
 
 		if isKeyword(lexeme) {
-			fmt.Println("Adding keyword token, token is: ", lexeme)
 			s.addToken(lexeme)
 		} else {
 			s.addToken("IDENTIFIER")
@@ -174,8 +170,6 @@ func (s *Scanner) advanceNumber() error {
 	for !s.isAtEnd() {
 		c, _ := s.readCurrent()
 
-		fmt.Println("Looping inside number, current rune is", string(c))
-
 		if c < '0' || c > '9' {
 			break
 		} else {
@@ -201,7 +195,6 @@ func (s *Scanner) advanceNumber() error {
 		c, _ := s.readCurrent()
 
 		if c < '0' || c > '9' {
-			fmt.Println("BREAKING ON", string(c))
 			break
 		} else {
 			s.advance()
