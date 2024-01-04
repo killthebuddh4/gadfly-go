@@ -71,16 +71,22 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateLeftParen
 	case "IDENTIFIER":
 		eval = EvaluateIdentifier
-	case "let":
-		eval = EvaluateLet
-	case "do", "then", "else":
+	case "def":
+		eval = EvaluateDef
+	case "set":
+		eval = EvaluateSet
+	case "do", "when", "then", "else":
 		eval = EvaluateDo
+	case "and":
+		eval = EvaluateAnd
+	case "or":
+		eval = EvaluateOr
 	case "fn":
 		eval = EvaluateFn
+	case "array":
+		eval = EvaluateArray
 	case "if":
 		eval = EvaluateIf
-	case "and", "or":
-		eval = EvaluateLogical
 	default:
 		return nil, errors.New("unknown operator " + exp.Operator.Type)
 	}
@@ -396,7 +402,25 @@ func EvaluateString(exp Expression) (Value, error) {
 	return GetLexemeForToken(exp.Operator), nil
 }
 
-func EvaluateLet(exp Expression) (Value, error) {
+func EvaluateDef(exp Expression) (Value, error) {
+	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
+
+	val, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	setSymbolErr := DefSymbol(identifier, val)
+
+	if setSymbolErr != nil {
+		return nil, setSymbolErr
+	}
+
+	return val, nil
+}
+
+func EvaluateSet(exp Expression) (Value, error) {
 	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
 
 	val, err := Evaluate(exp.Inputs[1])
@@ -430,7 +454,7 @@ func EvaluateFn(exp Expression) (Value, error) {
 
 				val := arguments[i]
 
-				setSymbolErr := SetSymbol(identifier, val)
+				setSymbolErr := DefSymbol(identifier, val)
 
 				if setSymbolErr != nil {
 					return nil, setSymbolErr
@@ -525,23 +549,99 @@ func EvaluateDo(exp Expression) (Value, error) {
 }
 
 func EvaluateIf(exp Expression) (Value, error) {
-	condition, err := Evaluate(exp.Inputs[0])
+	whenExp := exp.Inputs[0]
+	thenExp := exp.Inputs[1]
+	elseExp := exp.Inputs[2]
+
+	conditionVal, err := Evaluate(whenExp)
 
 	if err != nil {
 		return nil, err
 	}
 
-	conditionVal, ok := condition.(bool)
+	condition, ok := conditionVal.(bool)
 
 	if !ok {
 		return nil, errors.New("condition is not a boolean")
 	}
 
-	if conditionVal {
-		return Evaluate(exp.Inputs[1])
+	if condition {
+		return Evaluate(thenExp)
 	} else {
-		return Evaluate(exp.Inputs[2])
+		return Evaluate(elseExp)
 	}
+}
+
+func EvaluateArray(exp Expression) (Value, error) {
+	array, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arrayVal, ok := array.([]Value)
+
+	if !ok {
+		return nil, errors.New("array is not an array")
+	}
+
+	PushEnvironment()
+
+	SetSymbol("array", arrayVal)
+
+	right, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	PopEnvironment()
+
+	return right, nil
+}
+
+func EvaluateAnd(exp Expression) (Value, error) {
+	for _, conditionExp := range exp.Inputs {
+		conditionVal, err := Evaluate(conditionExp)
+
+		if err != nil {
+			return nil, err
+		}
+
+		condition, ok := conditionVal.(bool)
+
+		if !ok {
+			return nil, errors.New("condition is not a boolean")
+		}
+
+		if !condition {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
+func EvaluateOr(exp Expression) (Value, error) {
+	for _, conditionExp := range exp.Inputs {
+		conditionVal, err := Evaluate(conditionExp)
+
+		if err != nil {
+			return nil, err
+		}
+
+		condition, ok := conditionVal.(bool)
+
+		if !ok {
+			return nil, errors.New("condition is not a boolean")
+		}
+
+		if condition {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func EvaluateLogical(exp Expression) (Value, error) {

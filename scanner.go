@@ -60,9 +60,6 @@ func (s *Scanner) scanToken() error {
 	case '+':
 		s.advance()
 		s.addToken("PLUS")
-	case ';':
-		s.advance()
-		s.addToken("SEMICOLON")
 	case '*':
 		s.advance()
 		s.addToken("STAR")
@@ -280,16 +277,25 @@ func isKeyword(text string) bool {
 		"ELSE":   "else",
 		"FALSE":  "false",
 		"fn":     "fn",
-		"FOR":    "for",
 		"IF":     "if",
 		"NIL":    "nil",
 		"OR":     "or",
+		"WHEN":   "when",
 		"RETURN": "return",
 		"THEN":   "then",
 		"TRUE":   "true",
-		"LET":    "let",
+		"DEF":    "def",
 		"DO":     "do",
 		"END":    "end",
+		"SET":    "set",
+		"FOR":    "for",
+		"MAP":    "map",
+		"FILTER": "filter",
+		"REDUCE": "reduce",
+		"READ":   "read",
+		"WRITE":  "write",
+		"ARRAY":  "array",
+		"HASH":   "hash",
 	}
 
 	for _, v := range KEYWORDS {

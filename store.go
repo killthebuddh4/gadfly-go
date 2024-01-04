@@ -88,13 +88,19 @@ func getSymbol(e *Environment, name string) (Value, error) {
 	return value, nil
 }
 
-func SetSymbol(name string, value Value) error {
+func DefSymbol(name string, value Value) error {
 	_, ok := env.values[name]
 
 	if ok {
 		return errors.New("symbol already exists")
 	}
 
+	env.values[name] = value
+
+	return nil
+}
+
+func SetSymbol(name string, value Value) error {
 	env.values[name] = value
 
 	return nil

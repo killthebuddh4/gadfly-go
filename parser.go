@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Parser struct {
@@ -22,7 +23,7 @@ func (p *Parser) program() ([]Expression, error) {
 	expressions := []Expression{}
 
 	for !p.isAtEnd() {
-		left, err := p.expression()
+		left, err := p.sexp()
 
 		if err != nil {
 			return []Expression{}, err
@@ -34,11 +35,106 @@ func (p *Parser) program() ([]Expression, error) {
 	return expressions, nil
 }
 
+func (p *Parser) sexp() (Expression, error) {
+	if p.accept([]string{"def", "if", "set", "do", "when", "then", "else", "and", "or"}) {
+		return p.sblock()
+	} else if p.accept([]string{"fn"}) {
+		return p.sfn()
+	} else {
+		exp, err := p.logical()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		return exp, nil
+	}
+}
+
+func (p *Parser) sblock() (Expression, error) {
+	operator := p.previous()
+
+	fmt.Println("Parsing sblock of type", operator.Type)
+
+	expressions := []Expression{}
+
+	for !p.accept([]string{"end"}) {
+		expression, err := p.sexp()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		expressions = append(expressions, expression)
+	}
+
+	fmt.Println("Done parsing sblock of type", operator.Type)
+
+	return Expression{
+		Operator: operator,
+		Inputs:   expressions,
+	}, nil
+}
+
+func (p *Parser) sfn() (Expression, error) {
+	fmt.Println("Parsing sfn")
+
+	operator := p.previous()
+
+	var parameters Expression
+
+	if p.accept([]string{"PIPE"}) {
+		fmt.Println("Parsing PIPE")
+		pipe := p.previous()
+
+		identifiers := []Expression{}
+
+		for p.accept([]string{"IDENTIFIER"}) {
+			identifiers = append(identifiers, Expression{
+				Operator: p.previous(),
+				Inputs:   []Expression{},
+			})
+
+			p.accept([]string{"COMMA"})
+		}
+
+		if !p.accept([]string{"PIPE"}) {
+			return Expression{}, errors.New("expected closing pipe")
+		}
+
+		parameters = Expression{
+			Operator: pipe,
+			Inputs:   identifiers,
+		}
+
+		fmt.Println("Done parsing PIPE")
+	}
+
+	if !p.accept([]string{"do"}) {
+		return Expression{}, errors.New("expected do after parameters")
+	}
+
+	block, err := p.sblock()
+
+	if err != nil {
+		return Expression{}, err
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs:   []Expression{parameters, block},
+	}, nil
+}
+
 func (p *Parser) expression() (Expression, error) {
-	if p.accept([]string{"let"}) {
+	if p.accept([]string{"def"}) {
 		return p.declaration()
 	} else if p.accept([]string{"fn"}) {
 		return p.fun()
+	} else if p.accept([]string{"array"}) {
+		return p.array()
+	} else if p.accept([]string{"set"}) {
+		return p.set()
 	} else if p.accept([]string{"do"}) {
 		return p.block()
 	} else if p.accept([]string{"if"}) {
@@ -52,6 +148,27 @@ func (p *Parser) expression() (Expression, error) {
 
 		return exp, nil
 	}
+}
+
+func (p *Parser) array() (Expression, error) {
+	operator := p.previous()
+
+	expressions := []Expression{}
+
+	for !p.accept([]string{"end"}) {
+		expression, err := p.expression()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		expressions = append(expressions, expression)
+	}
+
+	return Expression{
+		Operator: operator,
+		Inputs:   expressions,
+	}, nil
 }
 
 func (p *Parser) parseIf() (Expression, error) {
@@ -89,45 +206,39 @@ func (p *Parser) declaration() (Expression, error) {
 	operator := p.previous()
 
 	if !p.accept([]string{"IDENTIFIER"}) {
-		return Expression{}, errors.New("expected identifier after let")
+		return Expression{}, errors.New("expected identifier after def")
 	}
 
 	identifier := p.previous()
 
-	var value Expression
+	value, err := p.expression()
 
-	if p.accept([]string{"do"}) {
-		v, err := p.block()
+	if err != nil {
+		return Expression{}, err
+	}
 
-		if err != nil {
-			return Expression{}, err
-		}
+	return Expression{
+		Operator: operator,
+		Inputs: []Expression{{
+			Operator: identifier,
+			Inputs:   []Expression{},
+		}, value},
+	}, nil
+}
 
-		value = v
-	} else if p.accept([]string{"if"}) {
-		v, err := p.parseIf()
+func (p *Parser) set() (Expression, error) {
+	operator := p.previous()
 
-		if err != nil {
-			return Expression{}, err
-		}
+	if !p.accept([]string{"IDENTIFIER"}) {
+		return Expression{}, errors.New("expected identifier after def")
+	}
 
-		value = v
-	} else if p.accept([]string{"fn"}) {
-		v, err := p.fun()
+	identifier := p.previous()
 
-		if err != nil {
-			return Expression{}, err
-		}
+	value, err := p.expression()
 
-		value = v
-	} else {
-		v, err := p.logical()
-
-		if err != nil {
-			return Expression{}, err
-		}
-
-		value = v
+	if err != nil {
+		return Expression{}, err
 	}
 
 	return Expression{
@@ -405,7 +516,7 @@ func (p *Parser) atom() (Expression, error) {
 		return expr, nil
 	}
 
-	return Expression{}, errors.New("expected expression")
+	return Expression{}, errors.New("expected expression but got " + p.read().Type)
 }
 
 func (p *Parser) accept(tokenTypes []string) bool {

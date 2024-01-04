@@ -1,8 +1,8 @@
-let x 300
+def x 300
 
-let y 200
+def y 200
 
-let f if x < y then
+def f if x < y then
   fn |x|
     x * 10
   end
@@ -13,7 +13,7 @@ else
 end
 
 
-let times fn |n, f|
+def times fn |n, f|
   if n == 0 then
     0
   else
@@ -23,13 +23,13 @@ let times fn |n, f|
 end
 
 
-let z fn ||
+def z fn ||
   print("hello")
 end
 
 
 times(10, z)
 
-let a fn || "goodbye" end
+def a fn || "goodbye" end
 
 print(a())
