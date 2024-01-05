@@ -35,8 +35,11 @@ func (p *Parser) program() ([]Expression, error) {
 	return expressions, nil
 }
 
+var EXPRESSIONS = []string{"def", "if", "set", "do", "when", "then", "else", "and", "or", "array", "for", "map", "reduce", "filter"}
+
 func (p *Parser) sexp() (Expression, error) {
-	if p.accept([]string{"def", "if", "set", "do", "when", "then", "else", "and", "or"}) {
+	if p.accept(EXPRESSIONS) {
+		fmt.Println("Block is of type", p.previous().Type)
 		return p.sblock()
 	} else if p.accept([]string{"fn"}) {
 		return p.sfn()
@@ -59,6 +62,7 @@ func (p *Parser) sblock() (Expression, error) {
 	expressions := []Expression{}
 
 	for !p.accept([]string{"end"}) {
+		fmt.Println("looking at ", p.read().Type, GetLexemeForToken(p.read()))
 		expression, err := p.sexp()
 
 		if err != nil {
@@ -322,7 +326,7 @@ func (p *Parser) logical() (Expression, error) {
 		return Expression{}, err
 	}
 
-	for p.accept([]string{"and", "or"}) {
+	for p.accept([]string{"&&", "||"}) {
 		operator := p.previous()
 
 		right, err := p.equality()

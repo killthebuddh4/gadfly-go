@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 func Scan(source string) ([]Token, error) {
@@ -135,8 +136,10 @@ func (s *Scanner) scanToken() error {
 		lexeme := s.readLexeme()
 
 		if isKeyword(lexeme) {
+			fmt.Println("Scanned a keyword", lexeme)
 			s.addToken(lexeme)
 		} else {
+			fmt.Println("Scanned an identifier", lexeme)
 			s.addToken("IDENTIFIER")
 		}
 	default:

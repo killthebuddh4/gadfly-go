@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 )
 
@@ -75,6 +76,12 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateDef
 	case "set":
 		eval = EvaluateSet
+	case "for":
+		eval = EvaluateFor
+	case "map":
+		eval = EvaluateMap
+	case "reduce":
+		eval = EvaluateReduce
 	case "do", "when", "then", "else":
 		eval = EvaluateDo
 	case "and":
@@ -348,13 +355,13 @@ func EvaluateStar(exp Expression) (Value, error) {
 	leftV, ok := left.(float64)
 
 	if !ok {
-		return nil, errors.New("left operand is not a number")
+		return nil, errors.New("left operand is not a number " + reflect.TypeOf(left).String())
 	}
 
 	rightV, ok := right.(float64)
 
 	if !ok {
-		return nil, errors.New("right operand is not a number")
+		return nil, errors.New("right operand is not a number " + reflect.TypeOf(right).String())
 	}
 
 	return leftV * rightV, nil
@@ -454,6 +461,8 @@ func EvaluateFn(exp Expression) (Value, error) {
 
 				val := arguments[i]
 
+				fmt.Println("Defining symbol for val of type" + reflect.TypeOf(val).String())
+
 				setSymbolErr := DefSymbol(identifier, val)
 
 				if setSymbolErr != nil {
@@ -479,6 +488,7 @@ func EvaluateFn(exp Expression) (Value, error) {
 }
 
 func EvaluateLeftParen(exp Expression) (Value, error) {
+	fmt.Println("Evaluating left paren ------------------------")
 	PushEnvironment()
 
 	fnExp := exp.Inputs[0]
@@ -506,6 +516,8 @@ func EvaluateLeftParen(exp Expression) (Value, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			fmt.Println("Evaluating arg ", arg, " of type", reflect.TypeOf(arg).String())
 
 			args = append(args, arg)
 		}
@@ -572,32 +584,193 @@ func EvaluateIf(exp Expression) (Value, error) {
 	}
 }
 
-func EvaluateArray(exp Expression) (Value, error) {
-	array, err := Evaluate(exp.Inputs[0])
+func EvaluateFor(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
 
 	if err != nil {
 		return nil, err
 	}
 
-	arrayVal, ok := array.([]Value)
+	arr, ok := arrV.([]Value)
 
 	if !ok {
-		return nil, errors.New("array is not an array")
+		return nil, errors.New("not an array")
 	}
 
-	PushEnvironment()
-
-	SetSymbol("array", arrayVal)
-
-	right, err := Evaluate(exp.Inputs[1])
+	fnV, err := Evaluate(exp.Inputs[1])
 
 	if err != nil {
 		return nil, err
 	}
 
-	PopEnvironment()
+	fn, ok := fnV.(func(args ...Value) (Value, error))
 
-	return right, nil
+	if !ok {
+		return nil, errors.New("not a function")
+	}
+
+	for i, v := range arr {
+		_, err := fn(v, float64(i))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
+}
+
+func EvaluateMap(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr, ok := arrV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	fnV, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fn, ok := fnV.(func(args ...Value) (Value, error))
+
+	if !ok {
+		return nil, errors.New("not a function")
+	}
+
+	vals := []Value{}
+
+	for i, v := range arr {
+		fmt.Println("Evaluating map", v, float64(i))
+		mapped, err := fn(v, float64(i))
+
+		if err != nil {
+			return nil, err
+		}
+
+		vals = append(vals, mapped)
+	}
+
+	return vals, nil
+}
+
+func EvaluateFilter(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr, ok := arrV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	fnV, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fn, ok := fnV.(func(args ...Value) (Value, error))
+
+	if !ok {
+		return nil, errors.New("not a function")
+	}
+
+	vals := []Value{}
+
+	for i, v := range arr {
+		filterV, err := fn(v, float64(i))
+
+		if err != nil {
+			return nil, err
+		}
+
+		filter, ok := filterV.(bool)
+
+		if !ok {
+			return nil, errors.New("filter is not a boolean")
+		}
+
+		if filter {
+			vals = append(vals, v)
+		}
+	}
+
+	return vals, nil
+}
+
+func EvaluateReduce(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr, ok := arrV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	initV, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fnV, err := Evaluate(exp.Inputs[2])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fn, ok := fnV.(func(args ...Value) (Value, error))
+
+	if !ok {
+		return nil, errors.New("not a function")
+	}
+
+	if (len(arr)) == 0 {
+		return nil, nil
+	}
+
+	reduction := initV
+
+	for i, v := range arr {
+		reduction, err = fn(reduction, v, float64(i))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return reduction, nil
+}
+
+func EvaluateArray(exp Expression) (Value, error) {
+	arr := []Value{}
+
+	for _, input := range exp.Inputs {
+		val, err := Evaluate(input)
+
+		if err != nil {
+			return nil, err
+		}
+
+		arr = append(arr, val)
+	}
+
+	return arr, nil
 }
 
 func EvaluateAnd(exp Expression) (Value, error) {
