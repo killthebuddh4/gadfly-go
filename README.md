@@ -10,14 +10,14 @@ under heavy development._
   language models (LMs).
 - An LM wouldn't need to generalize, it could write a new program for each new
   task it encounters.
-- An LM user could analyze running programs very quickly, it could modify
+- An LM could analyze running programs very quickly, it could modify
   running programs according to new data.
-- Instead of importing code, an LM user could search for similar code in a
+- Instead of importing code, an LM could search for similar code in a
  . database and then repurpose it.
-- Because an LM user could analyze running programs very quickly, it could make
+- Because an LM could analyze running programs very quickly, it could make
   sense to store all kinds of useful metadata in the parse tree.
 - More generally, the parse tree could be something that is constantly
-  manipulated by the LM user.
+  manipulated by the LM.
 - An LM could outsource subtrees to other LMs, there could be a whole ecosystem
   built around this idea.
 - An LM could evaluate subtrees in parallel and then merge, prune, and recombine
