@@ -101,9 +101,22 @@ func DefSymbol(name string, value Value) error {
 }
 
 func SetSymbol(name string, value Value) error {
-	env.values[name] = value
+	return setSymbol(env, name, value)
+}
 
-	return nil
+func setSymbol(e *Environment, name string, value Value) error {
+	_, ok := e.values[name]
+
+	if ok {
+		e.values[name] = value
+		return nil
+	}
+
+	if e.parent == nil {
+		return errors.New("symbol not found " + name)
+	} else {
+		return setSymbol(e.parent, name, value)
+	}
 }
 
 func PrintEnvironment() {

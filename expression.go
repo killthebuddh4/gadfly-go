@@ -74,8 +74,10 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateCall
 	case "def":
 		eval = EvaluateDef
-	case "set":
-		eval = EvaluateSet
+	case "let":
+		eval = EvaluateLet
+	case "filter":
+		eval = EvaluateFilter
 	case "for":
 		eval = EvaluateFor
 	case "map":
@@ -92,6 +94,10 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateFn
 	case "array":
 		eval = EvaluateArray
+	case "set":
+		eval = EvaluateSet
+	case "get":
+		eval = EvaluateGet
 	case "if":
 		eval = EvaluateIf
 	default:
@@ -427,7 +433,7 @@ func EvaluateDef(exp Expression) (Value, error) {
 	return val, nil
 }
 
-func EvaluateSet(exp Expression) (Value, error) {
+func EvaluateLet(exp Expression) (Value, error) {
 	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
 
 	val, err := Evaluate(exp.Inputs[1])
@@ -441,6 +447,72 @@ func EvaluateSet(exp Expression) (Value, error) {
 	if setSymbolErr != nil {
 		return nil, setSymbolErr
 	}
+
+	return val, nil
+}
+
+func EvaluateSet(exp Expression) (Value, error) {
+	dataV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	data, ok := dataV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	indexV, err := Evaluate(exp.Inputs[1])
+
+	index, ok := indexV.(float64)
+
+	if !ok {
+		return nil, errors.New("not a number")
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := Evaluate(exp.Inputs[2])
+
+	if err != nil {
+		return nil, err
+	}
+
+	data[int(index)] = val
+
+	return data, nil
+}
+
+func EvaluateGet(exp Expression) (Value, error) {
+	dataV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	data, ok := dataV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	indexV, err := Evaluate(exp.Inputs[1])
+
+	index, ok := indexV.(float64)
+
+	if !ok {
+		return nil, errors.New("not a number")
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	val := data[int(index)]
 
 	return val, nil
 }
@@ -460,8 +532,6 @@ func EvaluateFn(exp Expression) (Value, error) {
 				identifier := GetLexemeForToken(parameter.Operator)
 
 				val := arguments[i]
-
-				fmt.Println("Defining symbol for val of type" + reflect.TypeOf(val).String())
 
 				setSymbolErr := DefSymbol(identifier, val)
 
@@ -488,7 +558,6 @@ func EvaluateFn(exp Expression) (Value, error) {
 }
 
 func EvaluateCall(exp Expression) (Value, error) {
-	fmt.Println("Evaluating left paren ------------------------")
 	PushEnvironment()
 
 	fnExp := exp.Inputs[0]
@@ -516,8 +585,6 @@ func EvaluateCall(exp Expression) (Value, error) {
 			if err != nil {
 				return nil, err
 			}
-
-			// fmt.Println("Evaluating arg ", arg, " of type", reflect.TypeOf(arg).String())
 
 			args = append(args, arg)
 		}

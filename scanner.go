@@ -271,34 +271,34 @@ func isIdentifierChar(c rune) bool {
 	return c == '_' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 }
 
-func isKeyword(text string) bool {
-	var KEYWORDS = map[string]string{
-		"AND":    "and",
-		"ELSE":   "else",
-		"FALSE":  "false",
-		"fn":     "fn",
-		"IF":     "if",
-		"NIL":    "nil",
-		"OR":     "or",
-		"WHEN":   "when",
-		"RETURN": "return",
-		"THEN":   "then",
-		"TRUE":   "true",
-		"DEF":    "def",
-		"DO":     "do",
-		"END":    "end",
-		"SET":    "set",
-		"FOR":    "for",
-		"MAP":    "map",
-		"FILTER": "filter",
-		"REDUCE": "reduce",
-		"READ":   "read",
-		"WRITE":  "write",
-		"ARRAY":  "array",
-		"HASH":   "hash",
-		"CALL":   "call",
-	}
+var KEYWORDS = map[string]string{
+	"AND":    "and",
+	"ELSE":   "else",
+	"FALSE":  "false",
+	"fn":     "fn",
+	"IF":     "if",
+	"NIL":    "nil",
+	"OR":     "or",
+	"WHEN":   "when",
+	"RETURN": "return",
+	"THEN":   "then",
+	"TRUE":   "true",
+	"DEF":    "def",
+	"LET":    "let",
+	"DO":     "do",
+	"END":    "end",
+	"SET":    "set",
+	"GET":    "get",
+	"FOR":    "for",
+	"MAP":    "map",
+	"FILTER": "filter",
+	"REDUCE": "reduce",
+	"READ":   "read",
+	"ARRAY":  "array",
+	"CALL":   "call",
+}
 
+func isKeyword(text string) bool {
 	for _, v := range KEYWORDS {
 		if v == text {
 			return true

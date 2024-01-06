@@ -15,55 +15,66 @@ func main() {
 		fmt.Println("Usage: gadflai [script]")
 		fmt.Println(len(args))
 	} else {
-		pathToFile := args[1]
+		eval(args[1])
+	}
+}
 
-		file, openFileErr := os.Open(pathToFile)
+func eval(pathToFile string) {
+	source := ""
 
-		if openFileErr != nil {
-			fmt.Println("Error opening file: ", openFileErr)
+	files := []string{"lib.math.gf", "lib.array.gf", pathToFile}
+
+	for _, file := range files {
+		f, err := os.Open(file)
+
+		if err != nil {
+			fmt.Println("Error opening file: ", err)
 			return
 		}
 
-		defer file.Close()
+		defer f.Close()
 
-		data, readFileErr := io.ReadAll(file)
+		data, err := io.ReadAll(f)
 
-		SetSource(string(data))
-
-		if readFileErr != nil {
-			fmt.Println("Error reading file: ", readFileErr)
+		if err != nil {
+			fmt.Println("Error reading file: ", err)
 			return
 		}
 
-		tokens, scanErr := Scan(GetSource())
+		source += "\n"
+		source += string(data)
+	}
 
-		SetTokens(tokens)
+	SetSource(source)
 
-		if scanErr != nil {
-			fmt.Println("Error scanning: ", scanErr)
+	tokens, scanErr := Scan(GetSource())
+
+	SetTokens(tokens)
+
+	if scanErr != nil {
+		fmt.Println("Error scanning: ", scanErr)
+		return
+	}
+
+	expression, parseErr := Parse(GetTokens())
+
+	SetProgram(expression)
+
+	if parseErr != nil {
+		fmt.Println("Error parsing: ", parseErr)
+		return
+	}
+
+	values := []Value{}
+
+	for _, expression := range GetProgram() {
+		val, evalErr := Evaluate(expression)
+
+		if evalErr != nil {
+			fmt.Println("Error evaluating: ", evalErr)
 			return
 		}
 
-		expression, parseErr := Parse(GetTokens())
-
-		SetProgram(expression)
-
-		if parseErr != nil {
-			fmt.Println("Error parsing: ", parseErr)
-			return
-		}
-
-		values := []Value{}
-
-		for _, expression := range GetProgram() {
-			val, evalErr := Evaluate(expression)
-
-			if evalErr != nil {
-				fmt.Println("Error evaluating: ", evalErr)
-				return
-			}
-
-			values = append(values, val)
-		}
+		values = append(values, val)
 	}
 }

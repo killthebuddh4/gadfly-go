@@ -34,7 +34,7 @@ func (p *Parser) program() ([]Expression, error) {
 	return expressions, nil
 }
 
-var EXPRESSIONS = []string{"def", "call", "if", "set", "do", "when", "then", "else", "and", "or", "array", "for", "map", "reduce", "filter"}
+var EXPRESSIONS = []string{"def", "let", "call", "if", "get", "set", "do", "when", "then", "else", "and", "or", "array", "for", "map", "reduce", "filter"}
 
 func (p *Parser) expression() (Expression, error) {
 	if p.accept(EXPRESSIONS) {
