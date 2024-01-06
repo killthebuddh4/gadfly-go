@@ -12,8 +12,8 @@ under heavy development._
   task it encounters.
 - An LM could analyze running programs very quickly, it could modify
   running programs according to new data.
-- Instead of importing code, an LM could search for similar code in a
- . database and then repurpose it.
+- Instead of importing code, an LM could search for similar code in a database
+  and then repurpose it.
 - Because an LM could analyze running programs very quickly, it could make
   sense to store all kinds of useful metadata in the parse tree.
 - More generally, the parse tree could be something that is constantly
