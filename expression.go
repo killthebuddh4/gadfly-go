@@ -62,16 +62,16 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateTrue
 	case "false":
 		eval = EvaluateFalse
-	case "NIL":
+	case "nil":
 		eval = EvaluateNil
 	case "NUMBER":
 		eval = EvaluateNumber
 	case "STRING":
 		eval = EvaluateString
-	case "LEFT_PAREN":
-		eval = EvaluateLeftParen
 	case "IDENTIFIER":
 		eval = EvaluateIdentifier
+	case "call":
+		eval = EvaluateCall
 	case "def":
 		eval = EvaluateDef
 	case "set":
@@ -487,7 +487,7 @@ func EvaluateFn(exp Expression) (Value, error) {
 	return fn, nil
 }
 
-func EvaluateLeftParen(exp Expression) (Value, error) {
+func EvaluateCall(exp Expression) (Value, error) {
 	fmt.Println("Evaluating left paren ------------------------")
 	PushEnvironment()
 
@@ -517,7 +517,7 @@ func EvaluateLeftParen(exp Expression) (Value, error) {
 				return nil, err
 			}
 
-			fmt.Println("Evaluating arg ", arg, " of type", reflect.TypeOf(arg).String())
+			// fmt.Println("Evaluating arg ", arg, " of type", reflect.TypeOf(arg).String())
 
 			args = append(args, arg)
 		}
@@ -774,8 +774,14 @@ func EvaluateArray(exp Expression) (Value, error) {
 }
 
 func EvaluateAnd(exp Expression) (Value, error) {
-	for _, conditionExp := range exp.Inputs {
-		conditionVal, err := Evaluate(conditionExp)
+	if (len(exp.Inputs) % 2) != 0 {
+		return nil, errors.New("and must have even number of inputs")
+	}
+
+	var val Value = nil
+
+	for i := 0; i < len(exp.Inputs); i += 2 {
+		conditionVal, err := Evaluate(exp.Inputs[i])
 
 		if err != nil {
 			return nil, err
@@ -790,14 +796,26 @@ func EvaluateAnd(exp Expression) (Value, error) {
 		if !condition {
 			return false, nil
 		}
+
+		body, err := Evaluate(exp.Inputs[i+1])
+
+		if err != nil {
+			return nil, err
+		}
+
+		val = body
 	}
 
-	return true, nil
+	return val, nil
 }
 
 func EvaluateOr(exp Expression) (Value, error) {
-	for _, conditionExp := range exp.Inputs {
-		conditionVal, err := Evaluate(conditionExp)
+	if (len(exp.Inputs) % 2) != 0 {
+		return nil, errors.New("or must have even number of inputs")
+	}
+
+	for i := 0; i < len(exp.Inputs); i += 2 {
+		conditionVal, err := Evaluate(exp.Inputs[i])
 
 		if err != nil {
 			return nil, err
@@ -810,11 +828,11 @@ func EvaluateOr(exp Expression) (Value, error) {
 		}
 
 		if condition {
-			return true, nil
+			return Evaluate(exp.Inputs[i+1])
 		}
 	}
 
-	return false, nil
+	return nil, nil
 }
 
 func EvaluateLogical(exp Expression) (Value, error) {

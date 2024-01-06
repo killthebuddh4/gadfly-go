@@ -1,94 +1,26 @@
-def x 200 end
+def x 10 end
 
-def y 200 end
-
-def z 
-  fn || do
-    print("hello")
-
-    def y 
-      fn || do
-        print(" world")
-      end
-    end
-
-    y()
-  end
-end
-
-z()
-
-if
-  when x > y end
-  then print("x is greater than y") end
-  else print("x is not greater than y") end
-end
-
-def a 10 end
-def b 20 end
-
-def c 0 end
-def d 40 end
+call print x end
 
 
-def k
-  or
-      a == 100000
-      false
-  end
-end
-
-print(k)
-
-
-def arr
-  array
-    "hey"
-    "cool"
-    "cool"
-  end
-end
-
-print(arr)
-
-for arr
-  fn |e, i| do
-    print("test")
-    print(e)
-    print(i)
-  end
-end
-
-def t
-  map arr
-    fn |e, i| do
-      i * i
-    end
-  end
-end
-
-def r
-  reduce t
-    0
-
-    fn |r, e, i| do
-      r + e
-    end
-  end
-end
-
-
-def p
-  def n 0 end
+def y
   do
-    if true then
-      r
-    end else
+    def a do
+      10
+    end end
+
+    def b do
       20
-    end
-    end
+    end end
+
+    a == b
   end
 end
 
+call print y end
 
-print(p)
+
+
+
+  
+      

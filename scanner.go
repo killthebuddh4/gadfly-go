@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 func Scan(source string) ([]Token, error) {
@@ -130,16 +129,14 @@ func (s *Scanner) scanToken() error {
 		s.advance()
 	case ' ', '\r', '\t':
 		s.advance()
-	case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z':
+	case '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z':
 		s.advanceIdentifier()
 
 		lexeme := s.readLexeme()
 
 		if isKeyword(lexeme) {
-			fmt.Println("Scanned a keyword", lexeme)
 			s.addToken(lexeme)
 		} else {
-			fmt.Println("Scanned an identifier", lexeme)
 			s.addToken("IDENTIFIER")
 		}
 	default:
@@ -271,7 +268,7 @@ func (s Scanner) isAtEnd() bool {
 }
 
 func isIdentifierChar(c rune) bool {
-	return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
+	return c == '_' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 }
 
 func isKeyword(text string) bool {
@@ -299,6 +296,7 @@ func isKeyword(text string) bool {
 		"WRITE":  "write",
 		"ARRAY":  "array",
 		"HASH":   "hash",
+		"CALL":   "call",
 	}
 
 	for _, v := range KEYWORDS {
