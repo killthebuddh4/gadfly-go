@@ -22,7 +22,8 @@ func main() {
 func eval(pathToFile string) {
 	source := ""
 
-	files := []string{"lib.math.gf", "lib.array.gf", pathToFile}
+	// files := []string{"lib.math.gf", "lib.array.gf", pathToFile}
+	files := []string{pathToFile}
 
 	for _, file := range files {
 		f, err := os.Open(file)

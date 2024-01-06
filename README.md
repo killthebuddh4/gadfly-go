@@ -54,6 +54,7 @@ under heavy development._
   - [ ] lex
   - [ ] parse
   - [ ] eval
+  - [ ] closures
 - [ ] mvp language features
   - [ ] array and associated utilities
   - [ ] hashmaps and associated utilities
@@ -68,10 +69,21 @@ under heavy development._
 - [ ] serialize, deserialize, resume
 - [ ] what else?
 
+### nice to haves
+
+- [ ] syntax highlighter
+- [ ] language server protocol implementation
+
 ### autonomous program synthesis
 
 ...
 
+# topics to research
+
+- probabilistic programming
+- compiler design and implementation
+- data flow analysis and control flow analysis
+- Ω
 
 
 

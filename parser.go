@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Parser struct {
@@ -22,7 +23,7 @@ func (p *Parser) program() ([]Expression, error) {
 	expressions := []Expression{}
 
 	for !p.isAtEnd() {
-		left, err := p.expression()
+		left, err := p.expression(nil)
 
 		if err != nil {
 			return []Expression{}, err
@@ -34,15 +35,25 @@ func (p *Parser) program() ([]Expression, error) {
 	return expressions, nil
 }
 
-var EXPRESSIONS = []string{"def", "let", "call", "if", "get", "set", "do", "when", "then", "else", "and", "or", "array", "for", "map", "reduce", "filter"}
+var EXPRESSIONS = []string{"def", "val", "let", "call", "if", "get", "set", "do", "when", "then", "else", "and", "or", "array", "for", "map", "reduce", "filter"}
 
-func (p *Parser) expression() (Expression, error) {
+func (p *Parser) expression(parent *Expression) (Expression, error) {
+	names := []string{}
+	if parent != nil {
+		for name := range parent.Keywords {
+			names = append(names, name)
+		}
+	}
+
 	if p.accept(EXPRESSIONS) {
-		return p.block(p.previous().Type)
+		return p.block(parent, p.previous().Type)
+	} else if p.defined(names) {
+		fmt.Println("PREV TYPE", p.previous().Type)
+		return p.block(parent, p.previous().Type)
 	} else if p.accept([]string{"fn"}) {
-		return p.fn()
+		return p.fn(parent)
 	} else {
-		exp, err := p.logical()
+		exp, err := p.logical(parent)
 
 		if err != nil {
 			return Expression{}, err
@@ -52,32 +63,35 @@ func (p *Parser) expression() (Expression, error) {
 	}
 }
 
-func (p *Parser) block(blockType string) (Expression, error) {
+func (p *Parser) block(parent *Expression, blockType string) (Expression, error) {
 	operator := p.previous()
 
 	operator.Type = blockType
 
-	expressions := []Expression{}
+	root := Expr(parent, operator)
+
+	inputs := []Expression{}
 
 	for !p.accept([]string{"end"}) {
-		expression, err := p.expression()
+		input, err := p.expression(&root)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		expressions = append(expressions, expression)
+		inputs = append(inputs, input)
 	}
 
-	return Expression{
-		Operator: operator,
-		Inputs:   expressions,
-	}, nil
+	root.Inputs = inputs
+
+	return root, nil
 }
 
-func (p *Parser) fn() (Expression, error) {
+func (p *Parser) fn(parent *Expression) (Expression, error) {
 
 	operator := p.previous()
+
+	root := Expr(parent, operator)
 
 	var parameters Expression
 
@@ -87,10 +101,7 @@ func (p *Parser) fn() (Expression, error) {
 		identifiers := []Expression{}
 
 		for p.accept([]string{"IDENTIFIER"}) {
-			identifiers = append(identifiers, Expression{
-				Operator: p.previous(),
-				Inputs:   []Expression{},
-			})
+			identifiers = append(identifiers, Expr(&root, p.previous()))
 
 			p.accept([]string{"COMMA"})
 		}
@@ -99,26 +110,23 @@ func (p *Parser) fn() (Expression, error) {
 			return Expression{}, errors.New("expected closing pipe")
 		}
 
-		parameters = Expression{
-			Operator: pipe,
-			Inputs:   identifiers,
-		}
+		parameters = Expr(&root, pipe)
+		parameters.Inputs = identifiers
 	}
 
-	block, err := p.block("do")
+	block, err := p.block(&root, "do")
 
 	if err != nil {
 		return Expression{}, err
 	}
 
-	return Expression{
-		Operator: operator,
-		Inputs:   []Expression{parameters, block},
-	}, nil
+	root.Inputs = []Expression{parameters, block}
+
+	return root, nil
 }
 
-func (p *Parser) logical() (Expression, error) {
-	left, err := p.equality()
+func (p *Parser) logical(parent *Expression) (Expression, error) {
+	left, err := p.equality(parent)
 
 	if err != nil {
 		return Expression{}, err
@@ -127,23 +135,21 @@ func (p *Parser) logical() (Expression, error) {
 	for p.accept([]string{"&&", "||"}) {
 		operator := p.previous()
 
-		right, err := p.equality()
+		right, err := p.equality(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		left = Expression{
-			Operator: operator,
-			Inputs:   []Expression{left, right},
-		}
+		left = Expr(parent, operator)
+		left.Inputs = []Expression{left, right}
 	}
 
 	return left, nil
 }
 
-func (p *Parser) equality() (Expression, error) {
-	left, err := p.comparison()
+func (p *Parser) equality(parent *Expression) (Expression, error) {
+	left, err := p.comparison(parent)
 
 	if err != nil {
 		return Expression{}, err
@@ -152,23 +158,21 @@ func (p *Parser) equality() (Expression, error) {
 	for p.accept([]string{"BANG_EQUAL", "EQUAL_EQUAL"}) {
 		operator := p.previous()
 
-		right, err := p.comparison()
+		right, err := p.comparison(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		left = Expression{
-			Operator: operator,
-			Inputs:   []Expression{left, right},
-		}
+		left = Expr(parent, operator)
+		left.Inputs = []Expression{left, right}
 	}
 
 	return left, nil
 }
 
-func (p *Parser) comparison() (Expression, error) {
-	left, err := p.term()
+func (p *Parser) comparison(parent *Expression) (Expression, error) {
+	left, err := p.term(parent)
 
 	if err != nil {
 		return Expression{}, err
@@ -177,23 +181,21 @@ func (p *Parser) comparison() (Expression, error) {
 	for p.accept([]string{"GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL"}) {
 		operator := p.previous()
 
-		right, err := p.term()
+		right, err := p.term(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		left = Expression{
-			Operator: operator,
-			Inputs:   []Expression{left, right},
-		}
+		left = Expr(parent, operator)
+		left.Inputs = []Expression{left, right}
 	}
 
 	return left, nil
 }
 
-func (p *Parser) term() (Expression, error) {
-	left, err := p.factor()
+func (p *Parser) term(parent *Expression) (Expression, error) {
+	left, err := p.factor(parent)
 
 	if err != nil {
 		return Expression{}, err
@@ -202,23 +204,21 @@ func (p *Parser) term() (Expression, error) {
 	for p.accept([]string{"MINUS", "PLUS"}) {
 		operator := p.previous()
 
-		right, err := p.factor()
+		right, err := p.factor(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		left = Expression{
-			Operator: operator,
-			Inputs:   []Expression{left, right},
-		}
+		left = Expr(parent, operator)
+		left.Inputs = []Expression{left, right}
 	}
 
 	return left, nil
 }
 
-func (p *Parser) factor() (Expression, error) {
-	left, err := p.unary()
+func (p *Parser) factor(parent *Expression) (Expression, error) {
+	left, err := p.unary(parent)
 
 	if err != nil {
 		return Expression{}, err
@@ -227,50 +227,44 @@ func (p *Parser) factor() (Expression, error) {
 	for p.accept([]string{"SLASH", "STAR"}) {
 		operator := p.previous()
 
-		right, err := p.unary()
+		right, err := p.unary(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		left = Expression{
-			Operator: operator,
-			Inputs:   []Expression{left, right},
-		}
+		left = Expr(parent, operator)
+		left.Inputs = []Expression{left, right}
 	}
 
 	return left, nil
 }
 
-func (p *Parser) unary() (Expression, error) {
+func (p *Parser) unary(parent *Expression) (Expression, error) {
 
 	if p.accept([]string{"BANG", "MINUS"}) {
 		operator := p.previous()
 
-		right, err := p.unary()
+		right, err := p.unary(parent)
 
 		if err != nil {
 			return Expression{}, err
 		}
 
-		return Expression{
-			Operator: operator,
-			Inputs:   []Expression{right},
-		}, nil
+		e := Expr(parent, operator)
+		e.Inputs = []Expression{right}
+		return e, nil
 	}
 
-	return p.atom()
+	return p.atom(parent)
 }
 
-func (p *Parser) atom() (Expression, error) {
+func (p *Parser) atom(parent *Expression) (Expression, error) {
 
 	if p.accept([]string{"true", "false", "nil", "NUMBER", "STRING", "IDENTIFIER"}) {
 		operator := p.previous()
 
-		return Expression{
-			Operator: operator,
-			Inputs:   nil,
-		}, nil
+		return Expr(parent, operator), nil
 	}
 
 	return Expression{}, errors.New("expected expression but got " + p.read().Type)
@@ -279,6 +273,19 @@ func (p *Parser) atom() (Expression, error) {
 func (p *Parser) accept(tokenTypes []string) bool {
 	for _, tokenType := range tokenTypes {
 		if p.read().Type == tokenType {
+			p.advance()
+			return true
+		}
+	}
+
+	return false
+}
+
+func (p *Parser) defined(names []string) bool {
+	for _, name := range names {
+		token := p.read()
+		lexeme := GetLexemeForToken(token)
+		if lexeme == name {
 			p.advance()
 			return true
 		}
