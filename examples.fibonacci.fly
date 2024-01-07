@@ -1,0 +1,6 @@
+def fibonacci
+  fn |n|
+    nil
+  end
+end
+

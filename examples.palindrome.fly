@@ -1,0 +1,6 @@
+def palindrome
+  fn |str|
+    false
+  end
+end
+

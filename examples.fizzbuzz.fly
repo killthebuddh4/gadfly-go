@@ -1,0 +1,6 @@
+def fizzbuzz
+  fn |n|
+    nil
+  end
+end
+

@@ -44,7 +44,79 @@ under heavy development._
 
 # basic usage
 
+_Requires `go` 1.21 or higher. Learn how to install [here](https://go.dev/doc/install)._
+
+```bash
+
+go run . <path to gadfly source>
+
+```
+
+```bash
+
+go run example.fizzbuzz.gadfly
+
+go run example.sieve.gadfly
+
+go run example.fibonacci.gadfly
+
+go run example.factorial.gadfly
+
+go run example.palindrome.gadfly
+
+```
+
 # basic examples
+
+Other than the fundamental `for`, `map`, `filter`, and `reduce` functions, the
+array utilities are implemented in `gadfly` itself. See
+[lib.array.fly](lib.array.fly) for the full implementation. Here's some specific
+examples (_please note that performance is not a priority at this point at may
+never be_):
+
+```text
+
+def slice
+  fn |arr, start, finish|
+    filter arr 
+      fn |el, i|
+        def result
+          and
+            i >= start true
+            i < finish true
+          end
+        end
+
+        result != false
+      end
+    end
+  end
+end
+
+```
+
+```text
+
+def length
+  fn |arr|
+    def result 0 end
+
+    for arr
+      fn |e, i|
+        call print "hello" end
+        let result i end
+        call print result end
+      end
+    end
+
+    call print "final" end
+    result
+  end
+end
+
+```
+
+# keywords
 
 # roadmap
 
@@ -59,6 +131,7 @@ under heavy development._
   - [ ] array and associated utilities
   - [ ] hashmaps and associated utilities
   - [ ] strings and associated utilities
+  - [ ] puts and gets
   - [ ] http functionality
 - [ ] error reporting
 - [ ] very simple FFI (maybe)
@@ -73,6 +146,9 @@ under heavy development._
 
 - [ ] syntax highlighter
 - [ ] language server protocol implementation
+- [ ] repl
+- [ ] tail call optimization
+- [ ] looping constructs (maybe)
 
 ### autonomous program synthesis
 

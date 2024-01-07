@@ -1,0 +1,6 @@
+def factorial
+  fn |n|
+    nil
+  end
+end
+
