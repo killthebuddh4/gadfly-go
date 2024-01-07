@@ -44,7 +44,7 @@ under heavy development._
 
 # basic usage
 
-_Requires `go` 1.21 or higher. Learn how to install [here](https://go.dev/doc/install)._
+_Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
 ```bash
 
@@ -55,13 +55,9 @@ go run . <path to gadfly source>
 ```bash
 
 go run example.fizzbuzz.gadfly
-
 go run example.sieve.gadfly
-
 go run example.fibonacci.gadfly
-
 go run example.factorial.gadfly
-
 go run example.palindrome.gadfly
 
 ```
