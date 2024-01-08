@@ -10,13 +10,15 @@ import (
 type Evaluator func(Expression) (Value, error)
 
 func Evaluate(exp Expression) (Value, error) {
-	fmt.Println("Evaluating")
+	fmt.Println("Evaluating expression", exp.Operator.Type)
+
 	var eval Evaluator
 	switch exp.Operator.Type {
 	case "ROOT":
 		eval = func(exp Expression) (Value, error) {
 			var value Value
 			for _, input := range exp.Inputs {
+				fmt.Println("Here's an input")
 				val, err := Evaluate(input)
 
 				if err != nil {
@@ -545,17 +547,21 @@ func EvaluateLambda(exp Expression) (Value, error) {
 			}
 		}
 
-		body := exp.Inputs[1]
+		var value Value
 
-		val, err := Evaluate(body)
+		for _, input := range exp.Inputs[1:] {
+			val, err := Evaluate(input)
 
-		if err != nil {
-			return nil, err
+			if err != nil {
+				return nil, err
+			}
+
+			value = val
 		}
 
 		PopEnvironment()
 
-		return val, nil
+		return value, nil
 	}
 
 	return lambda, nil
@@ -596,6 +602,10 @@ func EvaluateCall(exp Expression) (Value, error) {
 
 	lambda, err := getDefinition(&exp, GetLexemeForToken(exp.Operator))
 
+	if lambda == nil {
+		return nil, errors.New("function not found " + GetLexemeForToken(exp.Operator))
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -624,7 +634,6 @@ func EvaluateCall(exp Expression) (Value, error) {
 
 	PopEnvironment()
 
-	fmt.Println("Call result", val)
 	return val, nil
 }
 
@@ -697,7 +706,9 @@ func EvaluateFor(exp Expression) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnV.(func(args ...Value) (Value, error))
+	fn, ok := fnV.(Lambda)
+
+	fmt.Println("For function", fn)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -715,6 +726,7 @@ func EvaluateFor(exp Expression) (Value, error) {
 }
 
 func EvaluateMap(exp Expression) (Value, error) {
+	fmt.Println("Evaluating mapppppppppppppppppppppppppppppppppppppp")
 	arrV, err := Evaluate(exp.Inputs[0])
 
 	if err != nil {
@@ -733,7 +745,7 @@ func EvaluateMap(exp Expression) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnV.(func(args ...Value) (Value, error))
+	fn, ok := fnV.(Lambda)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -774,7 +786,7 @@ func EvaluateFilter(exp Expression) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnV.(func(args ...Value) (Value, error))
+	fn, ok := fnV.(Lambda)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -799,6 +811,8 @@ func EvaluateFilter(exp Expression) (Value, error) {
 			vals = append(vals, v)
 		}
 	}
+
+	fmt.Println("Returning vals ", vals)
 
 	return vals, nil
 }
@@ -828,7 +842,7 @@ func EvaluateReduce(exp Expression) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnV.(func(args ...Value) (Value, error))
+	fn, ok := fnV.(Lambda)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -881,6 +895,8 @@ func EvaluateAnd(exp Expression) (Value, error) {
 			return nil, err
 		}
 
+		fmt.Println("Condition val", conditionVal)
+
 		condition, ok := conditionVal.(bool)
 
 		if !ok {
@@ -914,6 +930,8 @@ func EvaluateOr(exp Expression) (Value, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		fmt.Println("CONDITION VAL ", conditionVal)
 
 		condition, ok := conditionVal.(bool)
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 func Scan(source string) ([]Token, error) {
@@ -110,15 +111,11 @@ func (s *Scanner) scanToken() error {
 			s.advance()
 			s.addToken("GREATER_EQUAL")
 		}
+	case '#':
+		s.advanceLine()
 	case '/':
-		n, _ := s.readNext()
-
-		if n != '/' {
-			s.advance()
-			s.addToken("SLASH")
-		} else {
-			s.advanceLine()
-		}
+		s.advance()
+		s.addToken("SLASH")
 	case '"':
 		s.advanceString()
 		s.addToken(("STRING"))
@@ -239,9 +236,15 @@ func (s *Scanner) advanceIdentifier() error {
 }
 
 func (s *Scanner) advanceLine() {
+	fmt.Println("advancing line")
 	n, _ := s.readCurrent()
-	for n != '\n' && !s.isAtEnd() {
+
+	for !s.isAtEnd() {
+		if n == '\n' {
+			break
+		}
 		s.advance()
+		n, _ = s.readCurrent()
 	}
 }
 
@@ -276,7 +279,6 @@ var KEYWORDS = []string{
 	"def",
 	"val",
 	"let",
-	"call",
 	"if",
 	"get",
 	"set",
@@ -292,6 +294,9 @@ var KEYWORDS = []string{
 	"reduce",
 	"filter",
 	"end",
+	"true",
+	"false",
+	"nil",
 }
 
 func isKeyword(lexeme string) bool {

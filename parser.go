@@ -31,18 +31,27 @@ func (p *Parser) program(root *Expression) error {
 	return nil
 }
 
+var LITERALS = []string{"true", "false", "nil"}
+
 func (p *Parser) expression(parent *Expression) (Expression, error) {
-	if p.accept([]string{"fn"}) {
-		return p.lambda(parent)
+	lexeme := GetLexemeForToken(p.read())
+
+	if isLiteral(lexeme) {
+		exp, err := p.logical()
+
+		if err != nil {
+			return Expression{}, err
+		}
+
+		return exp, nil
 	} else if p.accept(KEYWORDS) {
 		return p.block(parent, p.previous().Type)
-	} else if isDefined(parent, GetLexemeForToken(p.read())) {
+	} else if isDefined(parent, lexeme) {
 		// isDefined doesn't accept the identifier, so we have to manually push it
 		// along here
 		if !p.accept([]string{"IDENTIFIER"}) {
 			return Expression{}, errors.New("expected identifier")
 		}
-		fmt.Println("ADDING CALL")
 		return p.block(parent, "call")
 	} else {
 		exp, err := p.logical()
@@ -60,15 +69,40 @@ func (p *Parser) block(parent *Expression, blockType string) (Expression, error)
 
 	operator.Type = blockType
 
-	fmt.Println("Parsing block of type " + blockType)
+	fmt.Println("Parsing block of type " + blockType + " " + GetLexemeForToken(operator))
 
 	root := Expr(parent, operator)
 
 	inputs := []Expression{}
 
-	if blockType == "def" {
-		fmt.Println("the next one is " + p.read().Type + " " + GetLexemeForToken(p.read()))
+	if blockType == "fn" {
+		var parameters Expression
 
+		if p.accept([]string{"PIPE"}) {
+			fmt.Println("Parsing pipe")
+			pipe := p.previous()
+
+			identifiers := []Expression{}
+
+			for p.accept([]string{"IDENTIFIER"}) {
+				identifiers = append(identifiers, Expr(&root, p.previous()))
+
+				p.accept([]string{"COMMA"})
+			}
+
+			if !p.accept([]string{"PIPE"}) {
+				return Expression{}, errors.New("expected closing pipe")
+			}
+
+			parameters = Expr(&root, pipe)
+			parameters.Inputs = identifiers
+
+			inputs = append(inputs, parameters)
+			fmt.Println("Done parsing pipe")
+		}
+	}
+
+	if blockType == "def" {
 		input, err := p.logical()
 
 		if err != nil {
@@ -83,8 +117,6 @@ func (p *Parser) block(parent *Expression, blockType string) (Expression, error)
 	}
 
 	for !p.accept([]string{"end"}) && !p.isAtEnd() {
-
-		fmt.Println("the next one is " + p.read().Type + " " + GetLexemeForToken(p.read()))
 		input, err := p.expression(&root)
 
 		if err != nil {
@@ -96,48 +128,9 @@ func (p *Parser) block(parent *Expression, blockType string) (Expression, error)
 
 	root.Inputs = inputs
 
-	fmt.Println("Finished parsing block of type " + blockType)
-	fmt.Println("Terminating token was " + p.previous().Type + " " + GetLexemeForToken(p.previous()))
-	fmt.Println("Next token is " + p.read().Type + " " + GetLexemeForToken(p.read()))
-
-	parent.Inputs = append(parent.Inputs, root)
-	return root, nil
-}
-
-func (p *Parser) lambda(parent *Expression) (Expression, error) {
-
-	operator := p.previous()
-
-	root := Expr(parent, operator)
-
-	var parameters Expression
-
-	if p.accept([]string{"PIPE"}) {
-		pipe := p.previous()
-
-		identifiers := []Expression{}
-
-		for p.accept([]string{"IDENTIFIER"}) {
-			identifiers = append(identifiers, Expr(&root, p.previous()))
-
-			p.accept([]string{"COMMA"})
-		}
-
-		if !p.accept([]string{"PIPE"}) {
-			return Expression{}, errors.New("expected closing pipe")
-		}
-
-		parameters = Expr(&root, pipe)
-		parameters.Inputs = identifiers
-	}
-
-	block, err := p.block(&root, "do")
-
-	if err != nil {
-		return Expression{}, err
-	}
-
-	root.Inputs = []Expression{parameters, block}
+	fmt.Println("Finished paring block of type " + blockType + " " + GetLexemeForToken(operator))
+	// fmt.Println("Terminating token was " + p.previous().Type + " " + GetLexemeForToken(p.previous()))
+	// fmt.Println("Next token is " + p.read().Type + " " + GetLexemeForToken(p.read()))
 
 	parent.Inputs = append(parent.Inputs, root)
 	return root, nil
@@ -333,6 +326,16 @@ func (p Parser) previous() Token {
 
 func (p Parser) isAtEnd() bool {
 	return p.Current >= len(p.Tokens)-1
+}
+
+func isLiteral(lexeme string) bool {
+	for _, literal := range LITERALS {
+		if lexeme == literal {
+			return true
+		}
+	}
+
+	return false
 }
 
 func isDefined(inExp *Expression, lexeme string) bool {

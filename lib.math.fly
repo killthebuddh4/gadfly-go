@@ -8,9 +8,27 @@ def mod
       0
 
       n > k
-      call mod
+      mod
         n - k
         k
+      end
+    end
+  end
+end
+
+def factorial
+  fn |n|
+    or
+      n == 0
+      1
+
+      n > 0
+      do
+        val inner
+          factorial n - 1 end
+        end
+
+        n * inner
       end
     end
   end

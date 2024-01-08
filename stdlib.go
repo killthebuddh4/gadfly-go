@@ -8,7 +8,6 @@ import (
 
 func InitializeStdLib(root *Expression) {
 	setDefinition(root, "print", func(args ...Value) (Value, error) {
-		fmt.Println("CALLING DEFINITON")
 		if len(args) != 1 {
 			return nil, errors.New("print only accepts one argument, a string")
 		}
