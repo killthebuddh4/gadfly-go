@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	InitializeStdLib()
 
 	args := os.Args
 
@@ -57,25 +56,25 @@ func eval(pathToFile string) {
 		return
 	}
 
-	expression, parseErr := Parse(GetTokens())
+	root := Expr(nil, Token{
+		Type:   "ROOT",
+		Start:  0,
+		Length: 0,
+	})
 
-	SetProgram(expression)
+	InitializeStdLib(&root)
+
+	parseErr := Parse(&root, GetTokens())
 
 	if parseErr != nil {
 		fmt.Println("Error parsing: ", parseErr)
 		return
 	}
 
-	values := []Value{}
+	_, evalErr := Evaluate(root)
 
-	for _, expression := range GetProgram() {
-		val, evalErr := Evaluate(expression)
-
-		if evalErr != nil {
-			fmt.Println("Error evaluating: ", evalErr)
-			return
-		}
-
-		values = append(values, val)
+	if evalErr != nil {
+		fmt.Println("Error evaluating: ", evalErr)
+		return
 	}
 }

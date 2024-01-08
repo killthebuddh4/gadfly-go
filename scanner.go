@@ -271,36 +271,32 @@ func isIdentifierChar(c rune) bool {
 	return c == '_' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 }
 
-var KEYWORDS = map[string]string{
-	"AND":    "and",
-	"ELSE":   "else",
-	"FALSE":  "false",
-	"fn":     "fn",
-	"IF":     "if",
-	"NIL":    "nil",
-	"OR":     "or",
-	"WHEN":   "when",
-	"RETURN": "return",
-	"THEN":   "then",
-	"TRUE":   "true",
-	"DEF":    "def",
-	"LET":    "let",
-	"DO":     "do",
-	"END":    "end",
-	"SET":    "set",
-	"GET":    "get",
-	"FOR":    "for",
-	"MAP":    "map",
-	"FILTER": "filter",
-	"REDUCE": "reduce",
-	"READ":   "read",
-	"ARRAY":  "array",
-	"CALL":   "call",
+var KEYWORDS = []string{
+	"fn",
+	"def",
+	"val",
+	"let",
+	"call",
+	"if",
+	"get",
+	"set",
+	"do",
+	"when",
+	"then",
+	"else",
+	"and",
+	"or",
+	"array",
+	"for",
+	"map",
+	"reduce",
+	"filter",
+	"end",
 }
 
-func isKeyword(text string) bool {
-	for _, v := range KEYWORDS {
-		if v == text {
+func isKeyword(lexeme string) bool {
+	for _, keyword := range KEYWORDS {
+		if keyword == lexeme {
 			return true
 		}
 	}

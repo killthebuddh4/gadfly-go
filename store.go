@@ -25,16 +25,6 @@ func SetTokens(t []Token) {
 	tokens = &t
 }
 
-var program *[]Expression
-
-func GetProgram() []Expression {
-	return *program
-}
-
-func SetProgram(p []Expression) {
-	program = &p
-}
-
 type Environment struct {
 	name   string
 	parent *Environment

@@ -10,8 +10,24 @@ import (
 type Evaluator func(Expression) (Value, error)
 
 func Evaluate(exp Expression) (Value, error) {
+	fmt.Println("Evaluating")
 	var eval Evaluator
 	switch exp.Operator.Type {
+	case "ROOT":
+		eval = func(exp Expression) (Value, error) {
+			var value Value
+			for _, input := range exp.Inputs {
+				val, err := Evaluate(input)
+
+				if err != nil {
+					return nil, err
+				}
+
+				value = val
+			}
+
+			return value, nil
+		}
 	case "BANG_EQUAL":
 		eval = EvaluateBangEqual
 	case "EQUAL_EQUAL":
@@ -31,6 +47,11 @@ func Evaluate(exp Expression) (Value, error) {
 	case "SLASH":
 		eval = EvaluateSlash
 	case "STAR":
+		fmt.Println("Called STAR in evaluate")
+		if exp.Parent != nil {
+			fmt.Println("Exp.parent type ", exp.Parent.Operator.Type)
+		}
+
 		eval = EvaluateStar
 	case "BANG":
 		eval = EvaluateBang
@@ -46,10 +67,14 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateString
 	case "IDENTIFIER":
 		eval = EvaluateIdentifier
+	case "def":
+		eval = func(exp Expression) (Value, error) {
+			return EvaluateDef(exp.Parent, exp)
+		}
 	case "call":
 		eval = EvaluateCall
-	case "def":
-		eval = EvaluateDef
+	case "val":
+		eval = EvaluateVal
 	case "let":
 		eval = EvaluateLet
 	case "filter":
@@ -67,7 +92,7 @@ func Evaluate(exp Expression) (Value, error) {
 	case "or":
 		eval = EvaluateOr
 	case "fn":
-		eval = EvaluateFn
+		eval = EvaluateLambda
 	case "array":
 		eval = EvaluateArray
 	case "set":
@@ -327,6 +352,9 @@ func EvaluateSlash(exp Expression) (Value, error) {
 }
 
 func EvaluateStar(exp Expression) (Value, error) {
+	fmt.Println("Evaluating STAR of type", exp.Operator.Type)
+	fmt.Println("Num inmputs", len(exp.Inputs))
+	fmt.Println("Type", exp.Operator.Type)
 	left, leftErr := Evaluate(exp.Inputs[0])
 	right, rightErr := Evaluate(exp.Inputs[1])
 
@@ -391,7 +419,7 @@ func EvaluateString(exp Expression) (Value, error) {
 	return GetLexemeForToken(exp.Operator), nil
 }
 
-func EvaluateDef(exp Expression) (Value, error) {
+func EvaluateVal(exp Expression) (Value, error) {
 	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
 
 	val, err := Evaluate(exp.Inputs[1])
@@ -493,8 +521,8 @@ func EvaluateGet(exp Expression) (Value, error) {
 	return val, nil
 }
 
-func EvaluateFn(exp Expression) (Value, error) {
-	fn := func(arguments ...Value) (Value, error) {
+func EvaluateLambda(exp Expression) (Value, error) {
+	var lambda Lambda = func(arguments ...Value) (Value, error) {
 		PushEnvironment()
 
 		parameters := exp.Inputs[0]
@@ -530,27 +558,49 @@ func EvaluateFn(exp Expression) (Value, error) {
 		return val, nil
 	}
 
-	return fn, nil
+	return lambda, nil
+}
+
+func EvaluateDef(parent *Expression, exp Expression) (Value, error) {
+	if parent == nil {
+		return nil, errors.New("def must be inside a scope")
+	}
+
+	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
+
+	var value Value
+
+	for _, input := range exp.Inputs[1:] {
+		val, err := Evaluate(input)
+
+		if err != nil {
+			return nil, err
+		}
+
+		value = val
+	}
+
+	lambda, ok := value.(Lambda)
+
+	if !ok {
+		return nil, errors.New("def body must be a function")
+	}
+
+	setDefinition(parent, identifier, lambda)
+
+	return lambda, nil
 }
 
 func EvaluateCall(exp Expression) (Value, error) {
 	PushEnvironment()
 
-	fnExp := exp.Inputs[0]
-
-	argsExps := exp.Inputs[1:]
-
-	fnVal, err := Evaluate(fnExp)
+	lambda, err := getDefinition(&exp, GetLexemeForToken(exp.Operator))
 
 	if err != nil {
 		return nil, err
 	}
 
-	fn, ok := fnVal.(func(args ...Value) (Value, error))
-
-	if !ok {
-		return nil, errors.New("not a function of the right sig")
-	}
+	argsExps := exp.Inputs
 
 	args := []Value{}
 
@@ -566,7 +616,7 @@ func EvaluateCall(exp Expression) (Value, error) {
 		}
 	}
 
-	val, err := fn(args...)
+	val, err := lambda(args...)
 
 	if err != nil {
 		return nil, err
@@ -574,6 +624,7 @@ func EvaluateCall(exp Expression) (Value, error) {
 
 	PopEnvironment()
 
+	fmt.Println("Call result", val)
 	return val, nil
 }
 

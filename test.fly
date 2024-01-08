@@ -1,0 +1,19 @@
+val x 1000 * 1000000 / 1000000000 end
+
+
+print 
+  do
+    val x 10 end
+    x
+  end
+end
+
+print 
+  do
+    if
+      x < 20000000
+      "small"
+      "big"
+    end
+  end
+end
