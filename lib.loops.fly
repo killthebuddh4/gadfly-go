@@ -1,16 +1,20 @@
 def while
-  fn |condition, body|
+  fn |condition body|
     if
       do
         false
       end
 
       do
-        print "while" end
+        call print 
+          "while"
+        end
       end
 
       do
-        print "not while" end
+        call print
+          "not while"
+        end
       end
     end
   end

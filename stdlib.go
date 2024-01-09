@@ -7,7 +7,7 @@ import (
 )
 
 func InitializeStdLib(root *Expression) {
-	setFunction(root, "print", func(args ...Value) (Value, error) {
+	var lambda Lambda = func(args ...Value) (Value, error) {
 		if len(args) != 1 {
 			return nil, errors.New("print only accepts one argument, a string")
 		}
@@ -40,5 +40,7 @@ func InitializeStdLib(root *Expression) {
 		}
 
 		return nil, nil
-	})
+	}
+
+	DefineDef(root, "print", lambda)
 }

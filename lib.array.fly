@@ -1,13 +1,35 @@
 def slice
-  fn |arr, start, finish|
+  fn |arr start finish|
     filter arr 
-      fn |el, i|
-        val result
+      fn |el i|
+        def result
+          call print "vvvvvvvvvvvvvvvvvvvv" end
+          call print
+            start
+          end
+          call print
+            i
+          end
+          call print
+            finish
+          end
+          call print
+            i >= start
+          end
+          call print
+            i < finish
+          end
+          call print "-------------" end
+
           and
             i >= start true
             i < finish true
           end
         end
+
+        call print "result vvvvv" end
+        call print result end
+        call print "result ^^^^^" end
 
         result != false
       end
@@ -17,15 +39,15 @@ end
 
 def length
   fn |arr|
-    val result 0 end
+    def result 0 end
 
     for arr
-      fn |e, i|
+      fn |e i|
         let result i end
       end
     end
 
-    result
+    result + 1
   end
 end
 

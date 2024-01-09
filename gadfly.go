@@ -21,8 +21,7 @@ func main() {
 func eval(pathToFile string) {
 	source := ""
 
-	// files := []string{"lib.loops.fly", "lib.math.fly", "lib.array.fly", pathToFile}
-	files := []string{pathToFile}
+	files := []string{"lib.loops.fly", "lib.math.fly", "lib.array.fly", pathToFile}
 
 	for _, file := range files {
 		f, err := os.Open(file)
@@ -46,11 +45,9 @@ func eval(pathToFile string) {
 		source += string(data)
 	}
 
-	fmt.Println("Source: ", source)
-
 	SetSource(source)
 
-	tokens, scanErr := Scan(GetSource())
+	tokens, scanErr := Lex(GetSource())
 
 	SetTokens(tokens)
 
@@ -74,7 +71,7 @@ func eval(pathToFile string) {
 		return
 	}
 
-	_, evalErr := Evaluate(root)
+	_, evalErr := Evaluate(&root)
 
 	if evalErr != nil {
 		fmt.Println("Error evaluating: ", evalErr)

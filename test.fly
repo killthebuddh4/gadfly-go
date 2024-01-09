@@ -1,10 +1,5 @@
-val empty array end end
-
-call 
-  do
-    print
-  end
-  do
-    empty
-  end
+call print
+call factorial
+  5
+end
 end

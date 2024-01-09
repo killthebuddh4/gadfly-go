@@ -1,5 +1,5 @@
 def mod
-  fn |n, k|
+  fn |n k|
     or
       n < k
       n
@@ -20,14 +20,32 @@ def factorial
   fn |n|
     or
       n == 0
-      1
+      do
+        call print "base case" end
+        1
+      end
 
       n > 0
       do
-        val inner
+        def inner
           call factorial
             n - 1
           end
+        end
+        call print
+          "inner is"
+        end
+
+        call print
+          inner
+        end
+
+        call print
+          "n is"
+        end
+
+        call print
+          n
         end
 
         n * inner

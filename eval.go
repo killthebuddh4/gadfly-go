@@ -2,23 +2,19 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strconv"
 )
 
-type Evaluator func(Expression) (Value, error)
+type Evaluator func(*Expression) (Value, error)
 
-func Evaluate(exp Expression) (Value, error) {
-	fmt.Println("Evaluating expression", exp.Operator.Type)
-
+func Evaluate(exp *Expression) (Value, error) {
 	var eval Evaluator
 	switch exp.Operator.Type {
 	case "ROOT":
-		eval = func(exp Expression) (Value, error) {
+		eval = func(exp *Expression) (Value, error) {
 			var value Value
-			for _, input := range exp.Inputs {
-				fmt.Println("Here's an input")
+			for _, input := range exp.Children {
 				val, err := Evaluate(input)
 
 				if err != nil {
@@ -30,82 +26,75 @@ func Evaluate(exp Expression) (Value, error) {
 
 			return value, nil
 		}
-	case "BANG_EQUAL":
+	case TOKENS.BangEqual:
 		eval = EvaluateBangEqual
-	case "EQUAL_EQUAL":
+	case TOKENS.EqualEqual:
 		eval = EvaluateEqualEqual
-	case "GREATER":
+	case TOKENS.GreaterThan:
 		eval = EvaluateGreater
-	case "GREATER_EQUAL":
+	case TOKENS.GreaterThanEqual:
 		eval = EvaluateGreaterEqual
-	case "LESS":
+	case TOKENS.LessThan:
 		eval = EvaluateLess
-	case "LESS_EQUAL":
+	case TOKENS.LessThanEqual:
 		eval = EvaluateLessEqual
-	case "MINUS":
+	case TOKENS.Conjunction, TOKENS.Disjunction:
+		eval = EvaluateLogical
+	case TOKENS.Minus:
 		eval = EvaluateMinus
-	case "PLUS":
+	case TOKENS.Plus:
 		eval = EvaluatePlus
-	case "SLASH":
+	case TOKENS.Divide:
 		eval = EvaluateSlash
-	case "STAR":
-		fmt.Println("Called STAR in evaluate")
-		if exp.Parent != nil {
-			fmt.Println("Exp.parent type ", exp.Parent.Operator.Type)
-		}
-
+	case TOKENS.Multiply:
 		eval = EvaluateStar
-	case "BANG":
+	case TOKENS.Bang:
 		eval = EvaluateBang
-	case "true":
+	case TOKENS.True:
 		eval = EvaluateTrue
-	case "false":
+	case TOKENS.False:
 		eval = EvaluateFalse
-	case "nil":
+	case TOKENS.Nil:
 		eval = EvaluateNil
-	case "NUMBER":
+	case TOKENS.Number:
 		eval = EvaluateNumber
-	case "STRING":
+	case TOKENS.String:
 		eval = EvaluateString
-	case "IDENTIFIER":
+	case TOKENS.Identifier:
 		eval = EvaluateIdentifier
-	case "def":
-		eval = func(exp Expression) (Value, error) {
-			return EvaluateDef(exp.Parent, exp)
-		}
-	case "call":
+	case TOKENS.Def:
+		eval = EvaluateDef
+	case TOKENS.Call:
 		eval = EvaluateCall
-	case "val":
-		eval = EvaluateVal
-	case "let":
+	case TOKENS.Edit:
 		eval = EvaluateLet
-	case "filter":
+	case TOKENS.Filter:
 		eval = EvaluateFilter
-	case "for":
+	case TOKENS.For:
 		eval = EvaluateFor
-	case "map":
+	case TOKENS.Map:
 		eval = EvaluateMap
-	case "reduce":
+	case TOKENS.Reduce:
 		eval = EvaluateReduce
-	case "push":
+	case TOKENS.Push:
 		eval = EvaluatePush
-	case "pop":
+	case TOKENS.Pop:
 		eval = EvaluatePop
-	case "do", "when", "then", "else":
+	case TOKENS.Do:
 		eval = EvaluateDo
-	case "and":
+	case TOKENS.And:
 		eval = EvaluateAnd
-	case "or":
+	case TOKENS.Or:
 		eval = EvaluateOr
-	case "fn":
-		eval = EvaluateLambda
-	case "array":
+	case TOKENS.Fn:
+		eval = EvaluateFn
+	case TOKENS.Array:
 		eval = EvaluateArray
-	case "set":
+	case TOKENS.Set:
 		eval = EvaluateSet
-	case "get":
+	case TOKENS.Get:
 		eval = EvaluateGet
-	case "if":
+	case TOKENS.If:
 		eval = EvaluateIf
 	default:
 		return nil, errors.New("unknown operator " + exp.Operator.Type)
@@ -114,9 +103,9 @@ func Evaluate(exp Expression) (Value, error) {
 	return eval(exp)
 }
 
-func EvaluateBangEqual(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateBangEqual(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -129,9 +118,9 @@ func EvaluateBangEqual(exp Expression) (Value, error) {
 	return left != right, nil
 }
 
-func EvaluateEqualEqual(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateEqualEqual(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -144,9 +133,9 @@ func EvaluateEqualEqual(exp Expression) (Value, error) {
 	return left == right, nil
 }
 
-func EvaluateGreater(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateGreater(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -171,9 +160,9 @@ func EvaluateGreater(exp Expression) (Value, error) {
 	return leftV > rightV, nil
 }
 
-func EvaluateGreaterEqual(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateGreaterEqual(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -198,9 +187,9 @@ func EvaluateGreaterEqual(exp Expression) (Value, error) {
 	return leftV >= rightV, nil
 }
 
-func EvaluateLess(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateLess(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -225,9 +214,9 @@ func EvaluateLess(exp Expression) (Value, error) {
 	return leftV < rightV, nil
 }
 
-func EvaluateLessEqual(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateLessEqual(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -252,17 +241,17 @@ func EvaluateLessEqual(exp Expression) (Value, error) {
 	return leftV <= rightV, nil
 }
 
-func EvaluateMinus(exp Expression) (Value, error) {
-	if len(exp.Inputs) == 1 {
+func EvaluateMinus(exp *Expression) (Value, error) {
+	if len(exp.Children) == 1 {
 		return EvaluateMinusUnary(exp)
 	} else {
 		return EvaluateMinusBinary(exp)
 	}
 }
 
-func EvaluateMinusBinary(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateMinusBinary(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -287,8 +276,8 @@ func EvaluateMinusBinary(exp Expression) (Value, error) {
 	return leftV - rightV, nil
 }
 
-func EvaluateMinusUnary(exp Expression) (Value, error) {
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateMinusUnary(exp *Expression) (Value, error) {
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if rightErr != nil {
 		return nil, rightErr
@@ -303,9 +292,9 @@ func EvaluateMinusUnary(exp Expression) (Value, error) {
 	return -rightV, nil
 }
 
-func EvaluatePlus(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluatePlus(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -330,9 +319,9 @@ func EvaluatePlus(exp Expression) (Value, error) {
 	return leftV + rightV, nil
 }
 
-func EvaluateSlash(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateSlash(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -357,12 +346,9 @@ func EvaluateSlash(exp Expression) (Value, error) {
 	return leftV / rightV, nil
 }
 
-func EvaluateStar(exp Expression) (Value, error) {
-	fmt.Println("Evaluating STAR of type", exp.Operator.Type)
-	fmt.Println("Num inmputs", len(exp.Inputs))
-	fmt.Println("Type", exp.Operator.Type)
-	left, leftErr := Evaluate(exp.Inputs[0])
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateStar(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if (leftErr != nil) || (rightErr != nil) {
 		return nil, errors.New("error evaluating inputs")
@@ -383,8 +369,8 @@ func EvaluateStar(exp Expression) (Value, error) {
 	return leftV * rightV, nil
 }
 
-func EvaluateBang(exp Expression) (Value, error) {
-	right, rightErr := Evaluate(exp.Inputs[1])
+func EvaluateBang(exp *Expression) (Value, error) {
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if rightErr != nil {
 		return nil, errors.New("error evaluating inputs")
@@ -399,19 +385,19 @@ func EvaluateBang(exp Expression) (Value, error) {
 	return !rightV, nil
 }
 
-func EvaluateTrue(exp Expression) (Value, error) {
+func EvaluateTrue(exp *Expression) (Value, error) {
 	return true, nil
 }
 
-func EvaluateFalse(exp Expression) (Value, error) {
+func EvaluateFalse(exp *Expression) (Value, error) {
 	return false, nil
 }
 
-func EvaluateNil(exp Expression) (Value, error) {
+func EvaluateNil(exp *Expression) (Value, error) {
 	return nil, nil
 }
 
-func EvaluateNumber(exp Expression) (Value, error) {
+func EvaluateNumber(exp *Expression) (Value, error) {
 	num, parseErr := strconv.ParseFloat(GetLexemeForToken(exp.Operator), 64)
 
 	if parseErr != nil {
@@ -421,48 +407,12 @@ func EvaluateNumber(exp Expression) (Value, error) {
 	return num, nil
 }
 
-func EvaluateString(exp Expression) (Value, error) {
+func EvaluateString(exp *Expression) (Value, error) {
 	return GetLexemeForToken(exp.Operator), nil
 }
 
-func EvaluateVal(exp Expression) (Value, error) {
-	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
-
-	val, err := Evaluate(exp.Inputs[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	setSymbolErr := DefSymbol(identifier, val)
-
-	if setSymbolErr != nil {
-		return nil, setSymbolErr
-	}
-
-	return val, nil
-}
-
-func EvaluateLet(exp Expression) (Value, error) {
-	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
-
-	val, err := Evaluate(exp.Inputs[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	setSymbolErr := SetSymbol(identifier, val)
-
-	if setSymbolErr != nil {
-		return nil, setSymbolErr
-	}
-
-	return val, nil
-}
-
-func EvaluateSet(exp Expression) (Value, error) {
-	dataV, err := Evaluate(exp.Inputs[0])
+func EvaluateSet(exp *Expression) (Value, error) {
+	dataV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -474,7 +424,7 @@ func EvaluateSet(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	indexV, err := Evaluate(exp.Inputs[1])
+	indexV, err := Evaluate(exp.Children[1])
 
 	index, ok := indexV.(float64)
 
@@ -486,7 +436,7 @@ func EvaluateSet(exp Expression) (Value, error) {
 		return nil, err
 	}
 
-	val, err := Evaluate(exp.Inputs[2])
+	val, err := Evaluate(exp.Children[2])
 
 	if err != nil {
 		return nil, err
@@ -497,8 +447,8 @@ func EvaluateSet(exp Expression) (Value, error) {
 	return data, nil
 }
 
-func EvaluateGet(exp Expression) (Value, error) {
-	dataV, err := Evaluate(exp.Inputs[0])
+func EvaluateGet(exp *Expression) (Value, error) {
+	dataV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -510,7 +460,7 @@ func EvaluateGet(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	indexV, err := Evaluate(exp.Inputs[1])
+	indexV, err := Evaluate(exp.Children[1])
 
 	index, ok := indexV.(float64)
 
@@ -527,34 +477,29 @@ func EvaluateGet(exp Expression) (Value, error) {
 	return val, nil
 }
 
-func EvaluateLambda(exp Expression) (Value, error) {
+func EvaluateFn(exp *Expression) (Value, error) {
 	var lambda Lambda = func(arguments ...Value) (Value, error) {
-		PushEnvironment()
+		ClearDefs(exp)
 
-		parameters := exp.Inputs[0]
-
-		if len(arguments) != len(parameters.Inputs) {
+		if len(arguments) != len(exp.Parameters) {
 			return nil, errors.New("wrong number of arguments")
 		}
 
-		if len(parameters.Inputs) > 0 {
-			for i, parameter := range parameters.Inputs {
-				identifier := GetLexemeForToken(parameter.Operator)
+		if len(exp.Parameters) > 0 {
+			for i, param := range exp.Parameters {
+				// TODO, What is the correct way to create new environments for each call?
+				err := DefineDef(exp, param, arguments[i])
 
-				val := arguments[i]
-
-				setSymbolErr := DefSymbol(identifier, val)
-
-				if setSymbolErr != nil {
-					return nil, setSymbolErr
+				if err != nil {
+					return nil, err
 				}
 			}
 		}
 
 		var value Value
 
-		for _, input := range exp.Inputs[1:] {
-			val, err := Evaluate(input)
+		for _, child := range exp.Children {
+			val, err := Evaluate(child)
 
 			if err != nil {
 				return nil, err
@@ -563,66 +508,26 @@ func EvaluateLambda(exp Expression) (Value, error) {
 			value = val
 		}
 
-		PopEnvironment()
-
 		return value, nil
 	}
 
 	return lambda, nil
 }
 
-func EvaluateDef(parent *Expression, exp Expression) (Value, error) {
-	if parent == nil {
-		return nil, errors.New("def must be inside a scope")
-	}
-
-	identifier := GetLexemeForToken(exp.Inputs[0].Operator)
-
-	var value Value
-
-	for _, input := range exp.Inputs[1:] {
-		val, err := Evaluate(input)
-
-		if err != nil {
-			return nil, err
-		}
-
-		value = val
-	}
-
-	lambda, ok := value.(Lambda)
-
-	if !ok {
-		return nil, errors.New("def body must be a function")
-	}
-
-	setFunction(parent, identifier, lambda)
-
-	return lambda, nil
-}
-
-func EvaluateCall(exp Expression) (Value, error) {
-	PushEnvironment()
-
-	fmt.Println("Evaluating CALL", exp.Operator.Type)
-	fmt.Println("Num inputs", len(exp.Inputs))
-	for _, input := range exp.Inputs {
-		fmt.Println("Input", input.Operator.Type)
-	}
-	name := GetLexemeForToken(exp.Inputs[0].Operator)
-	fmt.Println("Calling function", name)
-
-	lambda, err := getFunction(&exp, name)
-
-	if lambda == nil {
-		return nil, errors.New("function not found " + name)
-	}
+func EvaluateCall(exp *Expression) (Value, error) {
+	fnVal, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
 	}
 
-	argsExps := exp.Inputs
+	fn, ok := fnVal.(Lambda)
+
+	if !ok {
+		return nil, errors.New("tried to call an expression that didn't evaluate to a Lambda")
+	}
+
+	argsExps := exp.Children[1:]
 
 	args := []Value{}
 
@@ -638,47 +543,82 @@ func EvaluateCall(exp Expression) (Value, error) {
 		}
 	}
 
-	val, err := lambda(args...)
+	val, err := fn(args...)
 
 	if err != nil {
 		return nil, err
 	}
 
-	PopEnvironment()
-
 	return val, nil
 }
 
-func EvaluateIdentifier(exp Expression) (Value, error) {
-	identifier := GetLexemeForToken(exp.Operator)
-	return GetSymbol(identifier)
+func EvaluateDef(exp *Expression) (Value, error) {
+	identifier := exp.Children[0].Operator.Lexeme
+
+	var value Value
+
+	for _, input := range exp.Children[1:] {
+		val, err := Evaluate(input)
+
+		if err != nil {
+			return nil, err
+		}
+
+		value = val
+	}
+
+	DefineDef(exp.Parent, identifier, value)
+
+	return value, nil
 }
 
-func EvaluateDo(exp Expression) (Value, error) {
-	PushEnvironment()
+func EvaluateLet(exp *Expression) (Value, error) {
+	identifier := exp.Children[0].Operator.Lexeme
 
+	var value Value
+
+	for _, input := range exp.Children[1:] {
+		val, err := Evaluate(input)
+
+		if err != nil {
+			return nil, err
+		}
+
+		value = val
+	}
+
+	EditDef(exp.Parent, identifier, value)
+
+	return value, nil
+}
+
+func EvaluateIdentifier(exp *Expression) (Value, error) {
+	if exp.Parent == nil {
+		return nil, errors.New("cannot evaluate identifier " + exp.Operator.Lexeme + " with nil parent")
+	}
+	return ResolveDef(exp.Parent, exp.Operator.Lexeme)
+}
+
+func EvaluateDo(exp *Expression) (Value, error) {
 	var val Value
 
-	for _, input := range exp.Inputs {
+	for _, input := range exp.Children {
 		v, err := Evaluate(input)
 
 		val = v
 
 		if err != nil {
-			PopEnvironment()
 			return nil, err
 		}
 	}
 
-	PopEnvironment()
-
 	return val, nil
 }
 
-func EvaluateIf(exp Expression) (Value, error) {
-	whenExp := exp.Inputs[0]
-	thenExp := exp.Inputs[1]
-	elseExp := exp.Inputs[2]
+func EvaluateIf(exp *Expression) (Value, error) {
+	whenExp := exp.Children[0]
+	thenExp := exp.Children[1]
+	elseExp := exp.Children[2]
 
 	conditionVal, err := Evaluate(whenExp)
 
@@ -699,8 +639,8 @@ func EvaluateIf(exp Expression) (Value, error) {
 	}
 }
 
-func EvaluateFor(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluateFor(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -712,15 +652,13 @@ func EvaluateFor(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	fnV, err := Evaluate(exp.Inputs[1])
+	fnV, err := Evaluate(exp.Children[1])
 
 	if err != nil {
 		return nil, err
 	}
 
 	fn, ok := fnV.(Lambda)
-
-	fmt.Println("For function", fn)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -737,8 +675,8 @@ func EvaluateFor(exp Expression) (Value, error) {
 	return nil, nil
 }
 
-func EvaluateMap(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluateMap(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -750,7 +688,7 @@ func EvaluateMap(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	fnV, err := Evaluate(exp.Inputs[1])
+	fnV, err := Evaluate(exp.Children[1])
 
 	if err != nil {
 		return nil, err
@@ -765,7 +703,6 @@ func EvaluateMap(exp Expression) (Value, error) {
 	vals := []Value{}
 
 	for i, v := range arr {
-		fmt.Println("Evaluating map", v, float64(i))
 		mapped, err := fn(v, float64(i))
 
 		if err != nil {
@@ -778,8 +715,8 @@ func EvaluateMap(exp Expression) (Value, error) {
 	return vals, nil
 }
 
-func EvaluatePush(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluatePush(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -791,7 +728,7 @@ func EvaluatePush(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	val, err := Evaluate(exp.Inputs[1])
+	val, err := Evaluate(exp.Children[1])
 
 	if err != nil {
 		return nil, err
@@ -802,8 +739,8 @@ func EvaluatePush(exp Expression) (Value, error) {
 	return arr, nil
 }
 
-func EvaluatePop(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluatePop(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -818,8 +755,8 @@ func EvaluatePop(exp Expression) (Value, error) {
 	return arr[:len(arr)-1], nil
 }
 
-func EvaluateFilter(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluateFilter(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -831,7 +768,7 @@ func EvaluateFilter(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	fnV, err := Evaluate(exp.Inputs[1])
+	fnV, err := Evaluate(exp.Children[1])
 
 	if err != nil {
 		return nil, err
@@ -863,13 +800,11 @@ func EvaluateFilter(exp Expression) (Value, error) {
 		}
 	}
 
-	fmt.Println("Returning vals ", vals)
-
 	return vals, nil
 }
 
-func EvaluateReduce(exp Expression) (Value, error) {
-	arrV, err := Evaluate(exp.Inputs[0])
+func EvaluateReduce(exp *Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Children[0])
 
 	if err != nil {
 		return nil, err
@@ -881,13 +816,13 @@ func EvaluateReduce(exp Expression) (Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	initV, err := Evaluate(exp.Inputs[1])
+	initV, err := Evaluate(exp.Children[1])
 
 	if err != nil {
 		return nil, err
 	}
 
-	fnV, err := Evaluate(exp.Inputs[2])
+	fnV, err := Evaluate(exp.Children[2])
 
 	if err != nil {
 		return nil, err
@@ -916,10 +851,10 @@ func EvaluateReduce(exp Expression) (Value, error) {
 	return reduction, nil
 }
 
-func EvaluateArray(exp Expression) (Value, error) {
+func EvaluateArray(exp *Expression) (Value, error) {
 	arr := []Value{}
 
-	for _, input := range exp.Inputs {
+	for _, input := range exp.Children {
 		val, err := Evaluate(input)
 
 		if err != nil {
@@ -932,21 +867,19 @@ func EvaluateArray(exp Expression) (Value, error) {
 	return arr, nil
 }
 
-func EvaluateAnd(exp Expression) (Value, error) {
-	if (len(exp.Inputs) % 2) != 0 {
+func EvaluateAnd(exp *Expression) (Value, error) {
+	if (len(exp.Children) % 2) != 0 {
 		return nil, errors.New("and must have even number of inputs")
 	}
 
 	var val Value = nil
 
-	for i := 0; i < len(exp.Inputs); i += 2 {
-		conditionVal, err := Evaluate(exp.Inputs[i])
+	for i := 0; i < len(exp.Children); i += 2 {
+		conditionVal, err := Evaluate(exp.Children[i])
 
 		if err != nil {
 			return nil, err
 		}
-
-		fmt.Println("Condition val", conditionVal)
 
 		condition, ok := conditionVal.(bool)
 
@@ -958,7 +891,7 @@ func EvaluateAnd(exp Expression) (Value, error) {
 			return false, nil
 		}
 
-		body, err := Evaluate(exp.Inputs[i+1])
+		body, err := Evaluate(exp.Children[i+1])
 
 		if err != nil {
 			return nil, err
@@ -970,19 +903,17 @@ func EvaluateAnd(exp Expression) (Value, error) {
 	return val, nil
 }
 
-func EvaluateOr(exp Expression) (Value, error) {
-	if (len(exp.Inputs) % 2) != 0 {
+func EvaluateOr(exp *Expression) (Value, error) {
+	if (len(exp.Children) % 2) != 0 {
 		return nil, errors.New("or must have even number of inputs")
 	}
 
-	for i := 0; i < len(exp.Inputs); i += 2 {
-		conditionVal, err := Evaluate(exp.Inputs[i])
+	for i := 0; i < len(exp.Children); i += 2 {
+		conditionVal, err := Evaluate(exp.Children[i])
 
 		if err != nil {
 			return nil, err
 		}
-
-		fmt.Println("CONDITION VAL ", conditionVal)
 
 		condition, ok := conditionVal.(bool)
 
@@ -991,15 +922,15 @@ func EvaluateOr(exp Expression) (Value, error) {
 		}
 
 		if condition {
-			return Evaluate(exp.Inputs[i+1])
+			return Evaluate(exp.Children[i+1])
 		}
 	}
 
 	return nil, nil
 }
 
-func EvaluateLogical(exp Expression) (Value, error) {
-	left, leftErr := Evaluate(exp.Inputs[0])
+func EvaluateLogical(exp *Expression) (Value, error) {
+	left, leftErr := Evaluate(exp.Children[0])
 
 	if leftErr != nil {
 		return nil, leftErr
@@ -1011,17 +942,19 @@ func EvaluateLogical(exp Expression) (Value, error) {
 		return nil, errors.New("left operand is not a boolean")
 	}
 
-	if exp.Operator.Type == "and" {
+	if exp.Operator.Type == TOKENS.Conjunction {
 		if !leftV {
 			return false, nil
 		}
-	} else if exp.Operator.Type == "or" {
+	} else if exp.Operator.Type == TOKENS.Disjunction {
 		if leftV {
 			return true, nil
 		}
+	} else {
+		return nil, errors.New("unknown logical operator, && and || are supported")
 	}
 
-	right, rightErr := Evaluate(exp.Inputs[1])
+	right, rightErr := Evaluate(exp.Children[1])
 
 	if rightErr != nil {
 		return nil, rightErr
