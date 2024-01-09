@@ -276,6 +276,7 @@ func isIdentifierChar(c rune) bool {
 
 var KEYWORDS = []string{
 	"fn",
+	"call",
 	"def",
 	"val",
 	"let",
@@ -293,6 +294,8 @@ var KEYWORDS = []string{
 	"map",
 	"reduce",
 	"filter",
+	"push",
+	"pop",
 	"end",
 	"true",
 	"false",

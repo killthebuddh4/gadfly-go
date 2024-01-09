@@ -8,7 +8,7 @@ def mod
       0
 
       n > k
-      mod
+      call mod
         n - k
         k
       end
@@ -25,7 +25,9 @@ def factorial
       n > 0
       do
         val inner
-          factorial n - 1 end
+          call factorial
+            n - 1
+          end
         end
 
         n * inner

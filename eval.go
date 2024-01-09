@@ -87,6 +87,10 @@ func Evaluate(exp Expression) (Value, error) {
 		eval = EvaluateMap
 	case "reduce":
 		eval = EvaluateReduce
+	case "push":
+		eval = EvaluatePush
+	case "pop":
+		eval = EvaluatePop
 	case "do", "when", "then", "else":
 		eval = EvaluateDo
 	case "and":
@@ -592,7 +596,7 @@ func EvaluateDef(parent *Expression, exp Expression) (Value, error) {
 		return nil, errors.New("def body must be a function")
 	}
 
-	setDefinition(parent, identifier, lambda)
+	setFunction(parent, identifier, lambda)
 
 	return lambda, nil
 }
@@ -600,10 +604,18 @@ func EvaluateDef(parent *Expression, exp Expression) (Value, error) {
 func EvaluateCall(exp Expression) (Value, error) {
 	PushEnvironment()
 
-	lambda, err := getDefinition(&exp, GetLexemeForToken(exp.Operator))
+	fmt.Println("Evaluating CALL", exp.Operator.Type)
+	fmt.Println("Num inputs", len(exp.Inputs))
+	for _, input := range exp.Inputs {
+		fmt.Println("Input", input.Operator.Type)
+	}
+	name := GetLexemeForToken(exp.Inputs[0].Operator)
+	fmt.Println("Calling function", name)
+
+	lambda, err := getFunction(&exp, name)
 
 	if lambda == nil {
-		return nil, errors.New("function not found " + GetLexemeForToken(exp.Operator))
+		return nil, errors.New("function not found " + name)
 	}
 
 	if err != nil {
@@ -726,7 +738,6 @@ func EvaluateFor(exp Expression) (Value, error) {
 }
 
 func EvaluateMap(exp Expression) (Value, error) {
-	fmt.Println("Evaluating mapppppppppppppppppppppppppppppppppppppp")
 	arrV, err := Evaluate(exp.Inputs[0])
 
 	if err != nil {
@@ -765,6 +776,46 @@ func EvaluateMap(exp Expression) (Value, error) {
 	}
 
 	return vals, nil
+}
+
+func EvaluatePush(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr, ok := arrV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	val, err := Evaluate(exp.Inputs[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr = append(arr, val)
+
+	return arr, nil
+}
+
+func EvaluatePop(exp Expression) (Value, error) {
+	arrV, err := Evaluate(exp.Inputs[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr, ok := arrV.([]Value)
+
+	if !ok {
+		return nil, errors.New("not an array")
+	}
+
+	return arr[:len(arr)-1], nil
 }
 
 func EvaluateFilter(exp Expression) (Value, error) {

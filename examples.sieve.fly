@@ -1,6 +1,11 @@
 def sieve
   fn |n|
-    nil
+    val checked
+      array end
+    end
+
+    val base 2 end
+    val next base
   end
 end
 

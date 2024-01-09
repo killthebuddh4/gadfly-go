@@ -1,23 +1,10 @@
-val a array 1 3 5 7 9 end end
+val empty array end end
 
-
-print a end
-
-val l
-  length a end
-end
-
-print l end
-
-
-print
-  map
-    slice a
-      2 3
-    end
-
-    fn |e, i|
-      e * e
-    end
+call 
+  do
+    print
+  end
+  do
+    empty
   end
 end

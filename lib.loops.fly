@@ -1,0 +1,17 @@
+def while
+  fn |condition, body|
+    if
+      do
+        false
+      end
+
+      do
+        print "while" end
+      end
+
+      do
+        print "not while" end
+      end
+    end
+  end
+end

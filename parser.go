@@ -44,15 +44,12 @@ func (p *Parser) expression(parent *Expression) (Expression, error) {
 		}
 
 		return exp, nil
+	} else if p.accept([]string{"IDENTIFIER"}) {
+		operator := p.previous()
+		return Expr(parent, operator), nil
 	} else if p.accept(KEYWORDS) {
+		fmt.Println("ACCEPTING KEYWORD " + p.previous().Type)
 		return p.block(parent, p.previous().Type)
-	} else if isDefined(parent, lexeme) {
-		// isDefined doesn't accept the identifier, so we have to manually push it
-		// along here
-		if !p.accept([]string{"IDENTIFIER"}) {
-			return Expression{}, errors.New("expected identifier")
-		}
-		return p.block(parent, "call")
 	} else {
 		exp, err := p.logical()
 
@@ -100,20 +97,6 @@ func (p *Parser) block(parent *Expression, blockType string) (Expression, error)
 			inputs = append(inputs, parameters)
 			fmt.Println("Done parsing pipe")
 		}
-	}
-
-	if blockType == "def" {
-		input, err := p.logical()
-
-		if err != nil {
-			return Expression{}, err
-		}
-
-		inputs = append(inputs, input)
-
-		identifier := p.previous()
-		lexeme := GetLexemeForToken(identifier)
-		parent.Definitions[lexeme] = nil
 	}
 
 	for !p.accept([]string{"end"}) && !p.isAtEnd() {
@@ -343,7 +326,7 @@ func isDefined(inExp *Expression, lexeme string) bool {
 		return false
 	}
 
-	for kw, _ := range inExp.Definitions {
+	for kw, _ := range inExp.Functions {
 		if kw == lexeme {
 			return true
 		}
@@ -352,26 +335,26 @@ func isDefined(inExp *Expression, lexeme string) bool {
 	return isDefined(inExp.Parent, lexeme)
 }
 
-func getDefinition(inExp *Expression, lexeme string) (Lambda, error) {
+func getFunction(inExp *Expression, lexeme string) (Lambda, error) {
 	if inExp == nil {
 		return nil, errors.New("symbol not found " + lexeme)
 	}
 
-	for kw, def := range inExp.Definitions {
+	for kw, def := range inExp.Functions {
 		if kw == lexeme {
 			return def, nil
 		}
 	}
 
-	return getDefinition(inExp.Parent, lexeme)
+	return getFunction(inExp.Parent, lexeme)
 }
 
-func setDefinition(inExp *Expression, lexeme string, def Lambda) error {
+func setFunction(inExp *Expression, lexeme string, def Lambda) error {
 	if inExp == nil {
 		return errors.New("cannot set definition in nil expression")
 	}
 
-	inExp.Definitions[lexeme] = def
+	inExp.Functions[lexeme] = def
 
 	return nil
 }
