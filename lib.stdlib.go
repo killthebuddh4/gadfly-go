@@ -7,7 +7,7 @@ import (
 )
 
 func InitializeStdLib(root *Trajectory) {
-	var lambda Lambda = func(args ...Value) (Value, error) {
+	var print Lambda = func(args ...Value) (Value, error) {
 		if len(args) != 1 {
 			return nil, errors.New("print only accepts one argument, a string")
 		}
@@ -20,7 +20,9 @@ func InitializeStdLib(root *Trajectory) {
 		tf, tfOk := arg.(bool)
 		slice, sliceOk := arg.([]Value)
 
-		if strOk {
+		if arg == nil {
+			fmt.Println("nil")
+		} else if strOk {
 			fmt.Println(str)
 		} else if floatOk {
 			fmt.Println(float)
@@ -42,5 +44,29 @@ func InitializeStdLib(root *Trajectory) {
 		return nil, nil
 	}
 
-	DefineName(root, "print", lambda)
+	DefineName(root, "print", print)
+
+	var chars Lambda = func(args ...Value) (Value, error) {
+		if len(args) != 1 {
+			return nil, errors.New("chars only accepts one argument, a string")
+		}
+
+		arg := args[0]
+
+		str, strOk := arg.(string)
+
+		if !strOk {
+			return nil, errors.New("chars only accepts strings")
+		}
+
+		result := []Value{}
+
+		for _, c := range str {
+			result = append(result, string(c))
+		}
+
+		return result, nil
+	}
+
+	DefineName(root, "chars", chars)
 }

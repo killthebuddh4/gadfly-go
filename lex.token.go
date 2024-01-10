@@ -22,6 +22,7 @@ type Tokens struct {
 	Do               string
 	And              string
 	Or               string
+	While            string
 	Array            string
 	Get              string
 	Set              string
@@ -66,6 +67,7 @@ var TOKENS = Tokens{
 	Do:               "do",
 	And:              "and",
 	Or:               "or",
+	While:            "while",
 	Array:            "array",
 	Get:              "get",
 	Set:              "set",
@@ -164,7 +166,7 @@ func isAtom(token Token) bool {
 
 func isBlockStart(token Token) bool {
 	switch token.Type {
-	case TOKENS.Def, TOKENS.Call, TOKENS.Val, TOKENS.Edit, TOKENS.If, TOKENS.Do, TOKENS.And, TOKENS.Or, TOKENS.Array, TOKENS.Get, TOKENS.Set, TOKENS.For, TOKENS.Map, TOKENS.Reduce, TOKENS.Filter, TOKENS.Push, TOKENS.Pop, TOKENS.Effect:
+	case TOKENS.Def, TOKENS.Call, TOKENS.Val, TOKENS.Edit, TOKENS.If, TOKENS.Do, TOKENS.And, TOKENS.Or, TOKENS.While, TOKENS.Array, TOKENS.Get, TOKENS.Set, TOKENS.For, TOKENS.Map, TOKENS.Reduce, TOKENS.Filter, TOKENS.Push, TOKENS.Pop, TOKENS.Effect:
 		return true
 	default:
 		return false

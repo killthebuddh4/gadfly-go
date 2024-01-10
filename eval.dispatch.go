@@ -68,6 +68,8 @@ func dispatch(trajectory *Trajectory) (Evaluator, error) {
 		return EvaluateOr, nil
 	case TOKENS.Fn:
 		return EvaluateFn, nil
+	case TOKENS.While:
+		return EvaluateWhile, nil
 	case TOKENS.Array:
 		return EvaluateArray, nil
 	case TOKENS.Set:

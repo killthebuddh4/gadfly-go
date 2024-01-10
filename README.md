@@ -73,9 +73,9 @@ never be_):
 ```text
 
 def slice
-  fn |arr, start, finish|
+  fn |arr start finish|
     filter arr 
-      fn |el, i|
+      fn |el i|
         def result
           and
             i >= start true
@@ -83,7 +83,7 @@ def slice
           end
         end
 
-        result != false
+        result == true
       end
     end
   end
@@ -98,15 +98,12 @@ def length
     def result 0 end
 
     for arr
-      fn |e, i|
-        call print "hello" end
+      fn |e i|
         let result i end
-        call print result end
       end
     end
 
-    call print "final" end
-    result
+    result + 1
   end
 end
 
@@ -127,6 +124,7 @@ end
   - [ ] array and associated utilities
   - [ ] hashmaps and associated utilities
   - [ ] strings and associated utilities
+  - [ ] exceptions and associated utilities
   - [ ] puts and gets
   - [ ] http functionality
 - [ ] error reporting
@@ -148,14 +146,18 @@ end
 
 ### autonomous program synthesis
 
-...
+- policies
+- reflection
+- remote subtrees
+- generated subtrees
 
 # topics to research
 
 - probabilistic programming
 - compiler design and implementation
 - data flow analysis and control flow analysis
-- Ω
+- prolog and logic programming
+- ...
 
 
 

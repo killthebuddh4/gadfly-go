@@ -1,11 +1,61 @@
-def sieve
-  fn |n|
-    val checked
-      array end
+def includes
+  fn |arr n|
+    def includes false end
+
+    for arr
+      fn |test i|
+        if test == n
+          let includes true end
+          nil
+        end
+      end
     end
 
-    val base 2 end
-    val next base
+    includes
   end
 end
 
+# An innefficient sieve of Eratosthenes.
+
+def is_prime
+  fn |n|
+    def composites array end end
+
+    def base 2 end
+    def test base end
+
+    while base < n
+      let test base end
+
+      while test < n
+        let test test + base end
+
+        let composites
+          push composites
+            test
+          end
+        end
+      end
+
+      let base base + 1 end
+    end
+
+    def is_composite
+      call includes composites n end
+    end
+
+    is_composite == false
+  end
+end
+
+
+def k 0 end
+
+while k < 100
+  if call is_prime k end
+    call print k end
+    nil
+  end
+
+  let k k + 1 end
+end

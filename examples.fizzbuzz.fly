@@ -1,6 +1,57 @@
-def fizzbuzz
+def is_fizz
   fn |n|
-    nil
+    def r
+      call mod 
+        n 3
+      end
+    end
+
+    r == 0
   end
 end
+
+def is_buzz
+  fn |n|
+    def r
+      call mod 
+        n 5
+      end
+    end
+
+    r == 0
+  end
+end
+
+def is_fizzbuzz
+  fn |n|
+    def both
+      and
+        call is_fizz n end true
+        call is_buzz n end true
+      end
+    end
+
+    both == true
+  end
+end
+
+def fizzbuzz
+  fn |n|
+    def k 1 end
+    while k <= n
+      call print k end
+      
+      or
+        call is_fizzbuzz k end call print "fizzbuzz" end
+        call is_fizz k end call print "fizz" end
+        call is_buzz k end call print "buzz" end
+      end
+
+      let k k + 1 end
+    end
+  end
+end
+
+call fizzbuzz 50 end
+
 

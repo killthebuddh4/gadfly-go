@@ -12,6 +12,7 @@ type Blocks struct {
 	Do     string
 	And    string
 	Or     string
+	While  string
 	Array  string
 	Get    string
 	Set    string
@@ -35,6 +36,7 @@ var BLOCKS = Blocks{
 	Do:     "do",
 	And:    "and",
 	Or:     "or",
+	While:  "while",
 	Array:  "array",
 	Get:    "get",
 	Set:    "set",
@@ -68,6 +70,8 @@ func GetBlock(lexeme string) (string, error) {
 		return BLOCKS.And, nil
 	case BLOCKS.Or:
 		return BLOCKS.Or, nil
+	case BLOCKS.While:
+		return BLOCKS.While, nil
 	case BLOCKS.Array:
 		return BLOCKS.Array, nil
 	case BLOCKS.Get:

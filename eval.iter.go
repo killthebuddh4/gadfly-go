@@ -2,6 +2,42 @@ package main
 
 import "errors"
 
+func EvaluateWhile(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
+
+	var value Value = nil
+
+	for {
+		condV, err := Evaluate(trajectory.Children[0])
+
+		if err != nil {
+			return nil, err
+		}
+
+		cond, ok := condV.(bool)
+
+		if !ok {
+			return nil, errors.New("not a boolean")
+		}
+
+		if !cond {
+			break
+		} else {
+			for _, child := range trajectory.Children[1:] {
+				val, err := Evaluate(child)
+
+				if err != nil {
+					return nil, err
+				}
+
+				value = val
+			}
+		}
+	}
+
+	return value, nil
+}
+
 func EvaluateFor(trajectory *Trajectory) (Value, error) {
 	expand(trajectory)
 

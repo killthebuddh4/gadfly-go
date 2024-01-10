@@ -1,6 +1,62 @@
-def palindrome
+def is_palindrome
   fn |str|
-    false
+    def arr
+      call chars str end
+    end
+
+    def l
+      call length arr end
+    end
+
+    def k 0 end
+
+    def s "" end
+    def e "" end
+
+    def is_p true end
+
+    while k < l
+      let s
+        get arr k end
+      end
+
+      let e
+        get arr l - k - 1 end
+      end
+
+      if s != e
+        let is_p false end
+        nil
+      end
+
+      let k k + 1 end
+    end
+
+    is_p
   end
 end
 
+def words
+  array
+    "racecar"
+    "hannah"
+    "kayak"
+    "radar"
+    "saippuakivikauppias"
+    "tattarrattat"
+    "achilles"
+    "gadfly"
+    "golang"
+    "language"
+    "fun"
+  end
+end
+
+
+for words
+  fn |w i|
+    call print
+      call is_palindrome w end
+    end
+  end
+end

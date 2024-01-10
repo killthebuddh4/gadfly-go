@@ -4,6 +4,7 @@ import (
 	"errors"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type Evaluator func(*Trajectory) (Value, error)
@@ -355,7 +356,7 @@ func EvaluateNumber(trajectory *Trajectory) (Value, error) {
 }
 
 func EvaluateString(trajectory *Trajectory) (Value, error) {
-	return trajectory.Expression.Operator.Lexeme, nil
+	return strings.Trim(trajectory.Expression.Operator.Lexeme, "\""), nil
 }
 
 func EvaluateSet(trajectory *Trajectory) (Value, error) {
