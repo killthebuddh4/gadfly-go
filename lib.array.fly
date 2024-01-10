@@ -3,35 +3,13 @@ def slice
     filter arr 
       fn |el i|
         def result
-          call print "vvvvvvvvvvvvvvvvvvvv" end
-          call print
-            start
-          end
-          call print
-            i
-          end
-          call print
-            finish
-          end
-          call print
-            i >= start
-          end
-          call print
-            i < finish
-          end
-          call print "-------------" end
-
           and
             i >= start true
             i < finish true
           end
         end
 
-        call print "result vvvvv" end
-        call print result end
-        call print "result ^^^^^" end
-
-        result != false
+        result == true
       end
     end
   end

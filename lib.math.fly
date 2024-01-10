@@ -32,21 +32,6 @@ def factorial
             n - 1
           end
         end
-        call print
-          "inner is"
-        end
-
-        call print
-          inner
-        end
-
-        call print
-          "n is"
-        end
-
-        call print
-          n
-        end
 
         n * inner
       end

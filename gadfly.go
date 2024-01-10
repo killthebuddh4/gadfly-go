@@ -56,15 +56,13 @@ func eval(pathToFile string) {
 		return
 	}
 
-	root := Expr(nil, Token{
-		Type:   "ROOT",
-		Start:  0,
-		Length: 0,
-	})
+	rootExp := RootExpr()
+
+	root := Traj(nil, &rootExp)
 
 	InitializeStdLib(&root)
 
-	parseErr := Parse(&root, GetTokens())
+	parseErr := Parse(&rootExp, GetTokens())
 
 	if parseErr != nil {
 		fmt.Println("Error parsing: ", parseErr)

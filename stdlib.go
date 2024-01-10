@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-func InitializeStdLib(root *Expression) {
+func InitializeStdLib(root *Trajectory) {
 	var lambda Lambda = func(args ...Value) (Value, error) {
 		if len(args) != 1 {
 			return nil, errors.New("print only accepts one argument, a string")
@@ -42,5 +42,5 @@ func InitializeStdLib(root *Expression) {
 		return nil, nil
 	}
 
-	DefineDef(root, "print", lambda)
+	DefineName(root, "print", lambda)
 }
