@@ -29,7 +29,7 @@ type Blocks struct {
 var BLOCKS = Blocks{
 	Fn:     "fn",
 	Def:    "def",
-	Call:   "call",
+	Call:   "@",
 	Val:    "val",
 	Edit:   "let",
 	If:     "if",
@@ -204,6 +204,7 @@ var STRINGS = Strings{
 }
 
 type Identifiers struct {
+	At         rune
 	Underscore rune
 	LowerA     rune
 	LowerB     rune
@@ -260,6 +261,7 @@ type Identifiers struct {
 }
 
 var IDENTIFIERS = Identifiers{
+	At:         '@',
 	Underscore: '_',
 	LowerA:     'a',
 	LowerB:     'b',

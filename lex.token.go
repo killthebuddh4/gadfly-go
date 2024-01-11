@@ -60,7 +60,7 @@ var TOKENS = Tokens{
 	Fn:               "fn",
 	Pipe:             "|",
 	Def:              "def",
-	Call:             "call",
+	Call:             "@",
 	Val:              "val",
 	Edit:             "let",
 	If:               "if",

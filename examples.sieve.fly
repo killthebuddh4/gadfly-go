@@ -1,20 +1,3 @@
-def includes
-  fn |arr n|
-    def includes false end
-
-    for arr
-      fn |test i|
-        if test == n
-          let includes true end
-          nil
-        end
-      end
-    end
-
-    includes
-  end
-end
-
 # An innefficient sieve of Eratosthenes.
 
 def is_prime
@@ -41,7 +24,7 @@ def is_prime
     end
 
     def is_composite
-      call includes composites n end
+      @includes composites n end
     end
 
     is_composite == false
@@ -52,8 +35,8 @@ end
 def k 0 end
 
 while k < 100
-  if call is_prime k end
-    call print k end
+  if @is_prime k end
+    @print k end
     nil
   end
 

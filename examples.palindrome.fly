@@ -1,11 +1,11 @@
 def is_palindrome
   fn |str|
     def arr
-      call chars str end
+      @chars str end
     end
 
     def l
-      call length arr end
+      @length arr end
     end
 
     def k 0 end
@@ -55,8 +55,8 @@ end
 
 for words
   fn |w i|
-    call print
-      call is_palindrome w end
+    @print
+      @is_palindrome w end
     end
   end
 end

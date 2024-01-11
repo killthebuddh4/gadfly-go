@@ -29,3 +29,19 @@ def length
   end
 end
 
+def includes
+  fn |arr e|
+    def includes false end
+
+    for arr
+      fn |test i|
+        if test == e
+          let includes true end
+          nil
+        end
+      end
+    end
+
+    includes
+  end
+end

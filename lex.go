@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 func Lex(source string) ([]Token, error) {
@@ -134,6 +133,13 @@ func (s *Scanner) scanToken() error {
 		s.addToken(TOKENS.Number)
 	case WHITESPACE.NewLine, WHITESPACE.Space, WHITESPACE.Tab, WHITESPACE.Return:
 		s.advance()
+	case IDENTIFIERS.At:
+		s.advance()
+		block, err := GetBlock(s.readLexeme())
+		if err != nil {
+			return err
+		}
+		s.addToken(block)
 	case IDENTIFIERS.Underscore, IDENTIFIERS.LowerA, IDENTIFIERS.LowerB, IDENTIFIERS.LowerC, IDENTIFIERS.LowerD, IDENTIFIERS.LowerE, IDENTIFIERS.LowerF, IDENTIFIERS.LowerG, IDENTIFIERS.LowerH, IDENTIFIERS.LowerI, IDENTIFIERS.LowerJ, IDENTIFIERS.LowerK, IDENTIFIERS.LowerL, IDENTIFIERS.LowerM, IDENTIFIERS.LowerN, IDENTIFIERS.LowerO, IDENTIFIERS.LowerP, IDENTIFIERS.LowerQ, IDENTIFIERS.LowerR, IDENTIFIERS.LowerS, IDENTIFIERS.LowerT, IDENTIFIERS.LowerU, IDENTIFIERS.LowerV, IDENTIFIERS.LowerW, IDENTIFIERS.LowerX, IDENTIFIERS.LowerY, IDENTIFIERS.LowerZ, IDENTIFIERS.UpperA, IDENTIFIERS.UpperB, IDENTIFIERS.UpperC, IDENTIFIERS.UpperD, IDENTIFIERS.UpperE, IDENTIFIERS.UpperF, IDENTIFIERS.UpperG, IDENTIFIERS.UpperH, IDENTIFIERS.UpperI, IDENTIFIERS.UpperJ, IDENTIFIERS.UpperK, IDENTIFIERS.UpperL, IDENTIFIERS.UpperM, IDENTIFIERS.UpperN, IDENTIFIERS.UpperO, IDENTIFIERS.UpperP, IDENTIFIERS.UpperQ, IDENTIFIERS.UpperR, IDENTIFIERS.UpperS, IDENTIFIERS.UpperT, IDENTIFIERS.UpperU, IDENTIFIERS.UpperV, IDENTIFIERS.UpperW, IDENTIFIERS.UpperX, IDENTIFIERS.UpperY, IDENTIFIERS.UpperZ:
 		s.advanceIdentifier()
 
@@ -254,7 +260,6 @@ func (s *Scanner) advanceIdentifier() error {
 }
 
 func (s *Scanner) advanceLine() {
-	fmt.Println("advancing line")
 	n, _ := s.readCurrent()
 
 	for !s.isAtEnd() {
