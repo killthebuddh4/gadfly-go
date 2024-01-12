@@ -1,6 +1,12 @@
 package main
 
-func (p *Parser) ParseLiteral(parent *Expression) error {
-	Expr(parent, VARIANTS.Literal, p.previous())
+import "errors"
+
+func (p *Parser) ParseLiteral(parent *Expression, token Token) error {
+	if token.Type != TOKENS.String && token.Type != TOKENS.Number {
+		return errors.New("expected literal token")
+	}
+
+	Expr(parent, VARIANTS.Literal, token)
 	return nil
 }

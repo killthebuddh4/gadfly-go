@@ -24,8 +24,8 @@ func RootExpr() Expression {
 	return Expression{
 		Parent: nil,
 		Operator: Token{
-			Type:   "ROOT",
-			Lexeme: "ROOT",
+			Type:   TOKENS.Do,
+			Lexeme: "",
 			Start:  0,
 			Length: 0,
 		},
