@@ -10,7 +10,7 @@ type Trajectory struct {
 	Parent      *Trajectory
 	Children    []*Trajectory
 	Expression  *Expression
-	Environment map[string]Value
+	Environment map[string]Lambda
 	Yield       Value
 }
 
@@ -19,7 +19,7 @@ func Traj(parent *Trajectory, expr *Expression) Trajectory {
 		Parent:      parent,
 		Children:    []*Trajectory{},
 		Expression:  expr,
-		Environment: map[string]Value{},
+		Environment: make(map[string]Lambda),
 		Yield:       VOID,
 	}
 }
@@ -37,9 +37,9 @@ func expand(parent *Trajectory) error {
 	return nil
 }
 
-func ResolveName(trajectory *Trajectory, name string) (Value, error) {
+func ResolveName(trajectory *Trajectory, name string) (Lambda, error) {
 	if trajectory == nil {
-		return nil, errors.New("value not found for " + name)
+		return nil, errors.New("value not found for <" + name + ">")
 	}
 
 	for key, val := range trajectory.Environment {
@@ -51,7 +51,7 @@ func ResolveName(trajectory *Trajectory, name string) (Value, error) {
 	return ResolveName(trajectory.Parent, name)
 }
 
-func DefineName(trajectory *Trajectory, name string, val Value) error {
+func DefineName(trajectory *Trajectory, name string, val Lambda) error {
 	if trajectory == nil {
 		return errors.New("cannot define name in nil expression")
 	}
@@ -67,7 +67,7 @@ func DefineName(trajectory *Trajectory, name string, val Value) error {
 	return nil
 }
 
-func EditName(trajectory *Trajectory, name string, val Value) error {
+func EditName(trajectory *Trajectory, name string, val Lambda) error {
 	if trajectory == nil {
 		return errors.New("definition not found for " + name)
 	}

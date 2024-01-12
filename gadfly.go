@@ -21,7 +21,8 @@ func main() {
 func eval(pathToFile string) {
 	source := ""
 
-	files := []string{"lib.math.fly", "lib.array.fly", pathToFile}
+	// files := []string{"lib.math.fly", "lib.array.fly", pathToFile}
+	files := []string{pathToFile}
 
 	for _, file := range files {
 		f, err := os.Open(file)

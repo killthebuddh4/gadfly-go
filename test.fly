@@ -1,15 +1,7 @@
-def p
-  fn |thing|
-    @print
-      thing
-    end
-  end
+def x
+  fn |y|
+    y
+  end 
 end
 
-@p 10 end
 
-@print
-  @factorial
-    5
-  end
-end
