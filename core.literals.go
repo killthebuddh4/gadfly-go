@@ -12,7 +12,7 @@ func EvaluateLiteral(trajectory *Trajectory) (Value, error) {
 	} else if trajectory.Expression.Operator.Type == TOKENS.String {
 		return EvaluateString(trajectory)
 	} else {
-		return nil, errors.New("unknown literal type")
+		return nil, errors.New("unknown literal type <" + trajectory.Expression.Operator.Type + ">")
 	}
 }
 
@@ -28,4 +28,16 @@ func EvaluateNumber(trajectory *Trajectory) (Value, error) {
 
 func EvaluateString(trajectory *Trajectory) (Value, error) {
 	return strings.Trim(trajectory.Expression.Operator.Lexeme, "\""), nil
+}
+
+func EvaluateNil(trajectory *Trajectory) (Value, error) {
+	return nil, nil
+}
+
+func EvaluateTrue(trajectory *Trajectory) (Value, error) {
+	return true, nil
+}
+
+func EvaluateFalse(trajectory *Trajectory) (Value, error) {
+	return false, nil
 }

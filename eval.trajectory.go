@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Void struct{}
 
@@ -34,6 +37,8 @@ func expand(parent *Trajectory) error {
 
 	parent.Children = children
 
+	fmt.Println("Expanded <", parent.Expression.Operator.Lexeme, "> to N <", len(parent.Children), ">")
+
 	return nil
 }
 
@@ -62,6 +67,7 @@ func DefineName(trajectory *Trajectory, name string, val Lambda) error {
 		return errors.New("name " + name + " is already defined")
 	}
 
+	fmt.Println("Defining name <", name, "> in trajectory <", trajectory.Expression.Operator.Type, ">")
 	trajectory.Environment[name] = val
 
 	return nil

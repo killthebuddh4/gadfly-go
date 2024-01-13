@@ -2,15 +2,22 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
-	root := Expr(parent, VARIANTS.Lambda, operator)
+	fmt.Println("Going to parse a func, lexeme is <", p.previous().Lexeme, ">")
+
+	root := Expr(parent, VARIANTS.Call, operator)
 
 	parameters := []string{}
 
 	if accept(p, isPipe) {
+		fmt.Println("Going to parse parameters, lexeme is <", p.previous().Lexeme, ">")
+
 		for accept(p, isIdentifier) {
+			fmt.Println("Going to parse one parameter, lexeme is <", p.previous().Lexeme, ">")
+
 			parameter := p.previous().Lexeme
 
 			definition := Definition{
@@ -19,7 +26,7 @@ func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
 				Variadic: false,
 			}
 
-			err := Define(&root, definition.Name, definition)
+			err := Define(root, definition.Name, definition)
 
 			if err != nil {
 				return nil
@@ -33,6 +40,8 @@ func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
 		}
 
 		root.Parameters = parameters
+
+		fmt.Println("Done parsing parameters, found <", len(parameters), "> parameters")
 	}
 
 	if parent.Operator.Lexeme == "def" {
@@ -47,7 +56,7 @@ func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
 		err := Define(parent.Parent, definition.Name, definition)
 
 		if err != nil {
-			return nil
+			return err
 		}
 	}
 
@@ -60,12 +69,19 @@ func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
 			break
 		}
 
-		err := p.expression(&root)
+		err := p.expression(root)
 
 		if err != nil {
 			return nil
 		}
 	}
+
+	fmt.Println("FN PARENT PARENT TREE")
+	PrintExp(parent.Parent)
+	fmt.Println("FN PARENT TREE")
+	PrintExp(parent)
+
+	fmt.Println("Done parsing func with N children: ", len(root.Children))
 
 	return nil
 }

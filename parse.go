@@ -31,8 +31,26 @@ func (p *Parser) expression(parent *Expression) error {
 	} else if accept(p, isFn) {
 		return p.ParseFunc(parent, p.previous())
 	} else if accept(p, isIdentifier) {
-		return p.ParseIdentifier(parent, p.previous())
+		defn, err := Resolve(parent, p.previous().Lexeme)
+
+		if err != nil {
+			return err
+		}
+
+		if defn.Arity == 0 && !defn.Variadic {
+			// Oh boy.
+			p.backup()
+			err := p.ParseLogic(parent)
+
+			if err != nil {
+				return err
+			}
+
+			return nil
+		} else {
+			return p.ParseIdentifier(parent, p.previous())
+		}
 	} else {
-		return p.ParseCalc(parent)
+		return p.ParseLogic(parent)
 	}
 }

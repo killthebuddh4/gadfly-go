@@ -1,7 +1,37 @@
-def x
-  fn |y|
-    y
-  end 
+def act
+  fn
+    100
+  end
 end
 
+def b
+  fn |y|
+    y
+  end
+end
 
+def c
+  fn
+    b 100 end
+  end
+end
+
+def d
+  fn
+    or
+      act == 100 
+      "chool"
+
+      act < 200
+      print "hey" end
+      
+      200 < act
+      "whoad"
+
+      c == 100
+      "achilles"
+    end
+  end
+end
+
+print d end
