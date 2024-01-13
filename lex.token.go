@@ -12,7 +12,6 @@ type Token struct {
 }
 
 type Tokens struct {
-	Root             string
 	Fn               string
 	Pipe             string
 	Def              string
@@ -58,7 +57,6 @@ type Tokens struct {
 }
 
 var TOKENS = Tokens{
-	Root:             "ROOT",
 	Fn:               "fn",
 	Pipe:             "|",
 	Def:              "def",
@@ -166,9 +164,9 @@ func isAtom(token Token) bool {
 	}
 }
 
-func isString(token Token) bool {
+func isBlockStart(token Token) bool {
 	switch token.Type {
-	case TOKENS.String:
+	case TOKENS.Def, TOKENS.Call, TOKENS.Val, TOKENS.Edit, TOKENS.If, TOKENS.Do, TOKENS.And, TOKENS.Or, TOKENS.While, TOKENS.Array, TOKENS.Get, TOKENS.Set, TOKENS.For, TOKENS.Map, TOKENS.Reduce, TOKENS.Filter, TOKENS.Push, TOKENS.Pop, TOKENS.Effect:
 		return true
 	default:
 		return false
@@ -179,15 +177,6 @@ func isPipe(token Token) bool {
 	switch token.Type {
 	case TOKENS.Pipe:
 		return true
-	default:
-		return false
-	}
-}
-
-func isDef(token Token) bool {
-	switch token.Type {
-	case TOKENS.Identifier:
-		return token.Lexeme == TOKENS.Def
 	default:
 		return false
 	}
@@ -204,8 +193,8 @@ func isIdentifier(token Token) bool {
 
 func isFn(token Token) bool {
 	switch token.Type {
-	case TOKENS.Identifier:
-		return token.Lexeme == TOKENS.Fn
+	case TOKENS.Fn:
+		return true
 	default:
 		return false
 	}
@@ -213,8 +202,8 @@ func isFn(token Token) bool {
 
 func isEnd(token Token) bool {
 	switch token.Type {
-	case TOKENS.Identifier:
-		return token.Lexeme == TOKENS.End
+	case TOKENS.End:
+		return true
 	default:
 		return false
 	}

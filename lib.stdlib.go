@@ -7,23 +7,7 @@ import (
 )
 
 func InitializeStdLib(root *Trajectory) {
-	DefineName(root, TOKENS.Def, EvaluateDef)
-	DefineName(root, TOKENS.BangEqual, EvaluateBangEqual)
-	DefineName(root, TOKENS.EqualEqual, EvaluateEqualEqual)
-	DefineName(root, TOKENS.LessThan, EvaluateLessThan)
-	DefineName(root, TOKENS.LessThanEqual, EvaluateLessThanEqual)
-	DefineName(root, TOKENS.GreaterThan, EvaluateGreaterThan)
-	DefineName(root, TOKENS.GreaterThanEqual, EvaluateGreaterThanEqual)
-	DefineName(root, TOKENS.Plus, EvaluatePlus)
-	DefineName(root, TOKENS.Minus, EvaluateMinus)
-	DefineName(root, TOKENS.Multiply, EvaluateMultiply)
-	DefineName(root, TOKENS.Divide, EvaluateDivide)
-	DefineName(root, TOKENS.Bang, EvaluateBang)
-	DefineName(root, TOKENS.True, EvaluateTrue)
-	DefineName(root, TOKENS.False, EvaluateFalse)
-	DefineName(root, TOKENS.Nil, EvaluateNil)
-
-	var print Lambda = func(scope *Trajectory, args ...Value) (Value, error) {
+	var print Lambda = func(args ...Value) (Value, error) {
 		if len(args) != 1 {
 			return nil, errors.New("print only accepts one argument, a string")
 		}
@@ -62,27 +46,27 @@ func InitializeStdLib(root *Trajectory) {
 
 	DefineName(root, "print", print)
 
-	// var chars Lambda = func(args ...Value) (Value, error) {
-	// 	if len(args) != 1 {
-	// 		return nil, errors.New("chars only accepts one argument, a string")
-	// 	}
+	var chars Lambda = func(args ...Value) (Value, error) {
+		if len(args) != 1 {
+			return nil, errors.New("chars only accepts one argument, a string")
+		}
 
-	// 	arg := args[0]
+		arg := args[0]
 
-	// 	str, strOk := arg.(string)
+		str, strOk := arg.(string)
 
-	// 	if !strOk {
-	// 		return nil, errors.New("chars only accepts strings")
-	// 	}
+		if !strOk {
+			return nil, errors.New("chars only accepts strings")
+		}
 
-	// 	result := []Value{}
+		result := []Value{}
 
-	// 	for _, c := range str {
-	// 		result = append(result, string(c))
-	// 	}
+		for _, c := range str {
+			result = append(result, string(c))
+		}
 
-	// 	return result, nil
-	// }
+		return result, nil
+	}
 
-	// DefineName(root, "chars", chars)
+	DefineName(root, "chars", chars)
 }

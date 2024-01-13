@@ -1,279 +1,281 @@
 package main
 
-// func EvaluateWhile(trajectory *Trajectory, args ...Value) (Value, error) {
-// 	expand(trajectory)
+import "errors"
 
-// 	var value Value = nil
+func EvaluateWhile(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	for {
-// 		condV, err := Evaluate(trajectory.Children[0])
+	var value Value = nil
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
+	for {
+		condV, err := Evaluate(trajectory.Children[0])
 
-// 		cond, ok := condV.(bool)
+		if err != nil {
+			return nil, err
+		}
 
-// 		if !ok {
-// 			return nil, errors.New("not a boolean")
-// 		}
+		cond, ok := condV.(bool)
 
-// 		if !cond {
-// 			break
-// 		} else {
-// 			for _, child := range trajectory.Children[1:] {
-// 				val, err := Evaluate(child)
+		if !ok {
+			return nil, errors.New("not a boolean")
+		}
 
-// 				if err != nil {
-// 					return nil, err
-// 				}
+		if !cond {
+			break
+		} else {
+			for _, child := range trajectory.Children[1:] {
+				val, err := Evaluate(child)
 
-// 				value = val
-// 			}
-// 		}
-// 	}
+				if err != nil {
+					return nil, err
+				}
 
-// 	return value, nil
-// }
+				value = val
+			}
+		}
+	}
 
-// func EvaluateFor(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return value, nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluateFor(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	fnV, err := Evaluate(trajectory.Children[1])
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	fnV, err := Evaluate(trajectory.Children[1])
 
-// 	fn, ok := fnV.(Lambda)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not a function")
-// 	}
+	fn, ok := fnV.(Lambda)
 
-// 	for i, v := range arr {
-// 		_, err := fn(v, float64(i))
+	if !ok {
+		return nil, errors.New("not a function")
+	}
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
+	for i, v := range arr {
+		_, err := fn(v, float64(i))
 
-// 	return nil, nil
-// }
+		if err != nil {
+			return nil, err
+		}
+	}
 
-// func EvaluateMap(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return nil, nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluateMap(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	fnV, err := Evaluate(trajectory.Children[1])
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	fnV, err := Evaluate(trajectory.Children[1])
 
-// 	fn, ok := fnV.(Lambda)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not a function")
-// 	}
+	fn, ok := fnV.(Lambda)
 
-// 	vals := []Value{}
+	if !ok {
+		return nil, errors.New("not a function")
+	}
 
-// 	for i, v := range arr {
-// 		mapped, err := fn(v, float64(i))
+	vals := []Value{}
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
+	for i, v := range arr {
+		mapped, err := fn(v, float64(i))
 
-// 		vals = append(vals, mapped)
-// 	}
+		if err != nil {
+			return nil, err
+		}
 
-// 	return vals, nil
-// }
+		vals = append(vals, mapped)
+	}
 
-// func EvaluatePush(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return vals, nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluatePush(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	val, err := Evaluate(trajectory.Children[1])
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	val, err := Evaluate(trajectory.Children[1])
 
-// 	arr = append(arr, val)
+	if err != nil {
+		return nil, err
+	}
 
-// 	return arr, nil
-// }
+	arr = append(arr, val)
 
-// func EvaluatePop(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return arr, nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluatePop(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	return arr[:len(arr)-1], nil
-// }
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// func EvaluateFilter(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return arr[:len(arr)-1], nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluateFilter(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	fnV, err := Evaluate(trajectory.Children[1])
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	fnV, err := Evaluate(trajectory.Children[1])
 
-// 	fn, ok := fnV.(Lambda)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not a function")
-// 	}
+	fn, ok := fnV.(Lambda)
 
-// 	vals := []Value{}
+	if !ok {
+		return nil, errors.New("not a function")
+	}
 
-// 	for i, v := range arr {
-// 		filterV, err := fn(v, float64(i))
+	vals := []Value{}
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
+	for i, v := range arr {
+		filterV, err := fn(v, float64(i))
 
-// 		filter, ok := filterV.(bool)
+		if err != nil {
+			return nil, err
+		}
 
-// 		if !ok {
-// 			return nil, errors.New("filter is not a boolean")
-// 		}
+		filter, ok := filterV.(bool)
 
-// 		if filter {
-// 			vals = append(vals, v)
-// 		}
-// 	}
+		if !ok {
+			return nil, errors.New("filter is not a boolean")
+		}
 
-// 	return vals, nil
-// }
+		if filter {
+			vals = append(vals, v)
+		}
+	}
 
-// func EvaluateReduce(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return vals, nil
+}
 
-// 	arrV, err := Evaluate(trajectory.Children[0])
+func EvaluateReduce(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	arrV, err := Evaluate(trajectory.Children[0])
 
-// 	arr, ok := arrV.([]Value)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not an array")
-// 	}
+	arr, ok := arrV.([]Value)
 
-// 	initV, err := Evaluate(trajectory.Children[1])
+	if !ok {
+		return nil, errors.New("not an array")
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	initV, err := Evaluate(trajectory.Children[1])
 
-// 	fnV, err := Evaluate(trajectory.Children[2])
+	if err != nil {
+		return nil, err
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	fnV, err := Evaluate(trajectory.Children[2])
 
-// 	fn, ok := fnV.(Lambda)
+	if err != nil {
+		return nil, err
+	}
 
-// 	if !ok {
-// 		return nil, errors.New("not a function")
-// 	}
+	fn, ok := fnV.(Lambda)
 
-// 	if (len(arr)) == 0 {
-// 		return nil, nil
-// 	}
+	if !ok {
+		return nil, errors.New("not a function")
+	}
 
-// 	reduction := initV
+	if (len(arr)) == 0 {
+		return nil, nil
+	}
 
-// 	for i, v := range arr {
-// 		reduction, err = fn(reduction, v, float64(i))
+	reduction := initV
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
+	for i, v := range arr {
+		reduction, err = fn(reduction, v, float64(i))
 
-// 	return reduction, nil
-// }
+		if err != nil {
+			return nil, err
+		}
+	}
 
-// func EvaluateArray(trajectory *Trajectory) (Value, error) {
-// 	expand(trajectory)
+	return reduction, nil
+}
 
-// 	arr := []Value{}
+func EvaluateArray(trajectory *Trajectory) (Value, error) {
+	expand(trajectory)
 
-// 	for _, input := range trajectory.Children {
-// 		val, err := Evaluate(input)
+	arr := []Value{}
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
+	for _, input := range trajectory.Children {
+		val, err := Evaluate(input)
 
-// 		arr = append(arr, val)
-// 	}
+		if err != nil {
+			return nil, err
+		}
 
-// 	return arr, nil
-// }
+		arr = append(arr, val)
+	}
+
+	return arr, nil
+}
