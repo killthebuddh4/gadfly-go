@@ -1,4 +1,4 @@
-package main
+package lex
 
 var source *string
 
@@ -10,12 +10,12 @@ func SetSource(s string) {
 	source = &s
 }
 
-var tokens *[]Token
+var tokens *[]Lexeme
 
-func GetTokens() []Token {
+func GetTokens() []Lexeme {
 	return *tokens
 }
 
-func SetTokens(t []Token) {
+func SetTokens(t []Lexeme) {
 	tokens = &t
 }

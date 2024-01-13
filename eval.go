@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/killthebuddh4/gadflai/lex"
 )
 
 type Evaluator func(*Trajectory) (Value, error)
@@ -346,7 +348,7 @@ func EvaluateNil(trajectory *Trajectory) (Value, error) {
 }
 
 func EvaluateNumber(trajectory *Trajectory) (Value, error) {
-	num, parseErr := strconv.ParseFloat(GetLexemeForToken(trajectory.Expression.Operator), 64)
+	num, parseErr := strconv.ParseFloat(lex.GetLexemeForToken(trajectory.Expression.Operator), 64)
 
 	if parseErr != nil {
 		return nil, errors.New("error parsing number")
@@ -462,11 +464,11 @@ func EvaluateLogical(trajectory *Trajectory) (Value, error) {
 		return nil, errors.New("left operand is not a boolean")
 	}
 
-	if trajectory.Expression.Operator.Type == TOKENS.Conjunction {
+	if trajectory.Expression.Operator.Type == lex.KEYWORDS.Conjunction {
 		if !leftV {
 			return false, nil
 		}
-	} else if trajectory.Expression.Operator.Type == TOKENS.Disjunction {
+	} else if trajectory.Expression.Operator.Type == lex.KEYWORDS.Disjunction {
 		if leftV {
 			return true, nil
 		}

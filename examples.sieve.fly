@@ -2,16 +2,21 @@
 
 def is_prime
   fn |n|
-    def composites array end end
+    def
+      composites
+      array end
+    end
 
     def base 2 end
+    
     def test base end
 
     while base < n
       let test base end
 
       while test < n
-        let test test + base end
+        let test test + base
+        end
 
         let composites
           push composites
@@ -24,7 +29,8 @@ def is_prime
     end
 
     def is_composite
-      @includes composites n end
+      @includes composites n
+      end
     end
 
     is_composite == false

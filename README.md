@@ -42,7 +42,7 @@ under heavy development._
   introspectable, and serializable. I want to be able to seralize the parse
   tree, wire it somewhere, and then execute it on another machine.
 
-# basic usage
+# usage
 
 _Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
@@ -61,6 +61,10 @@ go run example.factorial.gadfly
 go run example.palindrome.gadfly
 
 ```
+
+# syntax
+
+TODO
 
 # basic examples
 

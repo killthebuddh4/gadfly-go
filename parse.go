@@ -318,3 +318,111 @@ func (p Parser) previous() Token {
 func (p Parser) isAtEnd() bool {
 	return p.Current >= len(p.Tokens)-1
 }
+
+// func isLogical(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Conjunction, KEYWORDS.Disjunction:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isEquality(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.BangEqual, KEYWORDS.EqualEqual:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isComparison(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.BangEqual, KEYWORDS.LessThan, KEYWORDS.LessThanEqual, KEYWORDS.GreaterThan, KEYWORDS.GreaterThanEqual:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isTerm(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Plus, KEYWORDS.Minus:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isFactor(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Multiply, KEYWORDS.Divide:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isUnary(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Minus, KEYWORDS.Bang:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isAtom(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Number, KEYWORDS.String, KEYWORDS.Identifier, KEYWORDS.True, KEYWORDS.False, KEYWORDS.Nil:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isPipe(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Pipe:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isIdentifier(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Identifier:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isFn(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.Fn:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isEnd(lexeme Lexeme) bool {
+// 	switch lexeme.Type {
+// 	case KEYWORDS.End:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
+
+// func isLexeme(text string) bool {
+// 	switch text {
+// 	case KEYWORDS.Fn, KEYWORDS.Pipe, KEYWORDS.Def, KEYWORDS.Call, KEYWORDS.Val, KEYWORDS.Edit, KEYWORDS.If, KEYWORDS.Do, KEYWORDS.And, KEYWORDS.Or, KEYWORDS.Array, KEYWORDS.Get, KEYWORDS.Set, KEYWORDS.For, KEYWORDS.Map, KEYWORDS.Reduce, KEYWORDS.Filter, KEYWORDS.Push, KEYWORDS.Pop, KEYWORDS.End, KEYWORDS.Effect, KEYWORDS.Plus, KEYWORDS.Minus, KEYWORDS.Multiply, KEYWORDS.Divide, KEYWORDS.Bang, KEYWORDS.BangEqual, KEYWORDS.EqualEqual, KEYWORDS.LessThan, KEYWORDS.LessThanEqual, KEYWORDS.GreaterThan, KEYWORDS.GreaterThanEqual, KEYWORDS.Number, KEYWORDS.String, KEYWORDS.Identifier, KEYWORDS.True, KEYWORDS.False, KEYWORDS.Nil, KEYWORDS.EndOfFile:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
