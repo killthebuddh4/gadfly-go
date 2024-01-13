@@ -1,9 +1,6 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "errors"
 
 func Resolve(expression *Expression, name string) (Definition, error) {
 	if expression == nil {
@@ -30,7 +27,6 @@ func Define(expression *Expression, name string, defn Definition) error {
 		return errors.New("name " + name + " is already defined")
 	}
 
-	fmt.Println("Defining name <", name, "> in expression <", expression.Operator.Lexeme, ">")
 	expression.Definitions = append(expression.Definitions, defn)
 
 	return nil

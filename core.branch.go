@@ -1,9 +1,6 @@
 package main
 
-import (
-	"errors"
-	"reflect"
-)
+import "errors"
 
 func EvaluateIf(trajectory *Trajectory) (Value, error) {
 	expand(trajectory)
@@ -12,7 +9,7 @@ func EvaluateIf(trajectory *Trajectory) (Value, error) {
 	thenExp := trajectory.Children[1]
 	elseExp := trajectory.Children[2]
 
-	conditionVal, err := evaluate(whenExp)
+	conditionVal, err := Evaluate(whenExp)
 
 	if err != nil {
 		return nil, err
@@ -21,13 +18,13 @@ func EvaluateIf(trajectory *Trajectory) (Value, error) {
 	condition, ok := conditionVal.(bool)
 
 	if !ok {
-		return nil, errors.New("condition is not a boolean, got " + reflect.TypeOf(conditionVal).String())
+		return nil, errors.New("condition is not a boolean")
 	}
 
 	if condition {
-		return evaluate(thenExp)
+		return Evaluate(thenExp)
 	} else {
-		return evaluate(elseExp)
+		return Evaluate(elseExp)
 	}
 }
 
@@ -41,7 +38,7 @@ func EvaluateAnd(trajectory *Trajectory) (Value, error) {
 	var val Value = nil
 
 	for i := 0; i < len(trajectory.Children); i += 2 {
-		conditionVal, err := evaluate(trajectory.Children[i])
+		conditionVal, err := Evaluate(trajectory.Children[i])
 
 		if err != nil {
 			return nil, err
@@ -50,14 +47,14 @@ func EvaluateAnd(trajectory *Trajectory) (Value, error) {
 		condition, ok := conditionVal.(bool)
 
 		if !ok {
-			return nil, errors.New("condition is not a boolean, got " + reflect.TypeOf(conditionVal).String())
+			return nil, errors.New("condition is not a boolean")
 		}
 
 		if !condition {
 			return false, nil
 		}
 
-		body, err := evaluate(trajectory.Children[i+1])
+		body, err := Evaluate(trajectory.Children[i+1])
 
 		if err != nil {
 			return nil, err
@@ -77,7 +74,7 @@ func EvaluateOr(trajectory *Trajectory) (Value, error) {
 	}
 
 	for i := 0; i < len(trajectory.Children); i += 2 {
-		conditionVal, err := evaluate(trajectory.Children[i])
+		conditionVal, err := Evaluate(trajectory.Children[i])
 
 		if err != nil {
 			return nil, err
@@ -90,7 +87,7 @@ func EvaluateOr(trajectory *Trajectory) (Value, error) {
 		}
 
 		if condition {
-			return evaluate(trajectory.Children[i+1])
+			return Evaluate(trajectory.Children[i+1])
 		}
 	}
 

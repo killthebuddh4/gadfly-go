@@ -12,26 +12,21 @@ type Definition struct {
 	Arity int
 	// whether to allow Variadic parameters
 	Variadic bool
-	//
-	Body Lambda
 }
 
 type Variants struct {
-	Root     string
-	Call     string
-	Literal  string
-	Operator string
+	Lambda  string
+	Call    string
+	Literal string
 }
 
 var VARIANTS = Variants{
-	Root:     "root",
-	Call:     "call",
-	Literal:  "literal",
-	Operator: "operator",
+	Lambda:  "lambda",
+	Call:    "call",
+	Literal: "literal",
 }
 
 type Expression struct {
-	Id           string
 	Parent       *Expression
 	Variant      string
 	Operator     Token

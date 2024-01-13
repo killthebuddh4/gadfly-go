@@ -166,6 +166,15 @@ func isAtom(token Token) bool {
 	}
 }
 
+func isString(token Token) bool {
+	switch token.Type {
+	case TOKENS.String:
+		return true
+	default:
+		return false
+	}
+}
+
 func isPipe(token Token) bool {
 	switch token.Type {
 	case TOKENS.Pipe:
