@@ -15,14 +15,18 @@ type Definition struct {
 }
 
 type Variants struct {
-	Lambda  string
+	Def     string
+	Func    string
 	Call    string
+	Calc    string
 	Literal string
 }
 
 var VARIANTS = Variants{
-	Lambda:  "lambda",
+	Def:     "def",
+	Func:    "func",
 	Call:    "call",
+	Calc:    "calc",
 	Literal: "literal",
 }
 

@@ -5,7 +5,7 @@ import (
 )
 
 func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
-	root := Expr(parent, VARIANTS.Lambda, operator)
+	root := Expr(parent, VARIANTS.Func, operator)
 
 	parameters := []string{}
 
@@ -35,7 +35,7 @@ func (p *Parser) ParseFunc(parent *Expression, operator Token) error {
 		root.Parameters = parameters
 	}
 
-	if parent.Operator.Lexeme == "def" {
+	if parent.Variant == VARIANTS.Def {
 		lexeme := parent.Children[0].Operator.Lexeme
 
 		definition := Definition{

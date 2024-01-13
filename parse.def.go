@@ -5,14 +5,12 @@ import (
 )
 
 func (p *Parser) ParseDef(parent *Expression, operator Token) error {
-	root := Expr(parent, VARIANTS.Call, operator)
+	root := Expr(parent, VARIANTS.Def, operator)
 
 	if !accept(p, isIdentifier) {
 		return errors.New("expected identifier after def")
 	} else {
-		// Is this bad or is it fine?
-		root.Operator.Type = TOKENS.String
-		p.ParseLiteral(&root, p.previous())
+		p.ParseLiteral(&root)
 	}
 
 	for {
