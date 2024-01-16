@@ -1,30 +1,37 @@
-package main
+package trajectory
 
-import "errors"
+import (
+	"errors"
+
+	exp "github.com/killthebuddh4/gadflai/expression"
+	"github.com/killthebuddh4/gadflai/value"
+)
 
 type Void struct{}
 
 var VOID Void = Void{}
 
+type Lambda func(args ...value.Value) (value.Value, error)
+
 type Trajectory struct {
 	Parent      *Trajectory
 	Children    []*Trajectory
-	Expression  *Expression
-	Environment map[string]Value
-	Yield       Value
+	Expression  *exp.Expression
+	Environment map[string]value.Value
+	Yield       value.Value
 }
 
-func Traj(parent *Trajectory, expr *Expression) Trajectory {
+func Traj(parent *Trajectory, expr *exp.Expression) Trajectory {
 	return Trajectory{
 		Parent:      parent,
 		Children:    []*Trajectory{},
 		Expression:  expr,
-		Environment: map[string]Value{},
+		Environment: map[string]value.Value{},
 		Yield:       VOID,
 	}
 }
 
-func expand(parent *Trajectory) error {
+func Expand(parent *Trajectory) error {
 	children := []*Trajectory{}
 
 	for _, child := range parent.Expression.Children {
@@ -37,7 +44,7 @@ func expand(parent *Trajectory) error {
 	return nil
 }
 
-func ResolveName(trajectory *Trajectory, name string) (Value, error) {
+func ResolveName(trajectory *Trajectory, name string) (value.Value, error) {
 	if trajectory == nil {
 		return nil, errors.New("value not found for " + name)
 	}
@@ -51,7 +58,7 @@ func ResolveName(trajectory *Trajectory, name string) (Value, error) {
 	return ResolveName(trajectory.Parent, name)
 }
 
-func DefineName(trajectory *Trajectory, name string, val Value) error {
+func DefineName(trajectory *Trajectory, name string, val value.Value) error {
 	if trajectory == nil {
 		return errors.New("cannot define name in nil expression")
 	}
@@ -67,7 +74,7 @@ func DefineName(trajectory *Trajectory, name string, val Value) error {
 	return nil
 }
 
-func EditName(trajectory *Trajectory, name string, val Value) error {
+func EditName(trajectory *Trajectory, name string, val value.Value) error {
 	if trajectory == nil {
 		return errors.New("definition not found for " + name)
 	}

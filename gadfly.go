@@ -4,6 +4,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/killthebuddh4/gadflai/exec"
+	exp "github.com/killthebuddh4/gadflai/expression"
+	"github.com/killthebuddh4/gadflai/lex"
+	"github.com/killthebuddh4/gadflai/parse"
+	traj "github.com/killthebuddh4/gadflai/trajectory"
 )
 
 func main() {
@@ -45,34 +51,42 @@ func eval(pathToFile string) {
 		source += string(data)
 	}
 
-	SetSource(source)
+	lexemes, err := lex.Lex(source)
 
-	tokens, scanErr := Lex(GetSource())
-
-	SetTokens(tokens)
-
-	if scanErr != nil {
-		fmt.Println("Error scanning: ", scanErr)
+	if err != nil {
+		fmt.Println("Error lexing: ", err)
 		return
 	}
 
-	rootExp := RootExpr()
+	rootOperator, err := exp.NewOperator("program")
 
-	root := Traj(nil, &rootExp)
+	if err != nil {
+		fmt.Println("Error creating root operator: ", err)
+		return
+	}
 
-	InitializeStdLib(&root)
+	rootExp := exp.NewExpression(nil, rootOperator, []*exp.Expression{})
 
-	parseErr := Parse(&rootExp, GetTokens())
+	parseErr := parse.Parse(&rootExp, lexemes)
+
+	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
+
+	if debug {
+		exp.Print(rootExp, 0)
+	}
+
+	root := traj.Traj(nil, &rootExp)
 
 	if parseErr != nil {
 		fmt.Println("Error parsing: ", parseErr)
 		return
 	}
 
-	_, evalErr := Evaluate(&root)
+	_, err = exec.Exec(&root)
 
-	if evalErr != nil {
-		fmt.Println("Error evaluating: ", evalErr)
+	if err != nil {
+		fmt.Println("Error evaluating: ", err)
 		return
 	}
+
 }

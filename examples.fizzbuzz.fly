@@ -39,12 +39,12 @@ def fizzbuzz
   fn |n|
     def k 1 end
     while k <= n
-      @print k end
+      puts k end
       
       or
-        @is_fizzbuzz k end @print "fizzbuzz" end
-        @is_fizz k end @print "fizz" end
-        @is_buzz k end @print "buzz" end
+        @is_fizzbuzz k end puts "fizzbuzz" end
+        @is_fizz k end puts "fizz" end
+        @is_buzz k end puts "buzz" end
       end
 
       let k k + 1 end

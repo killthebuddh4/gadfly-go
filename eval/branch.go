@@ -1,15 +1,20 @@
-package main
+package eval
 
-import "errors"
+import (
+	"errors"
 
-func EvaluateIf(trajectory *Trajectory) (Value, error) {
-	expand(trajectory)
+	traj "github.com/killthebuddh4/gadflai/trajectory"
+	"github.com/killthebuddh4/gadflai/value"
+)
+
+func If(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+	traj.Expand(trajectory)
 
 	whenExp := trajectory.Children[0]
 	thenExp := trajectory.Children[1]
 	elseExp := trajectory.Children[2]
 
-	conditionVal, err := Evaluate(whenExp)
+	conditionVal, err := eval(whenExp)
 
 	if err != nil {
 		return nil, err
@@ -22,23 +27,23 @@ func EvaluateIf(trajectory *Trajectory) (Value, error) {
 	}
 
 	if condition {
-		return Evaluate(thenExp)
+		return eval(thenExp)
 	} else {
-		return Evaluate(elseExp)
+		return eval(elseExp)
 	}
 }
 
-func EvaluateAnd(trajectory *Trajectory) (Value, error) {
-	expand(trajectory)
+func And(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+	traj.Expand(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
 		return nil, errors.New("and must have even number of inputs")
 	}
 
-	var val Value = nil
+	var val value.Value = nil
 
 	for i := 0; i < len(trajectory.Children); i += 2 {
-		conditionVal, err := Evaluate(trajectory.Children[i])
+		conditionVal, err := eval(trajectory.Children[i])
 
 		if err != nil {
 			return nil, err
@@ -54,7 +59,7 @@ func EvaluateAnd(trajectory *Trajectory) (Value, error) {
 			return false, nil
 		}
 
-		body, err := Evaluate(trajectory.Children[i+1])
+		body, err := eval(trajectory.Children[i+1])
 
 		if err != nil {
 			return nil, err
@@ -66,15 +71,15 @@ func EvaluateAnd(trajectory *Trajectory) (Value, error) {
 	return val, nil
 }
 
-func EvaluateOr(trajectory *Trajectory) (Value, error) {
-	expand(trajectory)
+func Or(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+	traj.Expand(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
 		return nil, errors.New("or must have even number of inputs")
 	}
 
 	for i := 0; i < len(trajectory.Children); i += 2 {
-		conditionVal, err := Evaluate(trajectory.Children[i])
+		conditionVal, err := eval(trajectory.Children[i])
 
 		if err != nil {
 			return nil, err
@@ -87,7 +92,7 @@ func EvaluateOr(trajectory *Trajectory) (Value, error) {
 		}
 
 		if condition {
-			return Evaluate(trajectory.Children[i+1])
+			return eval(trajectory.Children[i+1])
 		}
 	}
 
