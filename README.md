@@ -138,29 +138,29 @@ more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
 script. The full set of planned keywords is not yet implemented. _Keywords will
 be implemented as needed for the larger goals of the project_.
 
-### `do`
+### lambdas
 
-### `fn`, `@`
+### variables
 
-### `def`, `let`
+### branching
 
-### `if`
+### loops
 
-### `and`, `or`
+### logging
 
-### `while`
+### arrays
 
-### `hash`, `merge`, `delete`
+### records
 
-### `array`, `get`, `set`
+### strings
 
-### `for`, `map`, `reduce`, `filter`
+### fs
 
-### `push`, `pop`, `shift`, `unshift`
+_Coming soon!_
 
-### `puts`, `gets`
+### http
 
-### `split`
+_Coming soon!_
 
 # usage
 

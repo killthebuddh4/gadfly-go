@@ -110,6 +110,8 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Splice, nil
 	case "reverse":
 		return eval.Reverse, nil
+	case "sort":
+		return eval.Sort, nil
 	case "if":
 		return eval.If, nil
 	case "and":
