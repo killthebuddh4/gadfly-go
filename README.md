@@ -14,32 +14,48 @@ be awesome!_
 
 # language core and syntax
 
-In gadfly everything is a lexically-scoped __expression__ that yields a value.
-Every expression is either a _block_, _lambda_, _predicate_, or _literal_.
-Comments begin with the `#` character and continue until the end of the line.
+### expressions
 
-A __block__ is a sequence of expressions delimited by a __keyword__ and `end`. A
-block's keyword determines its behavior. See the [semantics](#semantics) section
-for more details on each keyword. Some examples:
+In gadfly everything is a lexically-scoped _expression_.  An __expression__ is
+either a _block_, _lambda_, _predicate_, or _literal_ and all expressions yield
+a _value_.  __Comments__ begin with the `#` character and continue until the end
+of the line.
+
+A __block__ is a sequence of expressions delimited by a _keyword_ and `end`. A
+__keyword__ determines its block's behavior. See the [semantics](#semantics)
+section for more details on each keyword. Some examples:
 
 ```text
+puts "hello world" end
 
 do
-  puts "hello world" end
+  def val "goodbye world" end
+
+  puts val end
 end
 
 while rnd < 0.5
   let rnd Math.random end
 end
 
-def val
+def numbers
   array 1 2 3 end
+end
+
+def squares
+  map numbers
+    fn |n|
+      n * n
+    end
+  end
 end
 
 ```
 
+### lambdas, parameters, and arguments
+
 A __lambda__ is a "parameterized block" that is not evaluated until each time it
-is called. A lambda can have zero or more __parameters__. A parameter is a name
+is called. A lambda can have zero or more _parameters_. A __parameter__ is a name
 that is defined each time the lambda is called (using an `@` block). Parameters
 are declared between `|` characters. If the lambda takes zero parameters, the
 `|` characters must be omitted. The  __arguments__ to the lambda are the values
@@ -47,7 +63,6 @@ of the expressions in the calling block bound to the lambda's parameters. An
 example:
 
 ```text
-
 def add
   fn |a b|
     a + b
@@ -59,18 +74,25 @@ end
   3
 end # => 11
 
+map
+  array 1 2 3 end
+
+  fn |n i|
+    n + i
+  end
+end
 ```
 
-A __predicate__ is an expression involving an __operator__ and __operands__. See
-the [semantics](#semantics) section for more details on each operator. An
-operand is either a predicate or a literal. A __literal__ is an expression
-that has no children (string, number, boolean, identifier). A predicate
-evaluates to a _number_. `0` is false-y, any other number is truth-y, and any
-other value is an error (when used as a boolean).  Some examples:
+### predicates, operators, and literals
 
+A __predicate__ is an expression involving an _operator_ and _operands_. See the
+[semantics](#semantics) section for more details on each operator. An
+__operand__ is either a _predicate_ or a _literal_. A __literal__ is an
+expression that has no children (string, number, boolean, identifier). A
+predicate evaluates to a _number_. `0` is false-y, any other number is truth-y,
+and any other value is an error (when used as a boolean). Some examples:
 
 ```text
-
 # Not predicates.
 
 fn
@@ -88,7 +110,6 @@ val == "goodbye"
 10 > 0
 
 !val
-
 ```
 
 _Note that because predicates cannot include blocks they cannot include function
@@ -96,12 +117,13 @@ calls. This is somewhat cumbersome to us human programmers, forcing us to write
 many instances of trivial indirection, but I think we'll see strong benefits for
 code generation and program synthesis. Maybe not, we'll see._
 
+### variables
+
 A __variable__ is a name that can be resolved to a _value_. A variable is
 defined using a `def` block and re-defined using a `let` block. After a variable
 is defined it can be referenced in any expression. Some examples
 
 ```text
-
 def surname "smith" end
 
 puts surname end
@@ -122,14 +144,25 @@ end
 let things
   push things "thing three" end
 end
-
 ```
 
-The currently supported __value__ types are __string__, __float__, __array__,
-__record__,  __lambda__, and __nil__. Strings are delimited by `"` characters. Floats are
-written using decimal notation. Arrays are created using the `array` block,
-records using the `record` block, and lambdas using the `fn` block. The keyword
-`true` evaluates to `0`, `false` evaluates to `1`, and `nil` evaluates to `nil`.
+### values
+
+In `gadfly` all values are immutable, meaning that all operations on values
+return new values and leave the original values unchanged. Note that variables
+are not values, they can be redefined (they can be pointed to new values).
+
+The currently supported __value__ types are _string_, _float_, _array_,
+_record_,  _lambda_, and _nil_. Strings are delimited by `"` characters. Floats
+are written using decimal notation. The keyword `true` evaluates to `0`, `false`
+evaluates to `1`, and `nil` evaluates to `nil`.
+
+An __array__ is created using the `array` block and  behaves just like a
+stereotypical scripting-language array. A __record__ is created using the
+`record` block, is a string key to value mapping,  and behaves just like a
+stereotypical scripting-language map or dictionary. A __lambda__ is created
+using the `fn` block and behaves just like a stereotypical scripting-language
+anonymous function that can be passed around and called later.
 
 And that's it for the conventional syntax (e.g. the syntax not relating to
 metaprogramming, program synthesis, orchestration, etc.)! The next section
@@ -143,9 +176,9 @@ more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
 script. The full set of planned keywords is not yet implemented. _Keywords will
 be implemented as needed for the larger goals of the project_.
 
-### lambdas
-
 ### variables
+
+### lambdas
 
 ### branching
 
@@ -159,32 +192,32 @@ be implemented as needed for the larger goals of the project_.
 
 ### strings
 
-### fs
+### experimental
 
 _Coming soon!_
 
-### http
+- copilot
+- distribution
+- delegate
+- policy
+- remote
+- memory
 
-_Coming soon!_
+And more...
 
-# usage
 
 _Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
 ```bash
-
 go run . <path to gadfly source>
-
 ```
 
 ```bash
-
 go run example.fizzbuzz.gadfly
 go run example.sieve.gadfly
 go run example.fibonacci.gadfly
 go run example.factorial.gadfly
 go run example.palindrome.gadfly
-
 ```
 
 # notes on the vision
