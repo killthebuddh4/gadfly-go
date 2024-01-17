@@ -1,22 +1,44 @@
-def p
-  fn |thing|
-      thing
-  end
+def a
+  array 1 2 3 4 5 6 6 7 end
 end
 
-def arr
-  array
-   1 2 3 4 4 5 6
-  end
+
+puts a end
+
+
+puts 
+  shift a end
+end
+
+puts
+  unshift a 100 end
+end
+
+puts reverse a end end
+
+
+puts segment a 2 @length a end end end
+
+
+def new
+  array "hey" "there" end
 end
 
 
 puts
-  get arr 3 end
+  splice a 2 new end
 end
 
-set arr 3 5 end
 
-puts
-  get arr 3 end
+def finder
+  fn |e i|
+    e == "achilles"
+  end
 end
+
+
+def found
+  find a finder end
+end
+
+puts found end

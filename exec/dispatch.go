@@ -82,6 +82,18 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Push, nil
 	case "pop":
 		return eval.Pop, nil
+	case "shift":
+		return eval.Shift, nil
+	case "unshift":
+		return eval.Unshift, nil
+	case "segment":
+		return eval.Segment, nil
+	case "find":
+		return eval.Find, nil
+	case "splice":
+		return eval.Splice, nil
+	case "reverse":
+		return eval.Reverse, nil
 	case "if":
 		return eval.If, nil
 	case "and":

@@ -14,7 +14,17 @@ func isLambda(lexeme lex.Lexeme) bool {
 
 func isBlock(lexeme lex.Lexeme) bool {
 	switch lexeme.Text {
-	case "def", "@", "val", "let", "if", "do", "and", "or", "while", "get", "set", "array", "for", "map", "filter", "reduce", "push", "pop", "puts", "chars", "effect":
+	case "do":
+		return true
+	case "def", "@", "val", "let":
+		return true
+	case "if", "and", "or", "while":
+		return true
+	case "array", "get", "set", "for", "map", "filter", "reduce", "push", "pop", "shift", "unshift", "segment", "find", "splice", "reverse":
+		return true
+	case "record", "merge", "delete", "keys", "values", "entries", "read", "write", "extract":
+		return true
+	case "puts", "chars":
 		return true
 	default:
 		return false

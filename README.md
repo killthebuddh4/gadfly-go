@@ -86,12 +86,12 @@ val == "goodbye"
 
 ```
 
-Note that because predicates cannot include blocks they cannot include function
+_Note that because predicates cannot include blocks they cannot include function
 calls. This is somewhat cumbersome to us human programmers, forcing us to write
 many instances of trivial indirection, but I think we'll see strong benefits for
-code generation and program synthesis. Maybe not, we'll see.
+code generation and program synthesis. Maybe not, we'll see._
 
-A _variable_ is a name that can be resolved to a value. A variable is defined
+A _variable_ is a name that can be resolved to a _value_. A variable is defined
 using a `def` block and re-defined using a `let` block. After a variable is
 defined it can be referenced in any expression. Some examples
 
@@ -120,10 +120,11 @@ end
 
 ```
 
-A _literal_ is either a _number_, _string_, _array_, _hash_, _true_, _false_, or
-_nil_. Strings are delimited by `"`, numbers are written using decimal notation
-(and they're all `go`'s `float64` type), `true` is defined as any nonzero
-number, and `false` is defined as `0`. _TOOD: Document arrays and hashes_.
+A _literal_ is either a _lambda_, _number_, _string_, _array_, _hash_, _true_,
+_false_, or _nil_. Lambdas are created using the `fn` block, strings are
+delimited by `"`, numbers are written using decimal notation (they're all
+`go`'s `float64` type), `true` is defined as any nonzero number, and `false` is
+defined as `0`. _TOOD: Document arrays and hashes_.
 
 And that's it for the conventional syntax (e.g. the syntax not relating to
 metaprogramming, program synthesis, orchestration, etc.). The next section
@@ -148,6 +149,8 @@ be implemented as needed for the larger goals of the project_.
 ### `and`, `or`
 
 ### `while`
+
+### `hash`, `merge`, `delete`
 
 ### `array`, `get`, `set`
 
