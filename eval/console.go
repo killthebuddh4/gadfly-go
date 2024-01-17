@@ -25,6 +25,7 @@ func Puts(trajecotry *traj.Trajectory, eval Eval) (value.Value, error) {
 	}
 
 	for _, arg := range args {
+		m, mOk := arg.(map[string]value.Value)
 		str, strOk := arg.(string)
 		float, floatOk := arg.(float64)
 		i, intOk := arg.(int)
@@ -33,6 +34,13 @@ func Puts(trajecotry *traj.Trajectory, eval Eval) (value.Value, error) {
 
 		if arg == nil {
 			fmt.Println("nil")
+		} else if mOk {
+			fmt.Println("record")
+			for k, v := range m {
+				fmt.Printf("    %s: ", k)
+				fmt.Println(v)
+			}
+			fmt.Println("end")
 		} else if strOk {
 			fmt.Println(str)
 		} else if floatOk {
@@ -42,12 +50,12 @@ func Puts(trajecotry *traj.Trajectory, eval Eval) (value.Value, error) {
 		} else if tfOk {
 			fmt.Println(tf)
 		} else if sliceOk {
-			fmt.Println("[")
+			fmt.Println("array")
 			for _, v := range slice {
 				fmt.Printf("    ")
 				fmt.Println(v)
 			}
-			fmt.Println("]")
+			fmt.Println("end")
 		} else {
 			return nil, errors.New("puts only accepts booleans and strings and numbers, got " + reflect.TypeOf(arg).String())
 		}

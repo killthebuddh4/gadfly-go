@@ -22,7 +22,7 @@ func isBlock(lexeme lex.Lexeme) bool {
 		return true
 	case "array", "get", "set", "for", "map", "filter", "reduce", "push", "pop", "shift", "unshift", "segment", "find", "splice", "reverse":
 		return true
-	case "record", "merge", "delete", "keys", "values", "entries", "read", "write", "extract":
+	case "record", "merge", "delete", "keys", "values", "read", "write", "extract":
 		return true
 	case "puts", "chars":
 		return true

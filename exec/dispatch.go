@@ -64,6 +64,22 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Let, nil
 	case "while":
 		return eval.While, nil
+	case "record":
+		return eval.Record, nil
+	case "merge":
+		return eval.Merge, nil
+	case "delete":
+		return eval.Delete, nil
+	case "extract":
+		return eval.Extract, nil
+	case "keys":
+		return eval.Keys, nil
+	case "values":
+		return eval.Values, nil
+	case "read":
+		return eval.Read, nil
+	case "write":
+		return eval.Write, nil
 	case "array":
 		return eval.Array, nil
 	case "set":

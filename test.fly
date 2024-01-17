@@ -36,9 +36,84 @@ def finder
   end
 end
 
-
 def found
   find a finder end
 end
 
 puts found end
+
+def r
+  record
+    "a" 100
+    "b" 200
+  end
+end
+
+puts r end
+
+puts
+  read r "b" end
+end
+
+puts
+  read r "c" end
+end
+
+write r "c" 300 end
+
+puts r end
+
+let r
+  write r "c" 300 end
+end
+
+puts r end
+
+puts keys r end end
+
+puts values r end end
+
+
+def m
+  record
+    "d" 400
+    "c" 500
+  end
+end
+
+merge r m end
+
+puts r end
+
+let r
+  merge r m end
+end
+
+puts r end
+
+def e
+  extract r
+    array
+      "a"
+      "d"
+    end
+  end
+end
+
+puts e end
+
+puts r end
+
+delete r
+  array "c" end
+end
+
+puts r end
+
+let r
+  delete r
+    array "c" end
+  end
+end
+
+puts r end
