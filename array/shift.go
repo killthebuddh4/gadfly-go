@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Pop(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Shift(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -22,5 +23,5 @@ func Pop(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	return arr[:len(arr)-1], nil
+	return append([]value.Value{}, arr[1:]...), nil
 }

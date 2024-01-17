@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Reduce(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Find(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -22,13 +23,7 @@ func Reduce(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	initV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	fnV, err := eval(trajectory.Children[2])
+	fnV, err := eval(trajectory.Children[1])
 
 	if err != nil {
 		return nil, err
@@ -40,19 +35,23 @@ func Reduce(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not a function")
 	}
 
-	if (len(arr)) == 0 {
-		return nil, nil
-	}
-
-	reduction := initV
-
 	for i, v := range arr {
-		reduction, err = fn(reduction, v, float64(i))
+		foundV, err := fn(v, float64(i))
 
 		if err != nil {
 			return nil, err
 		}
+
+		found, ok := foundV.(bool)
+
+		if !ok {
+			return nil, errors.New("found is not a boolean")
+		}
+
+		if found {
+			return v, nil
+		}
 	}
 
-	return reduction, nil
+	return nil, nil
 }

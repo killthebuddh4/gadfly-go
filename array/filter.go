@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Find(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Filter(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -34,23 +35,25 @@ func Find(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not a function")
 	}
 
+	vals := []value.Value{}
+
 	for i, v := range arr {
-		foundV, err := fn(v, float64(i))
+		filterV, err := fn(v, float64(i))
 
 		if err != nil {
 			return nil, err
 		}
 
-		found, ok := foundV.(bool)
+		filter, ok := filterV.(bool)
 
 		if !ok {
-			return nil, errors.New("found is not a boolean")
+			return nil, errors.New("filter is not a boolean")
 		}
 
-		if found {
-			return v, nil
+		if filter {
+			vals = append(vals, v)
 		}
 	}
 
-	return nil, nil
+	return vals, nil
 }

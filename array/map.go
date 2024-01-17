@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Filter(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Map(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -37,21 +38,13 @@ func Filter(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	vals := []value.Value{}
 
 	for i, v := range arr {
-		filterV, err := fn(v, float64(i))
+		mapped, err := fn(v, float64(i))
 
 		if err != nil {
 			return nil, err
 		}
 
-		filter, ok := filterV.(bool)
-
-		if !ok {
-			return nil, errors.New("filter is not a boolean")
-		}
-
-		if filter {
-			vals = append(vals, v)
-		}
+		vals = append(vals, mapped)
 	}
 
 	return vals, nil

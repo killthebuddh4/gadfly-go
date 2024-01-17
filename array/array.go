@@ -1,11 +1,12 @@
-package eval
+package array
 
 import (
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Array(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Array(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arr := []value.Value{}

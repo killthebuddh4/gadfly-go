@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Push(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Reverse(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -22,13 +23,11 @@ func Push(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	val, err := eval(trajectory.Children[1])
+	reversed := []value.Value{}
 
-	if err != nil {
-		return nil, err
+	for i := len(arr) - 1; i >= 0; i-- {
+		reversed = append(reversed, arr[i])
 	}
 
-	arr = append(arr, val)
-
-	return arr, nil
+	return reversed, nil
 }

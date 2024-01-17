@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Map(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Reduce(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -22,7 +23,13 @@ func Map(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	fnV, err := eval(trajectory.Children[1])
+	initV, err := eval(trajectory.Children[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fnV, err := eval(trajectory.Children[2])
 
 	if err != nil {
 		return nil, err
@@ -34,17 +41,19 @@ func Map(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not a function")
 	}
 
-	vals := []value.Value{}
+	if (len(arr)) == 0 {
+		return nil, nil
+	}
+
+	reduction := initV
 
 	for i, v := range arr {
-		mapped, err := fn(v, float64(i))
+		reduction, err = fn(reduction, v, float64(i))
 
 		if err != nil {
 			return nil, err
 		}
-
-		vals = append(vals, mapped)
 	}
 
-	return vals, nil
+	return reduction, nil
 }

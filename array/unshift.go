@@ -1,13 +1,14 @@
-package eval
+package array
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func For(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Unshift(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])
@@ -22,25 +23,13 @@ func For(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not an array")
 	}
 
-	fnV, err := eval(trajectory.Children[1])
+	val, err := eval(trajectory.Children[1])
 
 	if err != nil {
 		return nil, err
 	}
 
-	fn, ok := fnV.(traj.Lambda)
+	head := []value.Value{val}
 
-	if !ok {
-		return nil, errors.New("not a function")
-	}
-
-	for i, v := range arr {
-		_, err := fn(v, float64(i))
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return nil, nil
+	return append(head, arr...), nil
 }

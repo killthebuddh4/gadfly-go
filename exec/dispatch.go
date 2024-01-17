@@ -3,6 +3,7 @@ package exec
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/array"
 	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
@@ -81,37 +82,37 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 	case "write":
 		return eval.Write, nil
 	case "array":
-		return eval.Array, nil
-	case "set":
-		return eval.Set, nil
+		return array.Array, nil
 	case "get":
-		return eval.Get, nil
+		return array.Get, nil
 	case "for":
-		return eval.For, nil
+		return array.For, nil
 	case "filter":
-		return eval.Filter, nil
+		return array.Filter, nil
 	case "map":
-		return eval.Map, nil
+		return array.Map, nil
 	case "reduce":
-		return eval.Reduce, nil
+		return array.Reduce, nil
 	case "push":
-		return eval.Push, nil
+		return array.Push, nil
 	case "pop":
-		return eval.Pop, nil
+		return array.Pop, nil
+	case "set":
+		return array.Set, nil
 	case "shift":
-		return eval.Shift, nil
+		return array.Shift, nil
 	case "unshift":
-		return eval.Unshift, nil
+		return array.Unshift, nil
 	case "segment":
-		return eval.Segment, nil
+		return array.Segment, nil
 	case "find":
-		return eval.Find, nil
+		return array.Find, nil
 	case "splice":
-		return eval.Splice, nil
+		return array.Splice, nil
 	case "reverse":
-		return eval.Reverse, nil
+		return array.Reverse, nil
 	case "sort":
-		return eval.Sort, nil
+		return array.Sort, nil
 	case "if":
 		return eval.If, nil
 	case "and":
