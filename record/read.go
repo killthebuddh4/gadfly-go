@@ -1,13 +1,14 @@
-package eval
+package record
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Merge(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Read(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	baseV, err := eval(trajectory.Children[0])
@@ -22,27 +23,23 @@ func Merge(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("not a record")
 	}
 
-	newV, err := eval(trajectory.Children[1])
+	keyV, err := eval(trajectory.Children[1])
 
 	if err != nil {
 		return nil, err
 	}
 
-	new, ok := newV.(map[string]value.Value)
+	key, ok := keyV.(string)
 
 	if !ok {
-		return nil, errors.New("not a record")
+		return nil, errors.New("not a string")
 	}
 
-	merged := make(map[string]value.Value)
+	val, ok := base[key]
 
-	for k, v := range base {
-		merged[k] = v
+	if !ok {
+		return nil, nil
+	} else {
+		return val, nil
 	}
-
-	for k, v := range new {
-		merged[k] = v
-	}
-
-	return merged, nil
 }

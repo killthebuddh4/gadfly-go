@@ -1,13 +1,14 @@
-package eval
+package record
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Values(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Values(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	baseV, err := eval(trajectory.Children[0])

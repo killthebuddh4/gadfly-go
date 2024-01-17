@@ -5,6 +5,7 @@ import (
 
 	"github.com/killthebuddh4/gadflai/array"
 	"github.com/killthebuddh4/gadflai/eval"
+	"github.com/killthebuddh4/gadflai/record"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
@@ -66,21 +67,21 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 	case "while":
 		return eval.While, nil
 	case "record":
-		return eval.Record, nil
+		return record.Record, nil
 	case "merge":
-		return eval.Merge, nil
+		return record.Merge, nil
 	case "delete":
-		return eval.Delete, nil
+		return record.Delete, nil
 	case "extract":
-		return eval.Extract, nil
+		return record.Extract, nil
 	case "keys":
-		return eval.Keys, nil
+		return record.Keys, nil
 	case "values":
-		return eval.Values, nil
+		return record.Values, nil
 	case "read":
-		return eval.Read, nil
+		return record.Read, nil
 	case "write":
-		return eval.Write, nil
+		return record.Write, nil
 	case "array":
 		return array.Array, nil
 	case "get":

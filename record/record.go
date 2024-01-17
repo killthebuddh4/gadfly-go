@@ -1,13 +1,14 @@
-package eval
+package record
 
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Record(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Record(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
