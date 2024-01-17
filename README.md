@@ -12,6 +12,36 @@ see something is missing, find an error, have a question, or have anything at
 all to say, an [issue](https://github.com/killthebuddh4/gadfl.ai/issues) would
 be awesome!_
 
+# table of contents
+
+- [gadfly](#gadfly)
+- [table of contents](#table-of-contents)
+- [language core and syntax](#language-core-and-syntax)
+    - [expressions](#expressions)
+    - [lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
+    - [predicates, operators, and literals](#predicates-operators-and-literals)
+    - [variables](#variables)
+    - [values](#values)
+- [semantics](#semantics)
+    - [variables](#variables-1)
+    - [lambdas](#lambdas)
+    - [branching](#branching)
+    - [loops](#loops)
+    - [logging](#logging)
+    - [arrays](#arrays)
+    - [records](#records)
+    - [strings](#strings)
+    - [experimental](#experimental)
+- [notes on the vision](#notes-on-the-vision)
+- [notes on the design](#notes-on-the-design)
+- [roadmap](#roadmap)
+    - [the core language](#the-core-language)
+    - [parse tree tools](#parse-tree-tools)
+    - [nice to haves](#nice-to-haves)
+    - [autonomous program synthesis](#autonomous-program-synthesis)
+- [topics to research](#topics-to-research)
+
+
 # language core and syntax
 
 ### expressions
