@@ -42,7 +42,15 @@ func Set(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 		return nil, err
 	}
 
-	data[int(index)] = val
+	result := make([]value.Value, len(data))
 
-	return data, nil
+	for i, v := range data {
+		if float64(i) == index {
+			result[i] = val
+		} else {
+			result[i] = v
+		}
+	}
+
+	return result, nil
 }

@@ -1,6 +1,6 @@
 # gadfly
 
-`gadfly` is an experimental programming language and treewalk interpreter,
+__gadfly__ is an experimental programming language and treewalk interpreter,
 written in `go`, and designed for autonomous program synthesis. To this end, the
 core language is intended to be very simple, very regular, and amenable to
 certain kinds of analysis and metaprogramming. It is heavily inspired by
@@ -14,14 +14,13 @@ be awesome!_
 
 # language core and syntax
 
-In `gadfly` everything is a lexically-scoped _expression_ that yields a value.
-An expression's value is its last subexpression's value. Every expression is
-either a _block_, _lambda_, _predicate_, or _literal_ (or a single-line `#`
-comment).
+In gadfly everything is a lexically-scoped __expression__ that yields a value.
+Every expression is either a _block_, _lambda_, _predicate_, or _literal_.
+Comments begin with the `#` character and continue until the end of the line.
 
-A _block_ is a sequence of expressions delimited by a _keyword_ and `end`. A
+A __block__ is a sequence of expressions delimited by a __keyword__ and `end`. A
 block's keyword determines its behavior. See the [semantics](#semantics) section
-for more details. Of course, blocks can be nested. Some examples:
+for more details on each keyword. Some examples:
 
 ```text
 
@@ -39,10 +38,13 @@ end
 
 ```
 
-A _lambda_ is a "parameterized block" that is not evaluated until each time it
-is called. A lambda is called using an `@` block. The arguments to the lambda
-are the values of the expressions in the block bound to the lambda's parameters
-(see [syntax](#syntax) for more details). An example:
+A __lambda__ is a "parameterized block" that is not evaluated until each time it
+is called. A lambda can have zero or more __parameters__. A parameter is a name
+that is defined each time the lambda is called (using an `@` block). Parameters
+are declared between `|` characters. If the lambda takes zero parameters, the
+`|` characters must be omitted. The  __arguments__ to the lambda are the values
+of the expressions in the calling block bound to the lambda's parameters. An
+example:
 
 ```text
 
@@ -59,14 +61,17 @@ end # => 11
 
 ```
 
-A _predicate_ is an expression containing a combination of _literals_,
-_variables_, and _operators_. A predicate evaluates to a _number_. Of course,
-predicates can be nested. We define false as `0` and true as any nonzero number.
-Some examples:
+A __predicate__ is an expression involving an __operator__ and __operands__. See
+the [semantics](#semantics) section for more details on each operator. An
+operand is either a predicate or a literal. A __literal__ is an expression
+that has no children (string, number, boolean, identifier). A predicate
+evaluates to a _number_. `0` is false-y, any other number is truth-y, and any
+other value is an error (when used as a boolean).  Some examples:
+
 
 ```text
 
-# These are not predicates
+# Not predicates.
 
 fn
   puts "hi" end
@@ -74,7 +79,7 @@ end
 
 def val "hi" end
 
-# These are predicates:
+# Predicates.
 
 val
 
@@ -91,9 +96,9 @@ calls. This is somewhat cumbersome to us human programmers, forcing us to write
 many instances of trivial indirection, but I think we'll see strong benefits for
 code generation and program synthesis. Maybe not, we'll see._
 
-A _variable_ is a name that can be resolved to a _value_. A variable is defined
-using a `def` block and re-defined using a `let` block. After a variable is
-defined it can be referenced in any expression. Some examples
+A __variable__ is a name that can be resolved to a _value_. A variable is
+defined using a `def` block and re-defined using a `let` block. After a variable
+is defined it can be referenced in any expression. Some examples
 
 ```text
 
@@ -120,14 +125,14 @@ end
 
 ```
 
-A _literal_ is either a _lambda_, _number_, _string_, _array_, _hash_, _true_,
-_false_, or _nil_. Lambdas are created using the `fn` block, strings are
-delimited by `"`, numbers are written using decimal notation (they're all
-`go`'s `float64` type), `true` is defined as any nonzero number, and `false` is
-defined as `0`. _TOOD: Document arrays and hashes_.
+The currently supported __value__ types are __string__, __float__, __array__,
+__record__,  __lambda__, and __nil__. Strings are delimited by `"` characters. Floats are
+written using decimal notation. Arrays are created using the `array` block,
+records using the `record` block, and lambdas using the `fn` block. The keyword
+`true` evaluates to `0`, `false` evaluates to `1`, and `nil` evaluates to `nil`.
 
 And that's it for the conventional syntax (e.g. the syntax not relating to
-metaprogramming, program synthesis, orchestration, etc.). The next section
+metaprogramming, program synthesis, orchestration, etc.)! The next section
 describes the languages keywords and their semantics. After you've read that
 you'll be able to write a useful program in `gadfly`.
 
@@ -265,4 +270,7 @@ go run example.palindrome.gadfly
 - compiler design and implementation
 - data flow analysis and control flow analysis
 - prolog and logic programming
+- CSP (communicating sequential processes)
+- the actor model
+- consensus algorithms
 - ...

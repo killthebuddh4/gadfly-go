@@ -1,0 +1,313 @@
+puts "#############################################" end
+puts "" end
+puts "" end
+puts "Testing gadfly.array package..." end
+puts "" end
+puts "" end
+puts "#############################################" end
+puts "" end
+puts "" end
+
+#
+#
+# test data
+#
+#
+
+def numbers
+  array 2 4 6 7 8 10 end
+end
+
+def numbers_clone
+  map numbers
+    fn |e i| e end
+  end
+end
+
+def numbers_and_twenty
+  array 2 4 6 7 8 10 20 end
+end
+
+def numbers_without_ten
+  array 2 4 6 7 8 end
+end
+
+def numbers_without_two
+  array 4 6 7 8 10 end
+end
+
+def numbers_with_zero
+  array 0 2 4 6 7 8 10 end
+end
+
+def numbers_sum 37 end
+
+def squares
+  array 4 16 36 49 64 100 end
+end
+
+def evens
+  array 2 4 6 8 10 end
+end
+
+def test_val nil end
+
+#
+#
+# array.Get
+#
+#
+
+let test_val
+  get numbers 2 end
+end
+
+if
+  test_val != 6
+  puts "FAIL: array.Get" end
+  puts "PASS: array.Get" end
+end
+
+#
+#
+# array.Set
+#
+#
+
+set numbers 2 12 end
+
+let test_val get numbers 2 end
+
+if
+  test_val != 6
+  puts "FAIL: array.Set immutability" end
+  puts "PASS: array.Set immutability" end
+end
+
+def new_numbers
+  set numbers 2 12 end
+end
+
+let test_val
+  get new_numbers 2 end
+end
+
+if
+  test_val != 12
+  puts "FAIL: array.Set" end
+  puts "PASS: array.Set" end
+end
+
+#
+#
+# array.For
+#
+#
+
+let test_val 0 end
+
+for numbers
+  fn |e i|
+    let test_val test_val + e end
+  end
+end
+
+if
+  test_val != numbers_sum
+  puts "FAIL: array.For" end
+  puts "PASS: array.For" end
+end
+
+#
+#
+# array.Map
+#
+#
+
+let test_val
+  map numbers
+    fn |e i|
+      e * e
+    end
+  end
+end
+
+def squares_worked
+  @equal test_val squares end
+end
+
+if squares_worked == false
+  puts "FAIL: array.Map" end
+  puts "PASS: array.Map" end
+end 
+
+#
+#
+# array.Filter
+#
+#
+
+let test_val
+  filter numbers
+    fn |e i|
+      def rem
+        @mod e 2 end
+      end
+
+      rem == 0
+    end
+  end
+end
+
+def evens_worked
+  @equal test_val evens end
+end
+
+if evens_worked == false
+  puts "FAIL: array.Filter" end
+  puts "PASS: array.Filter" end
+end
+
+#
+#
+# array.Reduce
+#
+#
+
+let test_val
+  reduce
+    numbers
+
+    0
+
+    fn |acc e i|
+      acc + e
+    end
+  end
+end
+
+if
+  test_val != numbers_sum
+  puts "FAIL: array.Reduce" end
+  puts "PASS: array.Reduce" end
+end
+
+#
+#
+# array.Push
+#
+#
+
+push numbers 20 end
+
+def push_is_immutable
+  @equal numbers_clone numbers end
+end
+
+if push_is_immutable == false
+  puts "FAIL: array.Push immutability" end
+  puts "PASS: array.Push immutability" end
+end
+
+let test_val
+  push numbers 20 end
+end
+
+def push_worked
+  @equal test_val numbers_and_twenty end
+end
+
+if push_worked == false
+  puts "FAIL: array.Push" end
+  puts "PASS: array.Push" end
+end
+
+#
+#
+# array.Pop
+#
+#
+
+pop numbers end
+
+def pop_is_immutable
+  @equal numbers_clone numbers end
+end
+
+if pop_is_immutable == false
+  puts "FAIL: array.Pop immutability" end
+  puts "PASS: array.Pop immutability" end
+end
+
+let test_val
+  pop numbers end
+end
+
+def pop_worked
+  @equal test_val numbers_without_ten end
+end
+
+if pop_worked == false
+  puts "FAIL: array.Pop" end
+  puts "PASS: array.Pop" end
+end
+
+#
+#
+# array.Shift
+#
+#
+
+shift numbers end
+
+def shift_is_immutable
+  @equal numbers_clone numbers end
+end
+
+if shift_is_immutable == false
+  puts "FAIL: array.Shift immutability" end
+  puts "PASS: array.Shift immutability" end
+end
+
+let test_val
+  shift numbers end
+end
+
+def shift_worked
+  @equal test_val numbers_without_two end
+end
+
+if shift_worked == false
+  puts "FAIL: array.Shift" end
+  puts "PASS: array.Shift" end
+end
+
+#
+#
+# array.Unshift
+#
+#
+
+unshift numbers 0 end
+
+def unshift_is_immutable
+  @equal numbers_clone numbers end
+end
+
+if unshift_is_immutable == false
+  puts "FAIL: array.Unshift immutability" end
+  puts "PASS: array.Unshift immutability" end
+end
+
+let test_val
+  unshift numbers 0 end
+end
+
+def unshift_worked
+  @equal test_val numbers_with_zero end
+end
+
+if unshift_worked == false
+  puts "FAIL: array.Unshift" end
+  puts "PASS: array.Unshift" end
+end

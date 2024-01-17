@@ -14,7 +14,7 @@ func isLambda(lexeme lex.Lexeme) bool {
 
 func isBlock(lexeme lex.Lexeme) bool {
 	switch lexeme.Text {
-	case "do":
+	case "do", "panic":
 		return true
 	case "def", "@", "val", "let":
 		return true

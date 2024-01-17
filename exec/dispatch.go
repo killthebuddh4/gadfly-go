@@ -56,6 +56,8 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Identifier, nil
 	case "do":
 		return eval.Do, nil
+	case "panic":
+		return eval.Panic, nil
 	case "def":
 		return eval.Def, nil
 	case "fn":

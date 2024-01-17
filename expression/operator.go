@@ -19,6 +19,7 @@ var OPERATORS = []string{
 	"let",
 	"if",
 	"do",
+	"panic",
 	"and",
 	"or",
 	"while",

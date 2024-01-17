@@ -45,3 +45,37 @@ def includes
     includes
   end
 end
+
+def equal
+  fn |arr_a arr_b|
+    def result true end
+
+    def arr_a_length
+      @length arr_a end
+    end
+
+    def arr_b_length
+      @length arr_b end
+    end
+
+    if arr_a_length != arr_b_length
+      let result false end
+      nil
+    end
+
+    for arr_a
+      fn |e i|
+        def b
+          get arr_b i end
+        end
+
+        if e != b
+          let result false end
+          nil
+        end
+      end
+    end
+
+    result
+  end
+end
