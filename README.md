@@ -186,8 +186,8 @@ are not values, they can be redefined (they can be pointed to new values).
 
 The currently supported __value__ types are _string_, _float_, _array_,
 _record_,  _lambda_, and _nil_. Strings are delimited by `"` characters. Floats
-are written using decimal notation. The keyword `true` evaluates to `0`, `false`
-evaluates to `1`, and `nil` evaluates to `nil`.
+are written using decimal notation. The keyword `true` evaluates to `1`, `false`
+evaluates to `0`, and `nil` evaluates to `nil`.
 
 An __array__ is created using the `array` block and  behaves just like a
 stereotypical scripting-language array. A __record__ is created using the
