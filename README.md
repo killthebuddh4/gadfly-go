@@ -85,12 +85,11 @@ end
 ### lambdas, parameters, and arguments
 
 A __lambda__ is a "parameterized block" that is not evaluated until each time it
-is called. A lambda can have zero or more _parameters_. A __parameter__ is a name
-that is defined each time the lambda is called (using an `@` block). Parameters
-are declared between `|` characters. If the lambda takes zero parameters, the
-`|` characters must be omitted. The  __arguments__ to the lambda are the values
-of the expressions in the calling block bound to the lambda's parameters. An
-example:
+is called. A lambda can have zero or more _parameters_. A __parameter__ is a
+name that is defined each time the lambda is called. Parameters are declared
+between `|` characters. If the lambda takes zero parameters, the `|` characters
+must be omitted. The  __arguments__ to the lambda are the values of the
+expressions in the calling block bound to the lambda's parameters. An example:
 
 ```text
 def add
