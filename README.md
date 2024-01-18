@@ -1,5 +1,3 @@
-# gadfly
-
 __gadfly__ is an experimental programming language and treewalk interpreter
 designed for autonomous program synthesis. To this end, the core language is
 intended to be very simple, very regular, and amenable to certain kinds of
@@ -14,7 +12,6 @@ be awesome!_
 
 # Contents
 
-- [gadfly](#gadfly)
 - [Contents](#contents)
 - [Language core and syntax](#language-core-and-syntax)
     - [Expressions](#expressions)
