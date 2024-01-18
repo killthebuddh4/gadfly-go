@@ -93,12 +93,14 @@ expressions in the calling block bound to the lambda's parameters. An example:
 
 ```text
 def add
+  # parameters are a and b
   fn |a b|
     a + b
   end
 end
 
 @add
+  # arguments are 8 and 3, bound to a and b
   2 * 4
   3
 end # => 11
