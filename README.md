@@ -216,7 +216,7 @@ type of value.__
 
 ### variables
 
-__def__ identifier expression _end_
+`__def__ identifier expression _end_`
 
 Defines a variable with the given identifier. The variable resolves to the value
 of the expression. Variables are _lexically scoped_. If the variable is already
