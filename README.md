@@ -6,7 +6,9 @@ programs. The conventional aspects of the system are inspired by
 The more experimental features draw on ideas from
 [cybernetics](https://en.wikipedia.org/wiki/Cybernetics), [symbolic
 AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence), and
-[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning).
+[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning)
+as well as more recent research surrounding how to build and orchestrate
+autonomous agents.
 
 _Please note, this project and documentation are under heavy development. If you
 see something is missing, find an error, have a question, or have anything at
