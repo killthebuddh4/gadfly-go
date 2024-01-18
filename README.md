@@ -3,7 +3,7 @@ language and treewalk interpreter. The ultimate goal is to provide a development
 environment for [autopoietic](https://en.wikipedia.org/wiki/Autopoiesis) copilot
 programs. The conventional aspects of the system are inspired by
 [scheme](https://www.scheme.org/) and [ruby](https://www.ruby-lang.org/en/).
-The more experimental features draw on ideas from
+The (highly) experimental features draw on ideas from
 [cybernetics](https://en.wikipedia.org/wiki/Cybernetics), [symbolic
 AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence), and
 [reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning)
