@@ -12,10 +12,10 @@ see something is missing, find an error, have a question, or have anything at
 all to say, an [issue](https://github.com/killthebuddh4/gadfl.ai/issues) would
 be awesome!_
 
-# table of contents
+# contents
 
 - [gadfly](#gadfly)
-- [table of contents](#table-of-contents)
+- [contents](#contents)
 - [language core and syntax](#language-core-and-syntax)
     - [expressions](#expressions)
     - [lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
