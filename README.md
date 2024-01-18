@@ -33,10 +33,11 @@ be awesome!_
     - [Strings](#strings)
     - [Console](#console)
     - [Experimental Features](#experimental-features)
-- [Usage](#usage)
+- [Run a script](#run-a-script)
 - [Tests](#tests)
 - [Notes on the vision](#notes-on-the-vision)
-- [Notes on the design](#notes-on-the-design)
+- [Notes on the language](#notes-on-the-language)
+- [Notes on the interpreter](#notes-on-the-interpreter)
 - [Roadmap](#roadmap)
     - [The core language](#the-core-language)
     - [Parse tree tools](#parse-tree-tools)
@@ -445,17 +446,7 @@ Prints the values of the expressions to stdout.
 
 _Coming soon!_
 
-- copilot
-- distribution
-- delegate
-- policy
-- remote
-- memory
-
-And more...
-
-
-# Usage
+# Run a script
 
 _Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
@@ -518,7 +509,7 @@ done
 - An LM could evaluate subtrees in parallel and then merge, prune, and recombine
   them according to certain policies.
 
-# Notes on the design
+# Notes on the language
 
 - It's looking like the language will (unsurprisingly) be very Lispy. One way to
   think about things is that `Gadfly` takes homoiconicity to wild extremes.
@@ -536,6 +527,34 @@ done
 - Everything about the language needs to be ridiculously printable,
   introspectable, and serializable. I want to be able to seralize the parse
   tree, wire it somewhere, and then execute it on another machine.
+
+# Notes on the interpreter
+
+- you have a parse tree as well as metadata surrounding every execution that has
+  ever occurred in the parse tree
+- you never edit a node in the parse tree, you only deprecate them
+- the parse tree represents a decision making process that the AI will incorporate
+- one way to think about how this works is that it uses LLMs and execution
+  history to discretize the continuous decision space
+- one way to think about what the copilot is doing is “how to write a program
+  that proves a fact about the world”
+- similar to the previous bullet, there’s a way to think about is synthesizing
+  analytical facts and a fact is a subtree that can prove the thing
+- the copilot’s toolbox is determined via lexically-scoped name resolution
+- instead of a visual programming environment, you have a programming language
+  which means you can use programming language theory and tools
+- a core aspect of a copilot is that it must support delegation to other AIs
+- every expression in the parse tree has a natural language representation of
+  why it exists in the parse tree
+- every node in a trajectory has a natural language description of it’s scope,
+  it’s arguments, and a recapitulation
+- one piece of metadata is “number of active trajectories”
+- the parse tree must be fully serializable
+- you can think of every subtree as a policy fit for some situation
+- a gadflai program has something like sensors or actuators
+- leaf nodes are always either facts or sensors?
+- a pure function is a fact? something with an effect is a sensor?
+- every subtree can have a supervisor? or every subtree can have a policy?
 
 # Roadmap
 
