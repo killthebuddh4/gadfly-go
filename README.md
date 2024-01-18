@@ -89,7 +89,8 @@ is called. A lambda can have zero or more _parameters_. A __parameter__ is a
 name that is defined each time the lambda is called. Parameters are declared
 between `|` characters. If the lambda takes zero parameters, the `|` characters
 must be omitted. The  __arguments__ to the lambda are the values of the
-expressions in the calling block bound to the lambda's parameters. An example:
+expressions in the calling block (using the `@` keyword) bound to the lambda's
+parameters. An example:
 
 ```text
 def add
