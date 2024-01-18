@@ -6,6 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/array"
 	"github.com/killthebuddh4/gadflai/eval"
 	"github.com/killthebuddh4/gadflai/record"
+	"github.com/killthebuddh4/gadflai/strings"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
@@ -126,6 +127,12 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Puts, nil
 	case "chars":
 		return eval.Chars, nil
+	case "split":
+		return strings.Split, nil
+	case "substring":
+		return strings.Substring, nil
+	case "concat":
+		return strings.Concat, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

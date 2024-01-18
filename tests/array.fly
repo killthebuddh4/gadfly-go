@@ -1,12 +1,9 @@
-puts "#############################################" end
-puts "" end
-puts "" end
+puts "#######################################################" end
+puts "" "" end
 puts "Testing gadfly.array package..." end
-puts "" end
-puts "" end
-puts "#############################################" end
-puts "" end
-puts "" end
+puts "" "" end
+puts "#######################################################" end
+puts "" "" end
 
 #
 #

@@ -52,6 +52,6 @@ def fizzbuzz
   end
 end
 
-@fizzbuzz 50 end
+@fizzbuzz 20 end
 
 

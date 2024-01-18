@@ -31,6 +31,8 @@ be awesome!_
     - [strings](#strings)
     - [logging](#logging)
     - [experimental](#experimental)
+- [Usage](#usage)
+- [Tests](#tests)
 - [notes on the vision](#notes-on-the-vision)
 - [notes on the design](#notes-on-the-design)
 - [roadmap](#roadmap)
@@ -409,9 +411,31 @@ An array whose values are the values of the record is returned.
 
 __TODO__
 
+- [ ] regular expression engine
+
+`split string end`
+
+Returns an array whose values are the characters in the string.
+
+`concat string+ end`
+
+Returns a string whose value is the concatenation of the values of the strings.
+
+`substring string number number end`
+
+Returns a string whose value is the substring of the string between the first
+index and the second index (exclusive).
+
 ### logging
 
 __TODO__
+
+- [ ] `gets`
+- [ ] `err`
+
+`puts expression* end`
+
+Prints the values of the expressions to stdout.
 
 ### experimental
 
@@ -427,19 +451,49 @@ _Coming soon!_
 And more...
 
 
+# Usage
+
 _Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
 ```bash
 go run . <path to gadfly source>
 ```
 
+Try running the examples:
+
 ```bash
-go run example.fizzbuzz.gadfly
-go run example.sieve.gadfly
-go run example.fibonacci.gadfly
-go run example.factorial.gadfly
-go run example.palindrome.gadfly
+for file in examples/*.fly; do
+  go run . $file
+done
 ```
+
+# Tests
+
+ The goal is to have tests commensurate with the maturity of the project and its
+ components. The near term goal is to have something like 100% coverage for the
+ core language features. Basically, this means "all of the keywords and
+ operators". We'll do this incrementally, in phases.
+
+ - [ ] _WIP_ Happy-path coverage for all keywords and operators
+ - [ ] Edge-case coverage for all keywords and operators
+ - [ ] Happy-path coverage for at least one robust gadfly program.
+ - [ ] _Down the road_ Fuzzing for all keywords and operators
+
+ Right now we have happy path tests for:
+
+ - [x] array
+ - [x] strings
+ - [ ] record
+ - [ ] branching
+ - [ ] lambdas
+ - [ ] variables
+ - [ ] predicates
+
+ You can run the tests with:
+
+ ```bash
+ ./test.sh
+ ```
 
 # notes on the vision
 

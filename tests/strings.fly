@@ -1,0 +1,80 @@
+puts "#######################################################" end
+puts "" end
+puts "" end
+puts "Testing gadfly.strings package..." end
+puts "" end
+puts "" end
+puts "#######################################################" end
+puts "" end
+puts "" end
+
+#
+#
+# test data
+#
+#
+
+def lang "gadfly" end
+
+def splitted
+  array "g" "a" "d" "f" "l" "y" end
+end
+
+def test_value nil end
+
+#
+#
+# strings.Split
+#
+#
+
+let test_value
+  split lang end
+end
+
+def split_worked
+  @equal test_value splitted end
+end
+
+if
+  split_worked == false
+  puts "FAIL: strings.Split" end
+  puts "PASS: strings.Split" end
+end
+
+#
+#
+# strings.Substring
+#
+#
+
+let test_value
+  substring lang 3 6 end
+end
+
+if
+  test_value == "fly"
+  puts "PASS: strings.Substring" end
+  puts "FAIL: strings.Substring" end
+end
+
+#
+#
+# strings.Concat
+#
+#
+
+def gad "gad" end
+
+let test_value
+  concat
+    gad
+    "fly"
+  end
+end
+
+if
+  test_value == "gadfly"
+  puts "PASS: strings.Concat" end
+  puts "FAIL: strings.Concat" end
+end
