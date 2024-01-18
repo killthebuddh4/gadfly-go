@@ -12,40 +12,40 @@ see something is missing, find an error, have a question, or have anything at
 all to say, an [issue](https://github.com/killthebuddh4/gadfl.ai/issues) would
 be awesome!_
 
-# contents
+# Contents
 
 - [gadfly](#gadfly)
-- [contents](#contents)
-- [language core and syntax](#language-core-and-syntax)
-    - [expressions](#expressions)
-    - [lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
-    - [predicates, operators, and literals](#predicates-operators-and-literals)
-    - [variables](#variables)
-    - [values](#values)
-- [semantics](#semantics)
-    - [variables](#variables-1)
-    - [lambdas](#lambdas)
-    - [branching](#branching)
-    - [arrays](#arrays)
-    - [records](#records)
-    - [strings](#strings)
-    - [logging](#logging)
-    - [experimental](#experimental)
+- [Contents](#contents)
+- [Language core and syntax](#language-core-and-syntax)
+    - [Expressions](#expressions)
+    - [Lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
+    - [Predicates, operators, and literals](#predicates-operators-and-literals)
+    - [Variables](#variables)
+    - [Values](#values)
+- [Semantics](#semantics)
+    - [Variables](#variables-1)
+    - [Lambdas](#lambdas)
+    - [Branching](#branching)
+    - [Arrays](#arrays)
+    - [Records](#records)
+    - [Strings](#strings)
+    - [Console](#console)
+    - [Experimental Features](#experimental-features)
 - [Usage](#usage)
 - [Tests](#tests)
-- [notes on the vision](#notes-on-the-vision)
-- [notes on the design](#notes-on-the-design)
-- [roadmap](#roadmap)
-    - [the core language](#the-core-language)
-    - [parse tree tools](#parse-tree-tools)
-    - [nice to haves](#nice-to-haves)
-    - [autonomous program synthesis](#autonomous-program-synthesis)
-- [topics to research](#topics-to-research)
+- [Notes on the vision](#notes-on-the-vision)
+- [Notes on the design](#notes-on-the-design)
+- [Roadmap](#roadmap)
+    - [The core language](#the-core-language)
+    - [Parse tree tools](#parse-tree-tools)
+    - [Nice to haves](#nice-to-haves)
+    - [Autonomous program synthesis](#autonomous-program-synthesis)
+- [Topics to research](#topics-to-research)
 
 
-# language core and syntax
+# Language core and syntax
 
-### expressions
+### Expressions
 
 In gadfly everything is a lexically-scoped _expression_.  An __expression__ is
 either a _block_, _lambda_, _predicate_, or _literal_ and all expressions return
@@ -83,7 +83,7 @@ end
 
 ```
 
-### lambdas, parameters, and arguments
+### Lambdas, parameters, and arguments
 
 A __lambda__ is a "parameterized block" that is not evaluated until each time it
 is called. A lambda can have zero or more _parameters_. A __parameter__ is a
@@ -116,7 +116,7 @@ map
 end
 ```
 
-### predicates, operators, and literals
+### Predicates, operators, and literals
 
 A __predicate__ is an expression involving an _operator_ and _operands_. See the
 [semantics](#semantics) section for more details on each operator. An
@@ -150,7 +150,7 @@ calls. This is somewhat cumbersome to us human programmers, forcing us to write
 many instances of trivial indirection, but I think we'll see strong benefits for
 code generation and program synthesis. Maybe not, we'll see._
 
-### variables
+### Variables
 
 A __variable__ is a name that can be resolved to a _value_. A variable is
 defined using a `def` block and re-defined using a `let` block. After a variable
@@ -179,7 +179,7 @@ let things
 end
 ```
 
-### values
+### Values
 
 In `gadfly` all values are immutable, meaning that all operations on values
 return new values and leave the original values unchanged. Note that variables
@@ -202,7 +202,7 @@ metaprogramming, program synthesis, orchestration, etc.)! The next section
 describes the languages keywords and their semantics. After you've read that
 you'll be able to write a useful program in `gadfly`.
 
-# semantics
+# Semantics
 
 In this section we take a look at `gadfly`'s keywords and their semantics. For
 more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
@@ -216,7 +216,7 @@ expression. Unless otherwise noted, "number", "string", "number", "array", and
 "record", and "lambda" are understood to be expressions that evaluate to that
 type of value.__
 
-### variables
+### Variables
 
 `def identifier expression end`
 
@@ -231,7 +231,7 @@ Re-defines an existing variable with the given identifier. The variable resolves
 to the value of the expression. If the variable does not already exist, it is
 an error.
 
-### lambdas
+### Lambdas
 
 `fn (|identifier+|)? expression end`
 
@@ -247,7 +247,7 @@ Calls the lambda expression. Each subexpression is evaluated and bound to the
 lambda's parameters. The lambda is then evaluated, returning the value of its
 last subexpression.
 
-### branching
+### Branching
 
 The key difference between branching expressions and other expressions is that
 their subexpression are evaluated conditionally. The specific behavior of which
@@ -276,7 +276,7 @@ truth-y value, `nil` is returned.
 While the first expression evaluates to a truth-y value, the rest of the expressions
 are evaluated. The value of the last subexpression is returned.
 
-### arrays
+### Arrays
 
 `array expression* end`
 
@@ -366,7 +366,7 @@ Clones the first array and divides it in half at the index of the number. It
 appends the values of the second array to the first half, and then appends the
 second half to the result. The result is returned.
 
-### records
+### Records
 
 `record (string expression)* end`
 
@@ -407,7 +407,7 @@ An array whose values are the keys of the record is returned.
 
 An array whose values are the values of the record is returned.
 
-### strings
+### Strings
 
 __TODO__
 
@@ -426,10 +426,11 @@ Returns a string whose value is the concatenation of the values of the strings.
 Returns a string whose value is the substring of the string between the first
 index and the second index (exclusive).
 
-### logging
+### Console
 
 __TODO__
 
+- [x] `puts`
 - [ ] `gets`
 - [ ] `err`
 
@@ -437,7 +438,7 @@ __TODO__
 
 Prints the values of the expressions to stdout.
 
-### experimental
+### Experimental Features
 
 _Coming soon!_
 
@@ -495,7 +496,7 @@ done
  ./test.sh
  ```
 
-# notes on the vision
+# Notes on the vision
 
 - Imagine a programming language designed from the ground up to be used by
   language models (LMs).
@@ -514,7 +515,7 @@ done
 - An LM could evaluate subtrees in parallel and then merge, prune, and recombine
   them according to certain policies.
 
-# notes on the design
+# Notes on the design
 
 - It's looking like the language will (unsurprisingly) be very Lispy. One way to
   think about things is that `gadfly` takes homoiconicity to wild extremes.
@@ -533,9 +534,9 @@ done
   introspectable, and serializable. I want to be able to seralize the parse
   tree, wire it somewhere, and then execute it on another machine.
 
-# roadmap
+# Roadmap
 
-### the core language
+### The core language
 
 - [x] interpreter
   - [x] lex
@@ -552,27 +553,27 @@ done
 - [ ] error reporting
 - [ ] very simple FFI (maybe)
 
-### parse tree tools
+### Parse tree tools
 
 - [ ] start, stop, pause, resume, retry
 - [ ] serialize, deserialize, resume
 - [ ] what else?
 
-### nice to haves
+### Nice to haves
 
 - [ ] syntax highlighter
 - [ ] language server protocol implementation
 - [ ] repl
 - [ ] tail call optimization
 
-### autonomous program synthesis
+### Autonomous program synthesis
 
 - policies
 - reflection
 - remote subtrees
 - generated subtrees
 
-# topics to research
+# Topics to research
 
 - probabilistic programming
 - compiler design and implementation
