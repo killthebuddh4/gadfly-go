@@ -26,11 +26,10 @@ be awesome!_
     - [variables](#variables-1)
     - [lambdas](#lambdas)
     - [branching](#branching)
-    - [loops](#loops)
-    - [logging](#logging)
     - [arrays](#arrays)
     - [records](#records)
     - [strings](#strings)
+    - [logging](#logging)
     - [experimental](#experimental)
 - [notes on the vision](#notes-on-the-vision)
 - [notes on the design](#notes-on-the-design)
@@ -47,7 +46,7 @@ be awesome!_
 ### expressions
 
 In gadfly everything is a lexically-scoped _expression_.  An __expression__ is
-either a _block_, _lambda_, _predicate_, or _literal_ and all expressions yield
+either a _block_, _lambda_, _predicate_, or _literal_ and all expressions return
 a _value_.  __Comments__ begin with the `#` character and continue until the end
 of the line.
 
@@ -184,10 +183,10 @@ In `gadfly` all values are immutable, meaning that all operations on values
 return new values and leave the original values unchanged. Note that variables
 are not values, they can be redefined (they can be pointed to new values).
 
-The currently supported __value__ types are _string_, _float_, _array_,
-_record_,  _lambda_, and _nil_. Strings are delimited by `"` characters. Floats
+The currently supported __value__ types are _string_, _number_, _array_,
+_record_,  _lambda_, and _nil_. Strings are delimited by `"` characters. Numbers
 are written using decimal notation. The keyword `true` evaluates to `1`, `false`
-evaluates to `0`, and `nil` evaluates to `nil`.
+evaluates to `0`, and `nil` evaluates to `nil`. 
 
 An __array__ is created using the `array` block and  behaves just like a
 stereotypical scripting-language array. A __record__ is created using the
@@ -208,21 +207,212 @@ more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
 script. The full set of planned keywords is not yet implemented. _Keywords will
 be implemented as needed for the larger goals of the project_.
 
+__In all signatures described below, the `*` character indicates zero or more
+occurrences of the preceding expression. The `+` character indicates one or more
+occurrences of the preceding expression. The `?` character indicates an optional
+expression. Unless otherwise noted, "number", "string", "number", "array", and
+"record", and "lambda" are understood to be expressions that evaluate to that
+type of value.__
+
 ### variables
+
+__def__ identifier expression _end_
+
+Defines a variable with the given identifier. The variable resolves to the value
+of the expression. Variables are _lexically scoped_. If the variable is already
+defined in the local scope, it is an error. If the variable is defined in an
+outer scope, it will be _shadowed_ in the local scope.
+
+__let__ identifier expression _end_
+
+Re-defines an existing variable with the given identifier. The variable resolves
+to the value of the expression. If the variable does not already exist, it is
+an error.
 
 ### lambdas
 
+__fn__ (|identifier+|)? expression _end_
+
+When the lambda expression is evaluated, it creates a lambda. They key
+difference between a lambda expression and other expressions is that its
+subexpressions are not evaluated until the lambda is called. The lambda can take
+zero or more parameters. If the lambda takes zero parameters, the `|` characters
+must be omitted.
+
+__@__ expression* _end_
+
+Calls the lambda expression. Each subexpression is evaluated and bound to the
+lambda's parameters. The lambda is then evaluated, returning the value of its
+last subexpression.
+
 ### branching
 
-### loops
+The key difference between branching expressions and other expressions is that
+their subexpression are evaluated conditionally. The specific behavior of which
+expressions are evaluated depends on the keyword.
 
-### logging
+__if__ number expression expression _end_
+
+If the number is truth-y, the first expression is evaluated. Otherwise, the
+second expression is evaluated. The value of the last evaluated expression is
+returned.
+
+__and__ (number expression)+ _end_
+
+For each pair of subexpressions, if the first evaluates to a truth-y value, the
+second is evaluated. If any of the subexpressions evaluate to a false-y value,
+`nil` is returned. Otherwise, the value of the last subexpression is returned.
+
+__or__ (number expression)+ _end_
+
+For each pair of subexpressions, if the first evaluates to a truth-y value, the
+second is evaluated and returned. If none of the subexpressions evaluate to a
+truth-y value, `nil` is returned.
+
+__while__ number expression+ _end_
+
+While the first expression evaluates to a truth-y value, the rest of the expressions
+are evaluated. The value of the last subexpression is returned.
 
 ### arrays
 
+__array__ expression* _end_
+
+Creates an array whose values are the values of the subexpressions. The array is 
+returned.
+
+__get__ array number _end_
+
+The value of the array at the index of the number is returned.
+
+__set__ array number expression _end_
+
+Clones the array and sets the value at the index of the number to the value of
+the expression. The cloned array is returned.
+
+
+__for__ array lambda _end_
+
+For each value in the array, the lambda is called with the value bound to the
+lambda's first parameter and the index bound to the lambda's second parameter.
+The value of the last evaluated lambda is returned.
+
+__map__ array lambda _end_
+
+For each value in the array, the lambda is called with the value bound to the
+lambda's first parameter and the index bound to the lambda's second parameter.
+An array whose values are the result of each lambda call is returned.
+
+__filter__ array lambda _end_
+
+For each value in the array, the lambda is called with the value bound to the
+lambda's first parameter and the index bound to the lambda's second parameter.
+An array whose values are the values for which the lambda call returned a
+truth-y value is returned.
+
+__reduce__ array expression lambda _end_
+
+For each value in the array, the lambda is called with the value bound to the
+lambda's second parameter and the index bound to the lambda's third parameter.
+When the lambda is called for the first value in the array, the first parameter
+is bound to the value of expression. For each subsequent value in the array, the
+first parameter is bound to the value returned by the previous lambda call. The
+value of the last evaluated lambda is returned.
+
+__push__ array expression _end_
+
+Clones the array and appends the value of the expression to the cloned array. 
+The cloned array is returned.
+
+__pop__ array _end_
+
+Clones the array and removes the last value from the cloned array. The cloned
+array is returned.
+
+__unshift__ array expression _end_
+
+Clones the array and prepends the value of the expression to the cloned array.
+The cloned array is returned.
+
+__shift__ array _end_
+
+Clones the array and removes the first value from the cloned array. The cloned
+array is returned.
+
+__reverse__ array _end_
+
+Clones the array and reverses the order of the values in the cloned array. The
+cloned array is returned.
+
+__sort__ array lambda _end_
+
+Clones the array and sorts the values in the cloned array according to the value
+returned by the lambda. The lambda takes two parameters, the values of which are
+the values in the array. The lambda returns a negative number if the first value
+should be sorted before the second, a positive number if the first value should
+be sorted after the second, and `0` if the values are equal. The cloned (sorted)
+array is returned.
+
+__segment__ array number number _end_
+
+Clones the array and returns a new array whose values are the values of the
+cloned array between the first index and the second index (exclusive). The
+cloned array is returned.
+
+__splice__ array number array _end_
+
+Clones the first array and divides it in half at the index of the number. It
+appends the values of the second array to the first half, and then appends the
+second half to the result. The result is returned.
+
 ### records
 
+__record__ (string expression)* _end_
+
+Creates a record whose keys are the strings and whose values are the values of
+the expressions. The record is returned.
+
+__read__ record string _end_
+
+The value of the record at the key of the string is returned.
+
+__write__ record string expression _end_
+
+Clones the record and sets the value at the key of the string to the value of
+the expression. The cloned record is returned.
+
+__delete__ record array _end_
+
+The array is an array of strings. Clones the record and deletes the keys of the
+strings from the cloned record. The cloned record is returned.
+
+__extract__ record array _end_
+
+The array is an array of strings. Returns a record whose keys are the keys of
+the strings and whose values are the values of the keys of the strings in the
+record. The new record is returned.
+
+__merge__ record record _end_
+
+Clones the first record and then for each kv pair in the second record, sets the
+value of the cloned record at the key of the kv pair to the value of the kv
+pair. Returns the cloned record.
+
+__keys__ record _end_
+
+An array whose values are the keys of the record is returned.
+
+__values__ record _end_
+
+An array whose values are the values of the record is returned.
+
 ### strings
+
+__TODO__
+
+### logging
+
+__TODO__
 
 ### experimental
 
