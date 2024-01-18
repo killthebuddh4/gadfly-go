@@ -1,9 +1,12 @@
-__gadfly__ is an experimental programming language and treewalk interpreter
-designed for autonomous program synthesis. To this end, the core language is
-intended to be very simple, very regular, and amenable to certain kinds of
-analysis and metaprogramming. It is heavily inspired by
-[scheme](https://www.scheme.org/) and [ruby](https://www.ruby-lang.org/en/). It
-is dynamically and strongly typed. 
+__Gadfly__ is an experimental expression-oriented functional programming
+language and treewalk interpreter. The ultimate goal is to provide a development
+environment for [autopoietic](https://en.wikipedia.org/wiki/Autopoiesis) copilot
+programs. The conventional aspects of the system are inspired by
+[scheme](https://www.scheme.org/) and [ruby](https://www.ruby-lang.org/en/).
+The more experimental features draw on ideas from
+[cybernetics](https://en.wikipedia.org/wiki/Cybernetics), [symbolic
+AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence), and
+[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning).
 
 _Please note, this project and documentation are under heavy development. If you
 see something is missing, find an error, have a question, or have anything at
@@ -44,10 +47,11 @@ be awesome!_
 
 ### Expressions
 
-In gadfly everything is a lexically-scoped _expression_.  An __expression__ is
+In Gadfly everything is a lexically-scoped _expression_. Gadfly is dynamically
+and strongly typed. All values are immutable. An __expression__ is
 either a _block_, _lambda_, _predicate_, or _literal_ and all expressions return
 a _value_.  __Comments__ begin with the `#` character and continue until the end
-of the line.
+of the line. 
 
 A __block__ is a sequence of expressions delimited by a _keyword_ and `end`. A
 __keyword__ determines its block's behavior. See the [semantics](#semantics)
@@ -178,7 +182,7 @@ end
 
 ### Values
 
-In `gadfly` all values are immutable, meaning that all operations on values
+In `Gadfly` all values are immutable, meaning that all operations on values
 return new values and leave the original values unchanged. Note that variables
 are not values, they can be redefined (they can be pointed to new values).
 
@@ -197,11 +201,11 @@ anonymous function that can be passed around and called later.
 And that's it for the conventional syntax (e.g. the syntax not relating to
 metaprogramming, program synthesis, orchestration, etc.)! The next section
 describes the languages keywords and their semantics. After you've read that
-you'll be able to write a useful program in `gadfly`.
+you'll be able to write a useful program in `Gadfly`.
 
 # Semantics
 
-In this section we take a look at `gadfly`'s keywords and their semantics. For
+In this section we take a look at `Gadfly`'s keywords and their semantics. For
 more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
 script. The full set of planned keywords is not yet implemented. _Keywords will
 be implemented as needed for the larger goals of the project_.
@@ -454,7 +458,7 @@ And more...
 _Requires `go` 1.21 or higher. Learn how to install `go` [here](https://go.dev/doc/install)._
 
 ```bash
-go run . <path to gadfly source>
+go run . <path to Gadfly source>
 ```
 
 Try running the examples:
@@ -474,7 +478,7 @@ done
 
  - [ ] _WIP_ Happy-path coverage for all keywords and operators
  - [ ] Edge-case coverage for all keywords and operators
- - [ ] Happy-path coverage for at least one robust gadfly program.
+ - [ ] Happy-path coverage for at least one robust Gadfly program.
  - [ ] _Down the road_ Fuzzing for all keywords and operators
 
  Right now we have happy path tests for:
@@ -515,7 +519,7 @@ done
 # Notes on the design
 
 - It's looking like the language will (unsurprisingly) be very Lispy. One way to
-  think about things is that `gadfly` takes homoiconicity to wild extremes.
+  think about things is that `Gadfly` takes homoiconicity to wild extremes.
 - Right now the language is dynamically typed, but I feel like it would be
   better to have static typing. I don't have any great reasons to articulate
   why I feel that way other than maybe that it adds a ton of metadata to the
