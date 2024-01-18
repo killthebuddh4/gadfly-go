@@ -1,9 +1,9 @@
 # gadfly
 
-__gadfly__ is an experimental programming language and treewalk interpreter,
-written in `go`, and designed for autonomous program synthesis. To this end, the
-core language is intended to be very simple, very regular, and amenable to
-certain kinds of analysis and metaprogramming. It is heavily inspired by
+__gadfly__ is an experimental programming language and treewalk interpreter
+designed for autonomous program synthesis. To this end, the core language is
+intended to be very simple, very regular, and amenable to certain kinds of
+analysis and metaprogramming. It is heavily inspired by
 [scheme](https://www.scheme.org/) and [ruby](https://www.ruby-lang.org/en/). It
 is dynamically and strongly typed. 
 
