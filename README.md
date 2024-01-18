@@ -120,7 +120,7 @@ end
 A __predicate__ is an expression involving an _operator_ and _operands_. See the
 [semantics](#semantics) section for more details on each operator. An
 __operand__ is either a _predicate_ or a _literal_. A __literal__ is an
-expression that has no children (string, number, boolean, identifier). A
+expression without subexpressions (string, number, boolean, identifier). A
 predicate evaluates to a _number_. `0` is false-y, any other number is truth-y,
 and any other value is an error (when used as a boolean). Some examples:
 
