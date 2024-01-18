@@ -216,14 +216,14 @@ type of value.__
 
 ### variables
 
-`__def__ identifier expression _end_`
+`def identifier expression end`
 
 Defines a variable with the given identifier. The variable resolves to the value
 of the expression. Variables are _lexically scoped_. If the variable is already
 defined in the local scope, it is an error. If the variable is defined in an
 outer scope, it will be _shadowed_ in the local scope.
 
-__let__ identifier expression _end_
+`let identifier expression end`
 
 Re-defines an existing variable with the given identifier. The variable resolves
 to the value of the expression. If the variable does not already exist, it is
@@ -231,7 +231,7 @@ an error.
 
 ### lambdas
 
-__fn__ (|identifier+|)? expression _end_
+`fn (|identifier+|)? expression end`
 
 When the lambda expression is evaluated, it creates a lambda. They key
 difference between a lambda expression and other expressions is that its
@@ -239,7 +239,7 @@ subexpressions are not evaluated until the lambda is called. The lambda can take
 zero or more parameters. If the lambda takes zero parameters, the `|` characters
 must be omitted.
 
-__@__ expression* _end_
+`@ expression* end`
 
 Calls the lambda expression. Each subexpression is evaluated and bound to the
 lambda's parameters. The lambda is then evaluated, returning the value of its
@@ -251,66 +251,65 @@ The key difference between branching expressions and other expressions is that
 their subexpression are evaluated conditionally. The specific behavior of which
 expressions are evaluated depends on the keyword.
 
-__if__ number expression expression _end_
+`if number expression expression end`
 
 If the number is truth-y, the first expression is evaluated. Otherwise, the
 second expression is evaluated. The value of the last evaluated expression is
 returned.
 
-__and__ (number expression)+ _end_
+`and (number expression)+ end`
 
 For each pair of subexpressions, if the first evaluates to a truth-y value, the
 second is evaluated. If any of the subexpressions evaluate to a false-y value,
 `nil` is returned. Otherwise, the value of the last subexpression is returned.
 
-__or__ (number expression)+ _end_
+`or (number expression)+ end`
 
 For each pair of subexpressions, if the first evaluates to a truth-y value, the
 second is evaluated and returned. If none of the subexpressions evaluate to a
 truth-y value, `nil` is returned.
 
-__while__ number expression+ _end_
+`while number expression+ end`
 
 While the first expression evaluates to a truth-y value, the rest of the expressions
 are evaluated. The value of the last subexpression is returned.
 
 ### arrays
 
-__array__ expression* _end_
+`array expression* end`
 
 Creates an array whose values are the values of the subexpressions. The array is 
 returned.
 
-__get__ array number _end_
+`get array number end`
 
 The value of the array at the index of the number is returned.
 
-__set__ array number expression _end_
+`set array number expression end`
 
 Clones the array and sets the value at the index of the number to the value of
 the expression. The cloned array is returned.
 
-
-__for__ array lambda _end_
+`for array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 The value of the last evaluated lambda is returned.
 
-__map__ array lambda _end_
+`map array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the result of each lambda call is returned.
 
-__filter__ array lambda _end_
+`filter array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the values for which the lambda call returned a
 truth-y value is returned.
 
-__reduce__ array expression lambda _end_
+`reduce array expression lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's second parameter and the index bound to the lambda's third parameter.
@@ -319,32 +318,32 @@ is bound to the value of expression. For each subsequent value in the array, the
 first parameter is bound to the value returned by the previous lambda call. The
 value of the last evaluated lambda is returned.
 
-__push__ array expression _end_
+`push array expression end`
 
 Clones the array and appends the value of the expression to the cloned array. 
 The cloned array is returned.
 
-__pop__ array _end_
+`pop array end`
 
 Clones the array and removes the last value from the cloned array. The cloned
 array is returned.
 
-__unshift__ array expression _end_
+`unshift array expression end`
 
 Clones the array and prepends the value of the expression to the cloned array.
 The cloned array is returned.
 
-__shift__ array _end_
+`shift array end`
 
 Clones the array and removes the first value from the cloned array. The cloned
 array is returned.
 
-__reverse__ array _end_
+`reverse array end`
 
 Clones the array and reverses the order of the values in the cloned array. The
 cloned array is returned.
 
-__sort__ array lambda _end_
+`sort array lambda end`
 
 Clones the array and sorts the values in the cloned array according to the value
 returned by the lambda. The lambda takes two parameters, the values of which are
@@ -353,13 +352,13 @@ should be sorted before the second, a positive number if the first value should
 be sorted after the second, and `0` if the values are equal. The cloned (sorted)
 array is returned.
 
-__segment__ array number number _end_
+`segment array number number end`
 
 Clones the array and returns a new array whose values are the values of the
 cloned array between the first index and the second index (exclusive). The
 cloned array is returned.
 
-__splice__ array number array _end_
+`splice array number array end`
 
 Clones the first array and divides it in half at the index of the number. It
 appends the values of the second array to the first half, and then appends the
@@ -367,42 +366,42 @@ second half to the result. The result is returned.
 
 ### records
 
-__record__ (string expression)* _end_
+`record (string expression)* end`
 
 Creates a record whose keys are the strings and whose values are the values of
 the expressions. The record is returned.
 
-__read__ record string _end_
+`read record string end`
 
 The value of the record at the key of the string is returned.
 
-__write__ record string expression _end_
+`write record string expression end`
 
 Clones the record and sets the value at the key of the string to the value of
 the expression. The cloned record is returned.
 
-__delete__ record array _end_
+`delete record array end`
 
 The array is an array of strings. Clones the record and deletes the keys of the
 strings from the cloned record. The cloned record is returned.
 
-__extract__ record array _end_
+`extract record array end`
 
 The array is an array of strings. Returns a record whose keys are the keys of
 the strings and whose values are the values of the keys of the strings in the
 record. The new record is returned.
 
-__merge__ record record _end_
+`merge record record end`
 
 Clones the first record and then for each kv pair in the second record, sets the
 value of the cloned record at the key of the kv pair to the value of the kv
 pair. Returns the cloned record.
 
-__keys__ record _end_
+`keys record end`
 
 An array whose values are the keys of the record is returned.
 
-__values__ record _end_
+`values record end`
 
 An array whose values are the values of the record is returned.
 
