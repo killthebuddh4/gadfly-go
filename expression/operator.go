@@ -47,7 +47,7 @@ var OPERATORS = []string{
 	"splice",
 	"reverse",
 	"sort",
-	"puts",
+	"io.puts",
 	"split",
 	"substring",
 	"concat",

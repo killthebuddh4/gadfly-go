@@ -42,7 +42,7 @@ def k 0 end
 
 while k < 100
   if @is_prime k end
-    puts k end
+    io.puts k end
     nil
   end
 

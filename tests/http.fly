@@ -1,9 +1,9 @@
-puts "#######################################################" end
-puts "" "" end
-puts "Testing gadfly.http package..." end
-puts "" "" end
-puts "#######################################################" end
-puts "" "" end
+io.puts "#######################################################" end
+io.puts "" "" end
+io.puts "Testing gadfly.http package..." end
+io.puts "" "" end
+io.puts "#######################################################" end
+io.puts "" "" end
 
 #
 #
@@ -54,8 +54,8 @@ end
 
 if
   get_worked
-  puts "PASS: http get request" end
-  puts "FAIL: http get request" end
+  io.puts "PASS: http get request" end
+  io.puts "FAIL: http get request" end
 end
 
 #
@@ -88,6 +88,6 @@ end
 
 if
   post_worked
-  puts "PASS: http post request" end
-  puts "FAIL: http post request" end
+  io.puts "PASS: http post request" end
+  io.puts "FAIL: http post request" end
 end

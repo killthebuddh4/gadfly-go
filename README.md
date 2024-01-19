@@ -61,12 +61,12 @@ __keyword__ determines its block's behavior. See the [semantics](#semantics)
 section for more details on each keyword. Some examples:
 
 ```text
-puts "hello world" end
+io.puts "hello world" end
 
 do
   def val "goodbye world" end
 
-  puts val end
+  io.puts val end
 end
 
 while rnd < 0.5
@@ -133,7 +133,7 @@ and any other value is an error (when used as a boolean). Some examples:
 # Not predicates.
 
 fn
-  puts "hi" end
+  io.puts "hi" end
 end
 
 def val "hi" end
@@ -163,7 +163,7 @@ is defined it can be referenced in any expression. Some examples
 ```text
 def surname "smith" end
 
-puts surname end
+io.puts surname end
 
 def things
   array
@@ -174,7 +174,7 @@ end
 
 for things
   fn |thing i|
-    puts thing end
+    io.puts thing end
   end
 end
 
@@ -434,11 +434,11 @@ index and the second index (exclusive).
 
 __TODO__
 
-- [x] `puts`
+- [x] `io.puts`
 - [ ] `gets`
 - [ ] `err`
 
-`puts expression* end`
+`io.puts expression* end`
 
 Prints the values of the expressions to stdout.
 

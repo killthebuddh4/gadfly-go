@@ -1,9 +1,9 @@
-puts "#######################################################" end
-puts "" "" end
-puts "Testing gadfly.array package..." end
-puts "" "" end
-puts "#######################################################" end
-puts "" "" end
+io.puts "#######################################################" end
+io.puts "" "" end
+io.puts "Testing gadfly.array package..." end
+io.puts "" "" end
+io.puts "#######################################################" end
+io.puts "" "" end
 
 #
 #
@@ -63,8 +63,8 @@ end
 
 if
   test_val != 6
-  puts "FAIL: array.Get" end
-  puts "PASS: array.Get" end
+  io.puts "FAIL: array.Get" end
+  io.puts "PASS: array.Get" end
 end
 
 #
@@ -79,8 +79,8 @@ let test_val get numbers 2 end
 
 if
   test_val != 6
-  puts "FAIL: array.Set immutability" end
-  puts "PASS: array.Set immutability" end
+  io.puts "FAIL: array.Set immutability" end
+  io.puts "PASS: array.Set immutability" end
 end
 
 def new_numbers
@@ -93,8 +93,8 @@ end
 
 if
   test_val != 12
-  puts "FAIL: array.Set" end
-  puts "PASS: array.Set" end
+  io.puts "FAIL: array.Set" end
+  io.puts "PASS: array.Set" end
 end
 
 #
@@ -113,8 +113,8 @@ end
 
 if
   test_val != numbers_sum
-  puts "FAIL: array.For" end
-  puts "PASS: array.For" end
+  io.puts "FAIL: array.For" end
+  io.puts "PASS: array.For" end
 end
 
 #
@@ -136,8 +136,8 @@ def squares_worked
 end
 
 if squares_worked == false
-  puts "FAIL: array.Map" end
-  puts "PASS: array.Map" end
+  io.puts "FAIL: array.Map" end
+  io.puts "PASS: array.Map" end
 end 
 
 #
@@ -150,7 +150,7 @@ let test_val
   filter numbers
     fn |e i|
       def rem
-        @mod e 2 end
+        @math.mod e 2 end
       end
 
       rem == 0
@@ -163,8 +163,8 @@ def evens_worked
 end
 
 if evens_worked == false
-  puts "FAIL: array.Filter" end
-  puts "PASS: array.Filter" end
+  io.puts "FAIL: array.Filter" end
+  io.puts "PASS: array.Filter" end
 end
 
 #
@@ -187,8 +187,8 @@ end
 
 if
   test_val != numbers_sum
-  puts "FAIL: array.Reduce" end
-  puts "PASS: array.Reduce" end
+  io.puts "FAIL: array.Reduce" end
+  io.puts "PASS: array.Reduce" end
 end
 
 #
@@ -204,8 +204,8 @@ def push_is_immutable
 end
 
 if push_is_immutable == false
-  puts "FAIL: array.Push immutability" end
-  puts "PASS: array.Push immutability" end
+  io.puts "FAIL: array.Push immutability" end
+  io.puts "PASS: array.Push immutability" end
 end
 
 let test_val
@@ -217,8 +217,8 @@ def push_worked
 end
 
 if push_worked == false
-  puts "FAIL: array.Push" end
-  puts "PASS: array.Push" end
+  io.puts "FAIL: array.Push" end
+  io.puts "PASS: array.Push" end
 end
 
 #
@@ -234,8 +234,8 @@ def pop_is_immutable
 end
 
 if pop_is_immutable == false
-  puts "FAIL: array.Pop immutability" end
-  puts "PASS: array.Pop immutability" end
+  io.puts "FAIL: array.Pop immutability" end
+  io.puts "PASS: array.Pop immutability" end
 end
 
 let test_val
@@ -247,8 +247,8 @@ def pop_worked
 end
 
 if pop_worked == false
-  puts "FAIL: array.Pop" end
-  puts "PASS: array.Pop" end
+  io.puts "FAIL: array.Pop" end
+  io.puts "PASS: array.Pop" end
 end
 
 #
@@ -264,8 +264,8 @@ def shift_is_immutable
 end
 
 if shift_is_immutable == false
-  puts "FAIL: array.Shift immutability" end
-  puts "PASS: array.Shift immutability" end
+  io.puts "FAIL: array.Shift immutability" end
+  io.puts "PASS: array.Shift immutability" end
 end
 
 let test_val
@@ -277,8 +277,8 @@ def shift_worked
 end
 
 if shift_worked == false
-  puts "FAIL: array.Shift" end
-  puts "PASS: array.Shift" end
+  io.puts "FAIL: array.Shift" end
+  io.puts "PASS: array.Shift" end
 end
 
 #
@@ -294,8 +294,8 @@ def unshift_is_immutable
 end
 
 if unshift_is_immutable == false
-  puts "FAIL: array.Unshift immutability" end
-  puts "PASS: array.Unshift immutability" end
+  io.puts "FAIL: array.Unshift immutability" end
+  io.puts "PASS: array.Unshift immutability" end
 end
 
 let test_val
@@ -307,6 +307,6 @@ def unshift_worked
 end
 
 if unshift_worked == false
-  puts "FAIL: array.Unshift" end
-  puts "PASS: array.Unshift" end
+  io.puts "FAIL: array.Unshift" end
+  io.puts "PASS: array.Unshift" end
 end

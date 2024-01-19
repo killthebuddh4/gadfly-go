@@ -6,6 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/array"
 	"github.com/killthebuddh4/gadflai/eval"
 	"github.com/killthebuddh4/gadflai/http"
+	"github.com/killthebuddh4/gadflai/io"
 	"github.com/killthebuddh4/gadflai/record"
 	"github.com/killthebuddh4/gadflai/strings"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
@@ -124,8 +125,8 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.And, nil
 	case "or":
 		return eval.Or, nil
-	case "puts":
-		return eval.Puts, nil
+	case "io.puts":
+		return io.Puts, nil
 	case "chars":
 		return eval.Chars, nil
 	case "split":

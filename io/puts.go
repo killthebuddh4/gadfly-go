@@ -1,15 +1,16 @@
-package eval
+package io
 
 import (
 	"errors"
 	"fmt"
 	"reflect"
 
+	"github.com/killthebuddh4/gadflai/eval"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Puts(trajecotry *traj.Trajectory, eval Eval) (value.Value, error) {
+func Puts(trajecotry *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajecotry)
 
 	args := []value.Value{}
@@ -57,7 +58,7 @@ func Puts(trajecotry *traj.Trajectory, eval Eval) (value.Value, error) {
 			}
 			fmt.Println("end")
 		} else {
-			return nil, errors.New("puts only accepts booleans and strings and numbers, got " + reflect.TypeOf(arg).String())
+			return nil, errors.New("io.puts only accepts booleans and strings and numbers, got " + reflect.TypeOf(arg).String())
 		}
 	}
 

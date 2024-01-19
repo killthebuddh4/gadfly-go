@@ -55,7 +55,7 @@ end
 
 for words
   fn |w i|
-    puts
+    io.puts
       @is_palindrome w end
     end
   end
