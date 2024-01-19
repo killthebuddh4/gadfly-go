@@ -59,8 +59,8 @@ _For all expression signatures described in this section, the `*` character
 indicates zero or more occurrences of the preceding expression. The `+`
 character indicates one or more occurrences of the preceding expression. The `?`
 character indicates an optional expression. Unless otherwise noted, "number",
-"string", "number", "array", and "map", and "lambda" are understood to be
-expressions that evaluate to that type of value._
+"string", "array", "map", and "lambda" are understood as expressions that
+evaluate to that type of value._
 
 
 ### Blocks
