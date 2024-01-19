@@ -73,7 +73,7 @@ find a comprehensive, runnable example in
 
 The simplest block is the `do` block:
 
-`do expression* end`
+_Signature_ `do expression* end`
 
 The expressions are evaluated in order and the value of the last expression is
 returned.
@@ -96,7 +96,7 @@ A Gadfly __variable__ is an expression that resolves to a _value_ by referencing
 it. A variable is defined using a `def` block and re-defined using a `let`
 block. After a variable is defined it can be referenced in any expression.
 
-`def identifier expression end`
+_Signature_ `def identifier expression end`
 
 Defines a variable with the given identifier. The variable resolves to the value
 of the expression. Variables are _lexically scoped_. If the variable is already
@@ -107,7 +107,7 @@ outer scope, it will be _shadowed_ in the local scope.
 def surname "smith" end
 ```
 
-`let identifier expression end`
+_Signature_ `let identifier expression end`
 
 Re-defines an existing variable with the given identifier. The variable resolves
 to the value of the expression. If the variable does not already exist, it is
@@ -165,7 +165,7 @@ must be omitted. The  __arguments__ to the lambda are the values of the
 expressions in the calling block (using the `@` keyword) bound to the lambda's
 parameters.
 
-`fn (|identifier+|)? expression end`
+_Signature_ `fn (|identifier+|)? expression end`
 
 When the lambda expression is evaluated, it creates a lambda. The key difference
 between a lambda expression and other expressions is that its subexpressions are
@@ -173,7 +173,7 @@ evaluated only when the lambda is called. The lambda can take zero or more
 parameters. If the lambda takes zero parameters, the `|` characters must be
 omitted.
 
-`@ expression* end`
+_Signature_ `@ expression* end`
 
 Calls the lambda expression. Each subexpression is evaluated and bound to the
 lambda's parameters. The lambda is then evaluated, returning the value of its
@@ -250,66 +250,66 @@ subexpressions are evaluated depends on the keyword.
 
 _Note that branching expressions are not predicates, they may return any value._
 
-`if number expression expression end`
+_Signature_ `if number expression expression end`
 
 If the number is truth-y, the first expression is evaluated. Otherwise, the
 second expression is evaluated. The value of the last evaluated expression is
 returned.
 
 
-`and (number expression)+ end`
+_Signature_ `and (number expression)+ end`
 
 For each pair of subexpressions, if the first evaluates to a truth-y value, the
 second is evaluated. If any of the subexpressions evaluate to a false-y value,
 `nil` is returned. Otherwise, the value of the last subexpression is returned.
 
-`or (number expression)+ end`
+_Signature_ `or (number expression)+ end`
 
 For each pair of subexpressions, if the first evaluates to a truth-y value, the
 second is evaluated and returned. If none of the subexpressions evaluate to a
 truth-y value, `nil` is returned.
 
-`while number expression+ end`
+_Signature_ `while number expression+ end`
 
 While the first expression evaluates to a truth-y value, the rest of the expressions
 are evaluated. The value of the last subexpression is returned.
 
 ### Arrays
 
-`array expression* end`
+_Signature_ `array expression* end`
 
 Creates an array whose values are the values of the subexpressions. The array is 
 returned.
 
-`array.read array number end`
+_Signature_ `array.read array number end`
 
 The value of the array at the index of the number is returned.
 
-`array.write array number expression end`
+_Signature_ `array.write array number expression end`
 
 Clones the array and sets the value at the index of the number to the value of
 the expression. The cloned array is returned.
 
-`array.for array lambda end`
+_Signature_ `array.for array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 The value of the last evaluated lambda is returned.
 
-`array.map array lambda end`
+_Signature_ `array.map array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the result of each lambda call is returned.
 
-`array.filter array lambda end`
+_Signature_ `array.filter array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the values for which the lambda call returned a
 truth-y value is returned.
 
-`array.reduce array expression lambda end`
+_Signature_ `array.reduce array expression lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's second parameter and the index bound to the lambda's third parameter.
@@ -318,32 +318,32 @@ is bound to the value of expression. For each subsequent value in the array, the
 first parameter is bound to the value returned by the previous lambda call. The
 value of the last evaluated lambda is returned.
 
-`array.push array expression end`
+_Signature_ `array.push array expression end`
 
 Clones the array and appends the value of the expression to the cloned array. 
 The cloned array is returned.
 
-`array.pop array end`
+_Signature_ `array.pop array end`
 
 Clones the array and removes the last value from the cloned array. The cloned
 array is returned.
 
-`array.unshift array expression end`
+_Signature_ `array.unshift array expression end`
 
 Clones the array and prepends the value of the expression to the cloned array.
 The cloned array is returned.
 
-`array.shift array end`
+_Signature_ `array.shift array end`
 
 Clones the array and removes the first value from the cloned array. The cloned
 array is returned.
 
-`array.reverse array end`
+_Signature_ `array.reverse array end`
 
 Clones the array and reverses the order of the values in the cloned array. The
 cloned array is returned.
 
-`array.sort array lambda end`
+_Signature_ `array.sort array lambda end`
 
 Clones the array and sorts the values in the cloned array according to the value
 returned by the lambda. The lambda takes two parameters, the values of which are
@@ -352,13 +352,13 @@ should be sorted before the second, a positive number if the first value should
 be sorted after the second, and `0` if the values are equal. The cloned (sorted)
 array is returned.
 
-`array.segment array number number end`
+_Signature_ `array.segment array number number end`
 
 Clones the array and returns a new array whose values are the values of the
 cloned array between the first index and the second index (exclusive). The
 cloned array is returned.
 
-`array.splice array number array end`
+_Signature_ `array.splice array number array end`
 
 Clones the first array and divides it in half at the index of the number. It
 appends the values of the second array to the first half, and then appends the
@@ -366,56 +366,56 @@ second half to the result. The result is returned.
 
 ### Maps
 
-`map (string expression)* end`
+_Signature_ `map (string expression)* end`
 
 Creates a map whose keys are the strings and whose values are the values of
 the expressions. The map is returned.
 
-`map.read map string end`
+_Signature_ `map.read map string end`
 
 The value of the map at the key of the string is returned.
 
-`map.write map string expression end`
+_Signature_ `map.write map string expression end`
 
 Clones the map and sets the value at the key of the string to the value of
 the expression. The cloned map is returned.
 
-`map.delete map array end`
+_Signature_ `map.delete map array end`
 
 The array is an array of strings. Clones the map and deletes the keys of the
 strings from the cloned map. The cloned map is returned.
 
-`map.extract map array end`
+_Signature_ `map.extract map array end`
 
 The array is an array of strings. Returns a map whose keys are the keys of
 the strings and whose values are the values of the keys of the strings in the
 map. The new map is returned.
 
-`map.merge map map end`
+_Signature_ `map.merge map map end`
 
 Clones the first map and then for each kv pair in the second map, sets the
 value of the cloned map at the key of the kv pair to the value of the kv
 pair. Returns the cloned map.
 
-`map.keys map end`
+_Signature_ `map.keys map end`
 
 An array whose values are the keys of the map is returned.
 
-`map.values map end`
+_Signature_ `map.values map end`
 
 An array whose values are the values of the map is returned.
 
 ### Strings
 
-`split string end`
+_Signature_ `split string end`
 
 Returns an array whose values are the characters in the string.
 
-`concat string+ end`
+_Signature_ `concat string+ end`
 
 Returns a string whose value is the concatenation of the values of the strings.
 
-`substring string number number end`
+_Signature_ `substring string number number end`
 
 Returns a string whose value is the substring of the string between the first
 index and the second index (exclusive).
