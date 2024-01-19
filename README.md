@@ -55,6 +55,14 @@ _At the bottom of each subsection in this section you'll find a brief summary of
 the ongoing and planned development related to that subsection. For a
 higher-level perspective, please see the [roadmap](#roadmap)._
 
+_For all expression signatures described in this section, the `*` character
+indicates zero or more occurrences of the preceding expression. The `+`
+character indicates one or more occurrences of the preceding expression. The `?`
+character indicates an optional expression. Unless otherwise noted, "number",
+"string", "number", "array", and "map", and "lambda" are understood to be
+expressions that evaluate to that type of value._
+
+
 ### Blocks
 
 A __block__ is a sequence of expressions delimited by a _keyword_ and `end`. A
@@ -62,13 +70,6 @@ __keyword__ determines its block's behavior or semantics. Most of the language's
 keywords will be described throughout the rest of this section but you can also
 find a comprehensive, runnable example in
 [examples.core.fly](examples.core.fly).
-
-__For all block signatures described in this section, the `*` character
-indicates zero or more occurrences of the preceding expression. The `+`
-character indicates one or more occurrences of the preceding expression. The `?`
-character indicates an optional expression. Unless otherwise noted, "number",
-"string", "number", "array", and "map", and "lambda" are understood to be
-expressions that evaluate to that type of value.__
 
 The simplest block is the `do` block:
 
