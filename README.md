@@ -10,10 +10,10 @@ AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence), and
 as well as more recent research surrounding how to build and orchestrate
 autonomous agents.
 
-_Please note, this project and documentation are under heavy development. If you
+_This project and documentation are under heavy development. If you
 see something is missing, find an error, have a question, or have anything at
-all to say, an [issue](https://github.com/killthebuddh4/gadfl.ai/issues) would
-be awesome!_
+all to say, please don't hesitate to open an issue or reach out to me directly.
+For a (slightly) more detailed overview of the project, check out the [roadmap](#roadmap)_
 
 # Contents
 
