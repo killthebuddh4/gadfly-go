@@ -173,7 +173,7 @@ evaluated only when the lambda is called. The lambda can take zero or more
 parameters. If the lambda takes zero parameters, the `|` characters must be
 omitted.
 
-`@ expression* end`
+_`@ expression* end`_
 
 Calls the lambda expression. Each subexpression is evaluated and bound to the
 lambda's parameters. The lambda is then evaluated, returning the value of its
