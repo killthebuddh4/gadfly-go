@@ -12,7 +12,7 @@ io.puts "" "" end
 #
 
 def get_response
-  record
+  map
     "userId" 1
     "id" 1
     "title" "delectus aut autem"
@@ -21,7 +21,7 @@ def get_response
 end
 
 def post_response
-  record
+  map
     "id" 101
   end
 end
@@ -35,18 +35,18 @@ def test_value nil end
 #
 
 let test_value
-  http
+  io.http
     "https://jsonplaceholder.typicode.com/todos/1"
     "GET"
-    record
+    map
       "Accept" "application/json"
     end
-    record end
+    map end
   end
 end
 
 def get_worked
-  @record.equal
+  @map.equal
     test_value
     get_response
   end
@@ -65,13 +65,13 @@ end
 #
 
 let test_value
-  http
+  io.http
     "https://jsonplaceholder.typicode.com/posts"
     "POST"
-    record
+    map
       "Accept" "application/json"
     end
-    record
+    map
       "title" "foo"
       "body" "bar"
       "userId" 1
@@ -80,7 +80,7 @@ let test_value
 end
 
 def post_worked
-  @record.equal
+  @map.equal
     test_value
     post_response
   end

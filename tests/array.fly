@@ -18,7 +18,7 @@ def numbers
 end
 
 def numbers_clone
-  map numbers
+  array.map numbers
     fn |e i| e end
   end
 end
@@ -53,48 +53,48 @@ def test_val nil end
 
 #
 #
-# array.Get
+# array.Read
 #
 #
 
 let test_val
-  get numbers 2 end
+  array.read numbers 2 end
 end
 
 if
   test_val != 6
-  io.puts "FAIL: array.Get" end
-  io.puts "PASS: array.Get" end
+  io.puts "FAIL: array.Read" end
+  io.puts "PASS: array.Read" end
 end
 
 #
 #
-# array.Set
+# array.Write
 #
 #
 
-set numbers 2 12 end
+array.write numbers 2 12 end
 
-let test_val get numbers 2 end
+let test_val array.read numbers 2 end
 
 if
   test_val != 6
-  io.puts "FAIL: array.Set immutability" end
-  io.puts "PASS: array.Set immutability" end
+  io.puts "FAIL: array.Write immutability" end
+  io.puts "PASS: array.Write immutability" end
 end
 
 def new_numbers
-  set numbers 2 12 end
+  array.write numbers 2 12 end
 end
 
 let test_val
-  get new_numbers 2 end
+  array.read new_numbers 2 end
 end
 
 if
   test_val != 12
-  io.puts "FAIL: array.Set" end
-  io.puts "PASS: array.Set" end
+  io.puts "FAIL: array.Write" end
+  io.puts "PASS: array.Write" end
 end
 
 #
@@ -105,7 +105,7 @@ end
 
 let test_val 0 end
 
-for numbers
+array.for numbers
   fn |e i|
     let test_val test_val + e end
   end
@@ -124,7 +124,7 @@ end
 #
 
 let test_val
-  map numbers
+  array.map numbers
     fn |e i|
       e * e
     end
@@ -147,7 +147,7 @@ end
 #
 
 let test_val
-  filter numbers
+  array.filter numbers
     fn |e i|
       def rem
         @math.mod e 2 end
@@ -174,7 +174,7 @@ end
 #
 
 let test_val
-  reduce
+  array.reduce
     numbers
 
     0
@@ -197,7 +197,7 @@ end
 #
 #
 
-push numbers 20 end
+array.push numbers 20 end
 
 def push_is_immutable
   @equal numbers_clone numbers end
@@ -209,7 +209,7 @@ if push_is_immutable == false
 end
 
 let test_val
-  push numbers 20 end
+  array.push numbers 20 end
 end
 
 def push_worked
@@ -227,7 +227,7 @@ end
 #
 #
 
-pop numbers end
+array.pop numbers end
 
 def pop_is_immutable
   @equal numbers_clone numbers end
@@ -239,7 +239,7 @@ if pop_is_immutable == false
 end
 
 let test_val
-  pop numbers end
+  array.pop numbers end
 end
 
 def pop_worked
@@ -257,7 +257,7 @@ end
 #
 #
 
-shift numbers end
+array.shift numbers end
 
 def shift_is_immutable
   @equal numbers_clone numbers end
@@ -269,7 +269,7 @@ if shift_is_immutable == false
 end
 
 let test_val
-  shift numbers end
+  array.shift numbers end
 end
 
 def shift_worked
@@ -287,7 +287,7 @@ end
 #
 #
 
-unshift numbers 0 end
+array.unshift numbers 0 end
 
 def unshift_is_immutable
   @equal numbers_clone numbers end
@@ -299,7 +299,7 @@ if unshift_is_immutable == false
 end
 
 let test_val
-  unshift numbers 0 end
+  array.unshift numbers 0 end
 end
 
 def unshift_worked

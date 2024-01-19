@@ -5,9 +5,8 @@ import (
 
 	"github.com/killthebuddh4/gadflai/array"
 	"github.com/killthebuddh4/gadflai/eval"
-	"github.com/killthebuddh4/gadflai/http"
 	"github.com/killthebuddh4/gadflai/io"
-	"github.com/killthebuddh4/gadflai/record"
+	"github.com/killthebuddh4/gadflai/maps"
 	"github.com/killthebuddh4/gadflai/strings"
 	traj "github.com/killthebuddh4/gadflai/trajectory"
 	"github.com/killthebuddh4/gadflai/value"
@@ -71,53 +70,53 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Let, nil
 	case "while":
 		return eval.While, nil
-	case "record":
-		return record.Record, nil
-	case "merge":
-		return record.Merge, nil
-	case "delete":
-		return record.Delete, nil
-	case "extract":
-		return record.Extract, nil
-	case "keys":
-		return record.Keys, nil
-	case "values":
-		return record.Values, nil
-	case "read":
-		return record.Read, nil
-	case "write":
-		return record.Write, nil
+	case "map":
+		return maps.Map, nil
+	case "map.merge":
+		return maps.Merge, nil
+	case "map.delete":
+		return maps.Delete, nil
+	case "map.extract":
+		return maps.Extract, nil
+	case "map.keys":
+		return maps.Keys, nil
+	case "map.values":
+		return maps.Values, nil
+	case "map.read":
+		return maps.Read, nil
+	case "map.write":
+		return maps.Write, nil
 	case "array":
 		return array.Array, nil
-	case "get":
-		return array.Get, nil
-	case "for":
+	case "array.read":
+		return array.Read, nil
+	case "array.for":
 		return array.For, nil
-	case "filter":
+	case "array.filter":
 		return array.Filter, nil
-	case "map":
+	case "array.map":
 		return array.Map, nil
-	case "reduce":
+	case "array.reduce":
 		return array.Reduce, nil
-	case "push":
+	case "array.push":
 		return array.Push, nil
-	case "pop":
+	case "array.pop":
 		return array.Pop, nil
-	case "set":
-		return array.Set, nil
-	case "shift":
+	case "array.write":
+		return array.Write, nil
+	case "array.shift":
 		return array.Shift, nil
-	case "unshift":
+	case "array.unshift":
 		return array.Unshift, nil
-	case "segment":
+	case "array.segment":
 		return array.Segment, nil
-	case "find":
+	case "array.find":
 		return array.Find, nil
-	case "splice":
+	case "array.splice":
 		return array.Splice, nil
-	case "reverse":
+	case "array.reverse":
 		return array.Reverse, nil
-	case "sort":
+	case "array.sort":
 		return array.Sort, nil
 	case "if":
 		return eval.If, nil
@@ -127,6 +126,8 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return eval.Or, nil
 	case "io.puts":
 		return io.Puts, nil
+	case "io.http":
+		return io.Http, nil
 	case "chars":
 		return eval.Chars, nil
 	case "split":
@@ -135,8 +136,6 @@ func dispatch(trajectory *traj.Trajectory) (D, error) {
 		return strings.Substring, nil
 	case "concat":
 		return strings.Concat, nil
-	case "http":
-		return http.Http, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

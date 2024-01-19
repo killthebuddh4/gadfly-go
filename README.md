@@ -18,21 +18,18 @@ For a (slightly) more detailed overview of the project, check out the [roadmap](
 # Contents
 
 - [Contents](#contents)
-- [Language core and syntax](#language-core-and-syntax)
-    - [Expressions](#expressions)
-    - [Lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
-    - [Predicates, operators, and literals](#predicates-operators-and-literals)
+- [The language](#the-language)
+    - [Blocks](#blocks)
     - [Variables](#variables)
     - [Values](#values)
-- [Semantics](#semantics)
-    - [Variables](#variables-1)
-    - [Lambdas](#lambdas)
+    - [Lambdas, parameters, and arguments](#lambdas-parameters-and-arguments)
+    - [Predicates, operators, and literals](#predicates-operators-and-literals)
     - [Branching](#branching)
     - [Arrays](#arrays)
-    - [Records](#records)
+    - [Maps](#maps)
     - [Strings](#strings)
-    - [Console](#console)
-    - [Experimental Features](#experimental-features)
+    - [Input and Output](#input-and-output)
+    - [Signals and exceptions](#signals-and-exceptions)
 - [Run a script](#run-a-script)
 - [Tests](#tests)
 - [Notes on the vision](#notes-on-the-vision)
@@ -45,47 +42,117 @@ For a (slightly) more detailed overview of the project, check out the [roadmap](
     - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
 - [Work in progress](#work-in-progress)
 
+# The language
 
-# Language core and syntax
+Gadfly is dynamically and strongly typed. In Gadfly, everything is a
+_lexically-scoped expression_. All expressions return a _value_ and all values
+are _immutable_. An __expression__ is defined as a _block_, _lambda_,
+_predicate_, or _literal_.  __Comments__ begin with the `#` character and
+continue until the end of the line. Whitespace is ignored except to separate
+tokens.
 
-### Expressions
+_At the bottom of each subsection in this section you'll find a brief summary of
+the ongoing and planned development related to that subsection. For a
+higher-level perspective, please see the [roadmap](#roadmap)._
 
-In Gadfly everything is a lexically-scoped _expression_. Gadfly is dynamically
-and strongly typed. All values are immutable. An __expression__ is
-either a _block_, _lambda_, _predicate_, or _literal_ and all expressions return
-a _value_.  __Comments__ begin with the `#` character and continue until the end
-of the line. 
+### Blocks
 
 A __block__ is a sequence of expressions delimited by a _keyword_ and `end`. A
-__keyword__ determines its block's behavior. See the [semantics](#semantics)
-section for more details on each keyword. Some examples:
+__keyword__ determines its block's behavior or semantics. Most of the language's
+keywords will be described throughout the rest of this section but you can also
+find a comprehensive, runnable example in
+[examples.core.fly](examples.core.fly).
+
+__For all block signatures described in this section, the `*` character
+indicates zero or more occurrences of the preceding expression. The `+`
+character indicates one or more occurrences of the preceding expression. The `?`
+character indicates an optional expression. Unless otherwise noted, "number",
+"string", "number", "array", and "map", and "lambda" are understood to be
+expressions that evaluate to that type of value.__
+
+The simplest block is the `do` block:
+
+`do expression* end`
+
+The expressions are evaluated in order and the value of the last expression is
+returned.
 
 ```text
-io.puts "hello world" end
-
 do
-  def val "goodbye world" end
+  puts "hey" end
 
-  io.puts val end
-end
+  2
 
-while rnd < 0.5
-  let rnd Math.random end
-end
-
-def numbers
-  array 1 2 3 end
-end
-
-def squares
-  map numbers
-    fn |n|
-      n * n
-    end
+  do
+    3 + 4
   end
 end
+```
+
+### Variables
+
+A Gadfly __variable__ is an expression that resolves to a _value_ by referencing
+it. A variable is defined using a `def` block and re-defined using a `let`
+block. After a variable is defined it can be referenced in any expression.
+
+`def identifier expression end`
+
+Defines a variable with the given identifier. The variable resolves to the value
+of the expression. Variables are _lexically scoped_. If the variable is already
+defined in the local scope, it is an error. If the variable is defined in an
+outer scope, it will be _shadowed_ in the local scope.
+
+```text
+def surname "smith" end
+```
+
+`let identifier expression end`
+
+Re-defines an existing variable with the given identifier. The variable resolves
+to the value of the expression. If the variable does not already exist, it is
+an error.
 
 ```
+def val "hi" end
+let val "goodbye" end
+```
+
+__TODO__
+
+- [ ] Namespace declaration and resolution.
+
+### Values
+
+Every value is a _string_, _number_, _array_, _map_, _lambda_, or _nil_.
+
+A __string__ is created by enclosing characters in quotes.
+
+```text
+"I am string"
+```
+
+A __number__ is created by writing it out in decimal notation. All numbers are
+represented as floats internally.
+
+```text
+1
+0.1
+10.0
+```
+
+There is no _boolean_ type in Gadfly. All "boolean" operators take _number_
+operands and treat `0` as false-y and any other number as truth-y. All other
+values cause errors when used as a boolean.
+
+An __array__ is created using the `array` block and is a number-indexed list of
+values. See the [arrays](#arrays) section for more details on arrays.
+
+A __map__ is created using the `map` block and is a string-keyed dictionary of
+values. See the [maps](#maps) section for more details on maps.
+
+A __lambda__ is created using the `fn` block and can be thought of as a
+parameterized _do_ block or "anonymous function". See the [lambdas](#lambdas)
+section for more details on lambdas.
 
 ### Lambdas, parameters, and arguments
 
@@ -95,7 +162,21 @@ name that is defined each time the lambda is called. Parameters are declared
 between `|` characters. If the lambda takes zero parameters, the `|` characters
 must be omitted. The  __arguments__ to the lambda are the values of the
 expressions in the calling block (using the `@` keyword) bound to the lambda's
-parameters. An example:
+parameters.
+
+`fn (|identifier+|)? expression end`
+
+When the lambda expression is evaluated, it creates a lambda. The key difference
+between a lambda expression and other expressions is that its subexpressions are
+evaluated only when the lambda is called. The lambda can take zero or more
+parameters. If the lambda takes zero parameters, the `|` characters must be
+omitted.
+
+`@ expression* end`
+
+Calls the lambda expression. Each subexpression is evaluated and bound to the
+lambda's parameters. The lambda is then evaluated, returning the value of its
+last subexpression.
 
 ```text
 def add
@@ -109,7 +190,7 @@ end
   # arguments are 8 and 3, bound to a and b
   2 * 4
   3
-end # => 11
+end
 
 map
   array 1 2 3 end
@@ -123,11 +204,16 @@ end
 ### Predicates, operators, and literals
 
 A __predicate__ is an expression involving an _operator_ and _operands_. See the
-[semantics](#semantics) section for more details on each operator. An
+[operators](#operators) section for more details on each operator. An
 __operand__ is either a _predicate_ or a _literal_. A __literal__ is an
-expression without subexpressions (string, number, boolean, identifier). A
-predicate evaluates to a _number_. `0` is false-y, any other number is truth-y,
-and any other value is an error (when used as a boolean). Some examples:
+expression without subexpressions (string, number, boolean, variable). A
+predicate evaluates to a _number_ (because an operator evaluates to a number).
+
+_Because predicates cannot include blocks they cannot include function calls.
+This is somewhat cumbersome to us human programmers, forcing us to write many
+instances of trivial indirection, but I think we'll see strong benefits for code
+generation and program synthesis because it will make parse trees simpler. Maybe
+not, we'll see._
 
 ```text
 # Not predicates.
@@ -144,124 +230,31 @@ val
 
 val == "goodbye"
 
-10 > 0
+10 > 0 # => 1
+
+100 / 20 # => 5
 
 !val
 ```
 
-_Note that because predicates cannot include blocks they cannot include function
-calls. This is somewhat cumbersome to us human programmers, forcing us to write
-many instances of trivial indirection, but I think we'll see strong benefits for
-code generation and program synthesis. Maybe not, we'll see._
+__TODO__
 
-### Variables
-
-A __variable__ is a name that can be resolved to a _value_. A variable is
-defined using a `def` block and re-defined using a `let` block. After a variable
-is defined it can be referenced in any expression. Some examples
-
-```text
-def surname "smith" end
-
-io.puts surname end
-
-def things
-  array
-    "thing one"
-    "thing two"
-  end
-end
-
-for things
-  fn |thing i|
-    io.puts thing end
-  end
-end
-
-let things
-  push things "thing three" end
-end
-```
-
-### Values
-
-In `Gadfly` all values are immutable, meaning that all operations on values
-return new values and leave the original values unchanged. Note that variables
-are not values, they can be redefined (they can be pointed to new values).
-
-The currently supported __value__ types are _string_, _number_, _array_,
-_record_,  _lambda_, and _nil_. Strings are delimited by `"` characters. Numbers
-are written using decimal notation. The keyword `true` evaluates to `1`, `false`
-evaluates to `0`, and `nil` evaluates to `nil`. 
-
-An __array__ is created using the `array` block and  behaves just like a
-stereotypical scripting-language array. A __record__ is created using the
-`record` block, is a string key to value mapping,  and behaves just like a
-stereotypical scripting-language map or dictionary. A __lambda__ is created
-using the `fn` block and behaves just like a stereotypical scripting-language
-anonymous function that can be passed around and called later.
-
-And that's it for the conventional syntax (e.g. the syntax not relating to
-metaprogramming, program synthesis, orchestration, etc.)! The next section
-describes the languages keywords and their semantics. After you've read that
-you'll be able to write a useful program in `Gadfly`.
-
-# Semantics
-
-In this section we take a look at `Gadfly`'s keywords and their semantics. For
-more detailed, runnable examples, see the [examples.core.fly](examples.core.fly)
-script. The full set of planned keywords is not yet implemented. _Keywords will
-be implemented as needed for the larger goals of the project_.
-
-__In all signatures described below, the `*` character indicates zero or more
-occurrences of the preceding expression. The `+` character indicates one or more
-occurrences of the preceding expression. The `?` character indicates an optional
-expression. Unless otherwise noted, "number", "string", "number", "array", and
-"record", and "lambda" are understood to be expressions that evaluate to that
-type of value.__
-
-### Variables
-
-`def identifier expression end`
-
-Defines a variable with the given identifier. The variable resolves to the value
-of the expression. Variables are _lexically scoped_. If the variable is already
-defined in the local scope, it is an error. If the variable is defined in an
-outer scope, it will be _shadowed_ in the local scope.
-
-`let identifier expression end`
-
-Re-defines an existing variable with the given identifier. The variable resolves
-to the value of the expression. If the variable does not already exist, it is
-an error.
-
-### Lambdas
-
-`fn (|identifier+|)? expression end`
-
-When the lambda expression is evaluated, it creates a lambda. They key
-difference between a lambda expression and other expressions is that its
-subexpressions are not evaluated until the lambda is called. The lambda can take
-zero or more parameters. If the lambda takes zero parameters, the `|` characters
-must be omitted.
-
-`@ expression* end`
-
-Calls the lambda expression. Each subexpression is evaluated and bound to the
-lambda's parameters. The lambda is then evaluated, returning the value of its
-last subexpression.
+- [ ] Unary negation seems to be broken right now.
 
 ### Branching
 
 The key difference between branching expressions and other expressions is that
 their subexpression are evaluated conditionally. The specific behavior of which
-expressions are evaluated depends on the keyword.
+subexpressions are evaluated depends on the keyword.
+
+_Note that branching expressions are not predicates, they may return any value._
 
 `if number expression expression end`
 
 If the number is truth-y, the first expression is evaluated. Otherwise, the
 second expression is evaluated. The value of the last evaluated expression is
 returned.
+
 
 `and (number expression)+ end`
 
@@ -287,35 +280,35 @@ are evaluated. The value of the last subexpression is returned.
 Creates an array whose values are the values of the subexpressions. The array is 
 returned.
 
-`get array number end`
+`array.read array number end`
 
 The value of the array at the index of the number is returned.
 
-`set array number expression end`
+`array.write array number expression end`
 
 Clones the array and sets the value at the index of the number to the value of
 the expression. The cloned array is returned.
 
-`for array lambda end`
+`array.for array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 The value of the last evaluated lambda is returned.
 
-`map array lambda end`
+`array.map array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the result of each lambda call is returned.
 
-`filter array lambda end`
+`array.filter array lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's first parameter and the index bound to the lambda's second parameter.
 An array whose values are the values for which the lambda call returned a
 truth-y value is returned.
 
-`reduce array expression lambda end`
+`array.reduce array expression lambda end`
 
 For each value in the array, the lambda is called with the value bound to the
 lambda's second parameter and the index bound to the lambda's third parameter.
@@ -324,32 +317,32 @@ is bound to the value of expression. For each subsequent value in the array, the
 first parameter is bound to the value returned by the previous lambda call. The
 value of the last evaluated lambda is returned.
 
-`push array expression end`
+`array.push array expression end`
 
 Clones the array and appends the value of the expression to the cloned array. 
 The cloned array is returned.
 
-`pop array end`
+`array.pop array end`
 
 Clones the array and removes the last value from the cloned array. The cloned
 array is returned.
 
-`unshift array expression end`
+`array.unshift array expression end`
 
 Clones the array and prepends the value of the expression to the cloned array.
 The cloned array is returned.
 
-`shift array end`
+`array.shift array end`
 
 Clones the array and removes the first value from the cloned array. The cloned
 array is returned.
 
-`reverse array end`
+`array.reverse array end`
 
 Clones the array and reverses the order of the values in the cloned array. The
 cloned array is returned.
 
-`sort array lambda end`
+`array.sort array lambda end`
 
 Clones the array and sorts the values in the cloned array according to the value
 returned by the lambda. The lambda takes two parameters, the values of which are
@@ -358,64 +351,60 @@ should be sorted before the second, a positive number if the first value should
 be sorted after the second, and `0` if the values are equal. The cloned (sorted)
 array is returned.
 
-`segment array number number end`
+`array.segment array number number end`
 
 Clones the array and returns a new array whose values are the values of the
 cloned array between the first index and the second index (exclusive). The
 cloned array is returned.
 
-`splice array number array end`
+`array.splice array number array end`
 
 Clones the first array and divides it in half at the index of the number. It
 appends the values of the second array to the first half, and then appends the
 second half to the result. The result is returned.
 
-### Records
+### Maps
 
-`record (string expression)* end`
+`map (string expression)* end`
 
-Creates a record whose keys are the strings and whose values are the values of
-the expressions. The record is returned.
+Creates a map whose keys are the strings and whose values are the values of
+the expressions. The map is returned.
 
-`read record string end`
+`map.read map string end`
 
-The value of the record at the key of the string is returned.
+The value of the map at the key of the string is returned.
 
-`write record string expression end`
+`map.write map string expression end`
 
-Clones the record and sets the value at the key of the string to the value of
-the expression. The cloned record is returned.
+Clones the map and sets the value at the key of the string to the value of
+the expression. The cloned map is returned.
 
-`delete record array end`
+`map.delete map array end`
 
-The array is an array of strings. Clones the record and deletes the keys of the
-strings from the cloned record. The cloned record is returned.
+The array is an array of strings. Clones the map and deletes the keys of the
+strings from the cloned map. The cloned map is returned.
 
-`extract record array end`
+`map.extract map array end`
 
-The array is an array of strings. Returns a record whose keys are the keys of
+The array is an array of strings. Returns a map whose keys are the keys of
 the strings and whose values are the values of the keys of the strings in the
-record. The new record is returned.
+map. The new map is returned.
 
-`merge record record end`
+`map.merge map map end`
 
-Clones the first record and then for each kv pair in the second record, sets the
-value of the cloned record at the key of the kv pair to the value of the kv
-pair. Returns the cloned record.
+Clones the first map and then for each kv pair in the second map, sets the
+value of the cloned map at the key of the kv pair to the value of the kv
+pair. Returns the cloned map.
 
-`keys record end`
+`map.keys map end`
 
-An array whose values are the keys of the record is returned.
+An array whose values are the keys of the map is returned.
 
-`values record end`
+`map.values map end`
 
-An array whose values are the values of the record is returned.
+An array whose values are the values of the map is returned.
 
 ### Strings
-
-__TODO__
-
-- [ ] regular expression engine
 
 `split string end`
 
@@ -430,21 +419,28 @@ Returns a string whose value is the concatenation of the values of the strings.
 Returns a string whose value is the substring of the string between the first
 index and the second index (exclusive).
 
-### Console
+__TODO__
+
+- [ ] regular expression engine
+
+### Input and Output
 
 __TODO__
 
 - [x] `io.puts`
-- [ ] `gets`
-- [ ] `err`
+- [ ] `io.gets`
+- [ ] `io.err`
+- [ ] _WIP_ `io.http`
+- [ ] `io.file.read`
+- [ ] `io.file.write`
+- [ ] documentation
 
-`io.puts expression* end`
+### Signals and exceptions
 
-Prints the values of the expressions to stdout.
+__TODO__
 
-### Experimental Features
-
-_Coming soon!_
+- [ ] A Lisp-style _condition_ system but more focused on _signaling_.
+- [ ] documentation
 
 # Run a script
 
@@ -469,15 +465,22 @@ done
  core language features. Basically, this means "all of the keywords and
  operators". We'll do this incrementally, in phases.
 
+ You can run the tests with:
+
+ ```bash
+ ./test.sh
+ ```
+
 __TODO__
 
- - [ ] _WIP_ Happy-path coverage for all keywords and operators
+ - [ ] _WIP_ Smoke coverage for all keywords and operators
   - [x] array
   - [x] strings
-  - [ ] record
+  - [ ] map
   - [ ] branching
   - [ ] lambdas
-  - [ ] http
+  - [ ] io
+    - [x] http
   - [ ] namespaces
   - [ ] emitters
   - [ ] exceptions
@@ -486,13 +489,6 @@ __TODO__
  - [ ] Edge-case coverage for all keywords and operators
  - [ ] Happy-path coverage for at least one robust, traditional Gadfly program.
  - [ ] _Down the road_ Fuzzing for all keywords and operators
-
-
- You can run the tests with:
-
- ```bash
- ./test.sh
- ```
 
 # Notes on the vision
 
@@ -572,20 +568,20 @@ __TODO__
 - [ ] mvp language features
   - [x] array
   - [x] strings
-  - [x] record
+  - [x] map
   - [x] branching
   - [x] lambdas
   - [x] variables
   - [x] predicates
-  - [ ] http
+  - [ ] _WIP_ io
   - [ ] namespaces
   - [ ] emitters
-  - [ ] exceptions
+  - [ ] signals
 - [ ] syntax highlighting
 
 ### Phase 2, design the cybernetic constructs
 
-_Think of this like an exosuit for language models?_
+_Like an exosuit for language models?_
 
 - [ ] the copilot architecture (analysis, synthesis, proving, observation, etc.)
 - [ ] the user flow

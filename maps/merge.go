@@ -1,4 +1,4 @@
-package record
+package maps
 
 import (
 	"errors"
@@ -20,7 +20,7 @@ func Merge(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	base, ok := baseV.(map[string]value.Value)
 
 	if !ok {
-		return nil, errors.New("not a record")
+		return nil, errors.New("not a map")
 	}
 
 	newV, err := eval(trajectory.Children[1])
@@ -32,7 +32,7 @@ func Merge(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	new, ok := newV.(map[string]value.Value)
 
 	if !ok {
-		return nil, errors.New("not a record")
+		return nil, errors.New("not a map")
 	}
 
 	merged := make(map[string]value.Value)

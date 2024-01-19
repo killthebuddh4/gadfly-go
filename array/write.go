@@ -9,7 +9,7 @@ import (
 	"github.com/killthebuddh4/gadflai/value"
 )
 
-func Set(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
+func Write(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	traj.Expand(trajectory)
 
 	dataV, err := eval(trajectory.Children[0])

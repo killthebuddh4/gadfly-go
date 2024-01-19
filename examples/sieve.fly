@@ -15,11 +15,10 @@ def is_prime
       let test base end
 
       while test < n
-        let test test + base
-        end
+        let test test + base end
 
         let composites
-          push composites
+          array.push composites
             test
           end
         end

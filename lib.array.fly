@@ -1,6 +1,6 @@
 def slice
   fn |arr start finish|
-    filter arr 
+    array.filter arr 
       fn |el i|
         def result
           and
@@ -19,7 +19,7 @@ def length
   fn |arr|
     def result 0 end
 
-    for arr
+    array.for arr
       fn |e i|
         let result i end
       end
@@ -33,7 +33,7 @@ def includes
   fn |arr e|
     def includes false end
 
-    for arr
+    array.for arr
       fn |test i|
         if test == e
           let includes true end
@@ -63,10 +63,10 @@ def equal
       nil
     end
 
-    for arr_a
+    array.for arr_a
       fn |e i|
         def b
-          get arr_b i end
+          array.read arr_b i end
         end
 
         if e != b

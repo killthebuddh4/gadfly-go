@@ -1,4 +1,4 @@
-package record
+package maps
 
 import (
 	"errors"
@@ -20,7 +20,7 @@ func Read(trajectory *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 	base, ok := baseV.(map[string]value.Value)
 
 	if !ok {
-		return nil, errors.New("not a record")
+		return nil, errors.New("not a map")
 	}
 
 	keyV, err := eval(trajectory.Children[1])

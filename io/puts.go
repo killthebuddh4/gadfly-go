@@ -36,7 +36,6 @@ func Puts(trajecotry *traj.Trajectory, eval eval.Eval) (value.Value, error) {
 		if arg == nil {
 			fmt.Println("nil")
 		} else if mOk {
-			fmt.Println("record")
 			for k, v := range m {
 				fmt.Printf("    %s: ", k)
 				fmt.Println(v)

@@ -20,15 +20,13 @@ func isBlock(lexeme lex.Lexeme) bool {
 		return true
 	case "if", "and", "or", "while":
 		return true
-	case "array", "get", "set", "for", "map", "filter", "reduce", "push", "pop", "shift", "unshift", "segment", "find", "splice", "reverse", "sort":
+	case "array", "array.read", "array.write", "array.for", "array.map", "array.filter", "array.reduce", "array.push", "array.pop", "array.shift", "array.unshift", "array.segment", "array.find", "array.splice", "array.reverse", "array.sort":
 		return true
-	case "record", "merge", "delete", "keys", "values", "read", "write", "extract":
+	case "map", "map.merge", "map.delete", "map.keys", "map.values", "map.read", "map.write", "map.extract":
 		return true
 	case "split", "substring", "concat", "chars":
 		return true
-	case "http":
-		return true
-	case "io.puts":
+	case "io.puts", "io.http":
 		return true
 	default:
 		return false
