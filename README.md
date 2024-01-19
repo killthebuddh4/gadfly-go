@@ -51,7 +51,7 @@ _predicate_, or _literal_.  __Comments__ begin with the `#` character and
 continue until the end of the line. Whitespace is ignored except to separate
 tokens.
 
-For the rest of this section, text _`formatted like this`_ indicates a an
+For the rest of this section, _`italic text on a gray background`_ denotes an
 _expression signature_. For all expression signatures, the `*` character
 indicates zero or more occurrences of the preceding expression. The `+`
 character indicates one or more occurrences of the preceding expression. The `?`
