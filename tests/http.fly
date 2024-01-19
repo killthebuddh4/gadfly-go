@@ -1,0 +1,93 @@
+puts "#######################################################" end
+puts "" "" end
+puts "Testing gadfly.http package..." end
+puts "" "" end
+puts "#######################################################" end
+puts "" "" end
+
+#
+#
+# test data
+#
+#
+
+def get_response
+  record
+    "userId" 1
+    "id" 1
+    "title" "delectus aut autem"
+    "completed" false
+  end
+end
+
+def post_response
+  record
+    "id" 101
+  end
+end
+
+def test_value nil end
+
+#
+#
+# get request
+#
+#
+
+let test_value
+  http
+    "https://jsonplaceholder.typicode.com/todos/1"
+    "GET"
+    record
+      "Accept" "application/json"
+    end
+    record end
+  end
+end
+
+def get_worked
+  @record.equal
+    test_value
+    get_response
+  end
+end
+
+if
+  get_worked
+  puts "PASS: http get request" end
+  puts "FAIL: http get request" end
+end
+
+#
+#
+# post request
+#
+#
+
+let test_value
+  http
+    "https://jsonplaceholder.typicode.com/posts"
+    "POST"
+    record
+      "Accept" "application/json"
+    end
+    record
+      "title" "foo"
+      "body" "bar"
+      "userId" 1
+    end
+  end
+end
+
+def post_worked
+  @record.equal
+    test_value
+    post_response
+  end
+end
+
+if
+  post_worked
+  puts "PASS: http post request" end
+  puts "FAIL: http post request" end
+end

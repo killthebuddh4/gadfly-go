@@ -1,4 +1,4 @@
-def mod
+def math.mod
   fn |n k|
     or
       n < k
@@ -8,7 +8,7 @@ def mod
       0
 
       n > k
-      @ mod
+      @math.mod
         n - k
         k
       end
@@ -16,7 +16,7 @@ def mod
   end
 end
 
-def factorial
+def math.factorial
   fn |n|
     or
       n == 0
@@ -28,7 +28,7 @@ def factorial
       n > 0
       do
         def inner
-          @factorial
+          @math.factorial
             n - 1
           end
         end

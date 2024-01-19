@@ -1,7 +1,7 @@
 def is_fizz
   fn |n|
     def r
-      @mod 
+      @math.mod 
         n 3
       end
     end
@@ -13,7 +13,7 @@ end
 def is_buzz
   fn |n|
     def r
-      @mod 
+      @math.mod 
         n 5
       end
     end

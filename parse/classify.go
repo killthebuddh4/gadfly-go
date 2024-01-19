@@ -26,6 +26,8 @@ func isBlock(lexeme lex.Lexeme) bool {
 		return true
 	case "split", "substring", "concat", "chars":
 		return true
+	case "http":
+		return true
 	case "puts":
 		return true
 	default:
@@ -51,7 +53,7 @@ func isNil(lexeme lex.Lexeme) bool {
 
 func isIdentifier(lexeme lex.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
-	case "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+	case ".", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
 		return true
 	default:
 		return false

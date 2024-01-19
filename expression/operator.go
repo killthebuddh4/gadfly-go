@@ -54,6 +54,7 @@ var OPERATORS = []string{
 	"chars",
 	"effect",
 	"record",
+	"http",
 	"+",
 	"-",
 	"*",
