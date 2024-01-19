@@ -39,11 +39,11 @@ be awesome!_
 - [Notes on the language](#notes-on-the-language)
 - [Notes on the interpreter](#notes-on-the-interpreter)
 - [Roadmap](#roadmap)
-    - [The core language](#the-core-language)
-    - [Parse tree tools](#parse-tree-tools)
-    - [Nice to haves](#nice-to-haves)
-    - [Autonomous program synthesis](#autonomous-program-synthesis)
-- [Topics to research](#topics-to-research)
+    - [Phase 1, language core](#phase-1-language-core)
+    - [Phase 2, design the cybernetic constructs](#phase-2-design-the-cybernetic-constructs)
+    - [Phase 3, intelligence](#phase-3-intelligence)
+    - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
+- [Work in progress](#work-in-progress)
 
 
 # Language core and syntax
@@ -469,20 +469,24 @@ done
  core language features. Basically, this means "all of the keywords and
  operators". We'll do this incrementally, in phases.
 
+__TODO__
+
  - [ ] _WIP_ Happy-path coverage for all keywords and operators
+  - [x] array
+  - [x] strings
+  - [ ] record
+  - [ ] branching
+  - [ ] lambdas
+  - [ ] http
+  - [ ] namespaces
+  - [ ] emitters
+  - [ ] exceptions
+  - [ ] variables
+  - [ ] predicates
  - [ ] Edge-case coverage for all keywords and operators
- - [ ] Happy-path coverage for at least one robust Gadfly program.
+ - [ ] Happy-path coverage for at least one robust, traditional Gadfly program.
  - [ ] _Down the road_ Fuzzing for all keywords and operators
 
- Right now we have happy path tests for:
-
- - [x] array
- - [x] strings
- - [ ] record
- - [ ] branching
- - [ ] lambdas
- - [ ] variables
- - [ ] predicates
 
  You can run the tests with:
 
@@ -535,7 +539,7 @@ done
 - you never edit a node in the parse tree, you only deprecate them
 - the parse tree represents a decision making process that the AI will incorporate
 - one way to think about how this works is that it uses LLMs and execution
-  history to discretize the continuous decision space
+  history to discretize the continuous decision spac
 - one way to think about what the copilot is doing is “how to write a program
   that proves a fact about the world”
 - similar to the previous bullet, there’s a way to think about is synthesizing
@@ -558,50 +562,59 @@ done
 
 # Roadmap
 
-### The core language
+### Phase 1, language core
 
-- [x] interpreter
+- [x] design and implement the architecture
   - [x] lex
   - [x] parse
   - [x] eval
   - [x] closures
 - [ ] mvp language features
-  - [/] array and associated utilities
-  - [ ] hashmaps and associated utilities
-  - [/] strings and associated utilities
-  - [ ] exceptions and associated utilities
-  - [/] puts and gets
-  - [ ] http functionality
-- [ ] error reporting
-- [ ] very simple FFI (maybe)
+  - [x] array
+  - [x] strings
+  - [x] record
+  - [x] branching
+  - [x] lambdas
+  - [x] variables
+  - [x] predicates
+  - [ ] http
+  - [ ] namespaces
+  - [ ] emitters
+  - [ ] exceptions
+- [ ] syntax highlighting
 
-### Parse tree tools
+### Phase 2, design the cybernetic constructs
 
-- [ ] start, stop, pause, resume, retry
-- [ ] serialize, deserialize, resume
-- [ ] what else?
+_Think of this like an exosuit for language models?_
 
-### Nice to haves
+- [ ] the copilot architecture (analysis, synthesis, proving, observation, etc.)
+- [ ] the user flow
+- [ ] the persistence layer
+- [ ] feedback and expansion
+- [ ] delegation and orchestration
+- [ ] Implement MVP tooling for the above and for the next phase
 
-- [ ] syntax highlighter
+### Phase 3, intelligence
+
+- [ ] Prompt generation
+- [ ] observation mechanisms
+- [ ] evaluation mechanisms
+- [ ] retry mechanisms
+- [ ] shuffling mechanisms
+- [ ] delegation and orchestration
+
+### Nice to haves (unplanned)
+
 - [ ] language server protocol implementation
 - [ ] repl
 - [ ] tail call optimization
+- [ ] static typing
 
-### Autonomous program synthesis
+# Work in progress
 
-- policies
-- reflection
-- remote subtrees
-- generated subtrees
-
-# Topics to research
-
-- probabilistic programming
-- compiler design and implementation
-- data flow analysis and control flow analysis
-- prolog and logic programming
-- CSP (communicating sequential processes)
-- the actor model
-- consensus algorithms
-- ...
+- [ ] add an intepreter section at the top of the README
+- [ ] merge the syntax and semantics sections in the README
+- [ ] http keyword
+- [ ] namespaces
+- [ ] emitters
+- [ ] try to get a rough draft of the interpreter section using notes
