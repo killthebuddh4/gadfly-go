@@ -5,11 +5,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/killthebuddh4/gadflai/exec"
-	exp "github.com/killthebuddh4/gadflai/expression"
+	eval1 "github.com/killthebuddh4/gadflai/eval"
 	"github.com/killthebuddh4/gadflai/lex"
 	"github.com/killthebuddh4/gadflai/parse"
-	traj "github.com/killthebuddh4/gadflai/trajectory"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
 func main() {
@@ -58,31 +57,31 @@ func eval(pathToFile string) {
 		return
 	}
 
-	rootOperator, err := exp.NewOperator("program")
+	rootOperator, err := types.NewOperator("program")
 
 	if err != nil {
 		fmt.Println("Error creating root operator: ", err)
 		return
 	}
 
-	rootExp := exp.NewExpression(nil, rootOperator, []*exp.Expression{})
+	rootExp := types.NewExpression(nil, rootOperator, []*types.Expression{})
 
 	parseErr := parse.Parse(&rootExp, lexemes)
 
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {
-		exp.Print(rootExp, 0)
+		types.Print(rootExp, 0)
 	}
 
-	root := traj.Traj(nil, &rootExp)
+	root := types.NewTrajectory(nil, &rootExp)
 
 	if parseErr != nil {
 		fmt.Println("Error parsing: ", parseErr)
 		return
 	}
 
-	_, err = exec.Exec(&root)
+	_, err = eval1.Eval(&root)
 
 	if err != nil {
 		fmt.Println("Error evaluating: ", err)

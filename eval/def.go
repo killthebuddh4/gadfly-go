@@ -3,16 +3,16 @@ package eval
 import (
 	"errors"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
+	traj "github.com/killthebuddh4/gadflai/types"
 )
 
-func Def(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Def(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
 
-	var value value.Value
+	var value types.Value
 
 	for _, input := range trajectory.Children[1:] {
 		val, err := eval(input)
@@ -29,12 +29,12 @@ func Def(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return value, nil
 }
 
-func Let(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Let(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
 
-	var value value.Value
+	var value types.Value
 
 	for _, input := range trajectory.Children[1:] {
 		val, err := eval(input)
@@ -51,7 +51,7 @@ func Let(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return value, nil
 }
 
-func Identifier(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
+func Identifier(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	if trajectory.Parent == nil {
 		return nil, errors.New("cannot evaluate identifier " + trajectory.Expression.Operator.Value + " with nil parent")
 	}

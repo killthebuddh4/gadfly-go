@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/killthebuddh4/gadflai/types"
 )
 
 func (s *Lexer) scan() error {
@@ -168,7 +170,7 @@ func (s *Lexer) scan() error {
 		fmt.Println("adding token <" + s.Source[s.Start:s.Current] + ">")
 	}
 
-	s.Tokens = append(s.Tokens, Lexeme{
+	s.Tokens = append(s.Tokens, types.Lexeme{
 		Start:  s.Start,
 		Length: s.Current - s.Start,
 		Text:   s.Source[s.Start:s.Current],

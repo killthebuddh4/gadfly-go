@@ -1,10 +1,14 @@
 package lex
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/killthebuddh4/gadflai/types"
+)
 
 type Lexer struct {
 	Source  string
-	Tokens  []Lexeme
+	Tokens  []types.Lexeme
 	Start   int
 	Current int
 }
@@ -12,7 +16,7 @@ type Lexer struct {
 func NewLexer(source string) Lexer {
 	return Lexer{
 		Source:  source,
-		Tokens:  []Lexeme{},
+		Tokens:  []types.Lexeme{},
 		Start:   0,
 		Current: 0,
 	}

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	exp "github.com/killthebuddh4/gadflai/expression"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) predicate(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) {
 	left, err := p.equality(parent)
 
 	if err != nil {
@@ -22,7 +22,7 @@ func (p *Parser) predicate(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing logical for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -34,7 +34,7 @@ func (p *Parser) predicate(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{left, right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
 
 		left = &exp
 	}
@@ -42,7 +42,7 @@ func (p *Parser) predicate(parent *exp.Expression) (*exp.Expression, error) {
 	return left, nil
 }
 
-func (p *Parser) equality(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 	left, err := p.comparison(parent)
 
 	if err != nil {
@@ -56,7 +56,7 @@ func (p *Parser) equality(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing equality for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -68,7 +68,7 @@ func (p *Parser) equality(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{left, right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
 
 		left = &exp
 	}
@@ -76,7 +76,7 @@ func (p *Parser) equality(parent *exp.Expression) (*exp.Expression, error) {
 	return left, nil
 }
 
-func (p *Parser) comparison(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error) {
 	left, err := p.term(parent)
 
 	if err != nil {
@@ -90,7 +90,7 @@ func (p *Parser) comparison(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing comparison for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -102,7 +102,7 @@ func (p *Parser) comparison(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{left, right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
 
 		left = &exp
 	}
@@ -110,7 +110,7 @@ func (p *Parser) comparison(parent *exp.Expression) (*exp.Expression, error) {
 	return left, nil
 }
 
-func (p *Parser) term(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 	left, err := p.factor(parent)
 
 	if err != nil {
@@ -124,7 +124,7 @@ func (p *Parser) term(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing term for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -136,7 +136,7 @@ func (p *Parser) term(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{left, right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
 
 		left = &exp
 	}
@@ -144,7 +144,7 @@ func (p *Parser) term(parent *exp.Expression) (*exp.Expression, error) {
 	return left, nil
 }
 
-func (p *Parser) factor(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 	left, err := p.unary(parent)
 
 	if err != nil {
@@ -158,7 +158,7 @@ func (p *Parser) factor(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing factor for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -170,7 +170,7 @@ func (p *Parser) factor(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{left, right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
 
 		left = &exp
 	}
@@ -178,7 +178,7 @@ func (p *Parser) factor(parent *exp.Expression) (*exp.Expression, error) {
 	return left, nil
 }
 
-func (p *Parser) unary(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 	if accept(p, isUnary) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
@@ -186,7 +186,7 @@ func (p *Parser) unary(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing unary for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
@@ -198,7 +198,7 @@ func (p *Parser) unary(parent *exp.Expression) (*exp.Expression, error) {
 			return nil, err
 		}
 
-		exp := exp.NewExpression(nil, operator, []*exp.Expression{right})
+		exp := types.NewExpression(nil, operator, []*types.Expression{right})
 
 		return &exp, nil
 	}
@@ -206,7 +206,7 @@ func (p *Parser) unary(parent *exp.Expression) (*exp.Expression, error) {
 	return p.atom(parent)
 }
 
-func (p *Parser) atom(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 	if accept(p, isAtom) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
@@ -214,13 +214,13 @@ func (p *Parser) atom(parent *exp.Expression) (*exp.Expression, error) {
 			fmt.Println("Parsing atom for lexeme:", p.previous().Text)
 		}
 
-		operator, err := exp.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text)
 
 		if err != nil {
 			return nil, err
 		}
 
-		result := exp.NewExpression(nil, operator, []*exp.Expression{})
+		result := types.NewExpression(nil, operator, []*types.Expression{})
 
 		return &result, nil
 	}

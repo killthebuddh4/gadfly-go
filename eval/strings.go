@@ -3,12 +3,11 @@ package eval
 import (
 	"errors"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Chars(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Chars(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	arg, err := eval(trajectory.Children[0])
 
@@ -22,7 +21,7 @@ func Chars(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, errors.New("chars only accepts strings")
 	}
 
-	result := []value.Value{}
+	result := []types.Value{}
 
 	for _, c := range str {
 		result = append(result, string(c))

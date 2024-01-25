@@ -3,12 +3,12 @@ package eval
 import (
 	"errors"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
+	traj "github.com/killthebuddh4/gadflai/types"
 )
 
-func If(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func If(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	whenExp := trajectory.Children[0]
 	thenExp := trajectory.Children[1]
@@ -33,14 +33,14 @@ func If(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	}
 }
 
-func And(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
 		return nil, errors.New("and must have even number of inputs")
 	}
 
-	var val value.Value = nil
+	var val types.Value = nil
 
 	for i := 0; i < len(trajectory.Children); i += 2 {
 		conditionVal, err := eval(trajectory.Children[i])
@@ -71,8 +71,8 @@ func And(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return val, nil
 }
 
-func Or(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
 		return nil, errors.New("or must have even number of inputs")
@@ -99,10 +99,10 @@ func Or(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return nil, nil
 }
 
-func While(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func While(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
-	var value value.Value = nil
+	var value types.Value = nil
 
 	for {
 		condV, err := eval(trajectory.Children[0])

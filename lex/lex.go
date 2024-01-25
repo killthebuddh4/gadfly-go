@@ -1,6 +1,8 @@
 package lex
 
-func Lex(source string) ([]Lexeme, error) {
+import "github.com/killthebuddh4/gadflai/types"
+
+func Lex(source string) ([]types.Lexeme, error) {
 	lexer := NewLexer(source)
 
 	for !lexer.isAtEnd() {
@@ -12,7 +14,7 @@ func Lex(source string) ([]Lexeme, error) {
 		}
 	}
 
-	eof, err := NewEof(source)
+	eof, err := types.NewEof(source)
 
 	if err != nil {
 		return nil, err

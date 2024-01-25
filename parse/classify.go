@@ -1,6 +1,6 @@
 package parse
 
-import "github.com/killthebuddh4/gadflai/lex"
+import "github.com/killthebuddh4/gadflai/types"
 
 /*
  * Note that these classifiers are very much coupled to the grammar and must be
@@ -8,11 +8,12 @@ import "github.com/killthebuddh4/gadflai/lex"
  * violation of encapsulation, but I think it's fine in this case.
  */
 
-func isLambda(lexeme lex.Lexeme) bool {
+func isLambda(lexeme types.Lexeme) bool {
+
 	return lexeme.Text == "fn"
 }
 
-func isBlock(lexeme lex.Lexeme) bool {
+func isBlock(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "do", "panic":
 		return true
@@ -33,23 +34,23 @@ func isBlock(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isEnd(lexeme lex.Lexeme) bool {
+func isEnd(lexeme types.Lexeme) bool {
 	return lexeme.Text == "end"
 }
 
-func isTrue(lexeme lex.Lexeme) bool {
+func isTrue(lexeme types.Lexeme) bool {
 	return lexeme.Text == "true"
 }
 
-func isFalse(lexeme lex.Lexeme) bool {
+func isFalse(lexeme types.Lexeme) bool {
 	return lexeme.Text == "false"
 }
 
-func isNil(lexeme lex.Lexeme) bool {
+func isNil(lexeme types.Lexeme) bool {
 	return lexeme.Text == "nil"
 }
 
-func isIdentifier(lexeme lex.Lexeme) bool {
+func isIdentifier(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case ".", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
 		return true
@@ -58,11 +59,11 @@ func isIdentifier(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isPipe(lexeme lex.Lexeme) bool {
+func isPipe(lexeme types.Lexeme) bool {
 	return lexeme.Text == "|"
 }
 
-func isLogical(lexeme lex.Lexeme) bool {
+func isLogical(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "&&", "||":
 		return true
@@ -71,7 +72,7 @@ func isLogical(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isEquality(lexeme lex.Lexeme) bool {
+func isEquality(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "==", "!=":
 		return true
@@ -80,7 +81,7 @@ func isEquality(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isComparison(lexeme lex.Lexeme) bool {
+func isComparison(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "<", "<=", ">", ">=":
 		return true
@@ -89,7 +90,7 @@ func isComparison(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isTerm(lexeme lex.Lexeme) bool {
+func isTerm(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "+", "-":
 		return true
@@ -98,7 +99,7 @@ func isTerm(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isFactor(lexeme lex.Lexeme) bool {
+func isFactor(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "*", "/":
 		return true
@@ -107,7 +108,7 @@ func isFactor(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isUnary(lexeme lex.Lexeme) bool {
+func isUnary(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "-", "!":
 		return true
@@ -116,11 +117,11 @@ func isUnary(lexeme lex.Lexeme) bool {
 	}
 }
 
-func isString(lexeme lex.Lexeme) bool {
+func isString(lexeme types.Lexeme) bool {
 	return string(lexeme.Text[0]) == "\""
 }
 
-func isNumber(lexeme lex.Lexeme) bool {
+func isNumber(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
 		return true
@@ -130,7 +131,7 @@ func isNumber(lexeme lex.Lexeme) bool {
 }
 
 // Is an atom anything that is not more specific?
-func isAtom(lexeme lex.Lexeme) bool {
+func isAtom(lexeme types.Lexeme) bool {
 	if isBlock(lexeme) {
 		return false
 	}

@@ -3,12 +3,11 @@ package eval
 import (
 	"errors"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Panic(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Panic(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	messageV, err := eval(trajectory.Children[0])
 

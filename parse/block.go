@@ -4,23 +4,23 @@ import (
 	"fmt"
 	"os"
 
-	exp "github.com/killthebuddh4/gadflai/expression"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) block(parent *exp.Expression) (*exp.Expression, error) {
+func (p *Parser) block(parent *types.Expression) (*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {
 		fmt.Println("Parsing block for lexeme:", p.previous().Text)
 	}
 
-	operator, err := exp.NewOperator(p.previous().Text)
+	operator, err := types.NewOperator(p.previous().Text)
 
 	if err != nil {
 		return nil, err
 	}
 
-	root := exp.NewExpression(parent, operator, []*exp.Expression{})
+	root := types.NewExpression(parent, operator, []*types.Expression{})
 
 	for {
 		if accept(p, isEnd) {

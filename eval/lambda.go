@@ -4,26 +4,25 @@ import (
 	"errors"
 	"fmt"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Lambda(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	var lambda traj.Lambda = func(arguments ...value.Value) (value.Value, error) {
+func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
 		if len(arguments) != len(trajectory.Expression.Parameters) {
 			return nil, errors.New("Could not evaluate lambda, wrong number of arguments, expected " + fmt.Sprint(len(trajectory.Expression.Parameters)) + " got " + fmt.Sprint(len(arguments)))
 		}
 
-		scope := traj.Traj(trajectory, trajectory.Expression)
+		scope := types.NewTrajectory(trajectory, trajectory.Expression)
 
 		for i, param := range trajectory.Expression.Parameters {
-			traj.DefineName(&scope, param, arguments[i])
+			types.DefineName(&scope, param, arguments[i])
 		}
 
-		var value value.Value
+		var value types.Value
 
 		for _, exp := range trajectory.Expression.Children {
-			child := traj.Traj(&scope, exp)
+			child := types.NewTrajectory(&scope, exp)
 
 			val, err := eval(&child)
 
@@ -40,8 +39,8 @@ func Lambda(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return lambda, nil
 }
 
-func Call(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Call(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	fnVal, err := eval(trajectory.Children[0])
 
@@ -49,7 +48,7 @@ func Call(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnVal.(traj.Lambda)
+	fn, ok := fnVal.(types.Lambda)
 
 	if !ok {
 		return nil, errors.New("Error evaluating call, expression that didn't evaluate to a Lambda, got " + fmt.Sprint(fnVal))
@@ -57,7 +56,7 @@ func Call(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 
 	children := trajectory.Children[1:]
 
-	args := []value.Value{}
+	args := []types.Value{}
 
 	if len(children) > 0 {
 		for _, traj := range children {

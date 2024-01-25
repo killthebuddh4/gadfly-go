@@ -4,12 +4,11 @@ import (
 	"errors"
 	"reflect"
 
-	traj "github.com/killthebuddh4/gadflai/trajectory"
-	"github.com/killthebuddh4/gadflai/value"
+	"github.com/killthebuddh4/gadflai/types"
 )
 
-func BangEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func BangEqual(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -25,8 +24,8 @@ func BangEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return left != right, nil
 }
 
-func EqualEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func EqualEqual(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -42,8 +41,8 @@ func EqualEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return left == right, nil
 }
 
-func Greater(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Greater(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -71,8 +70,8 @@ func Greater(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV > rightV, nil
 }
 
-func GreaterEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func GreaterEqual(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -100,8 +99,8 @@ func GreaterEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV >= rightV, nil
 }
 
-func Less(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Less(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -129,8 +128,8 @@ func Less(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV < rightV, nil
 }
 
-func LessEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func LessEqual(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -158,8 +157,8 @@ func LessEqual(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV <= rightV, nil
 }
 
-func Minus(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Minus(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	if len(trajectory.Children) == 1 {
 		return MinusUnary(trajectory, eval)
@@ -168,8 +167,8 @@ func Minus(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	}
 }
 
-func MinusBinary(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func MinusBinary(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -197,8 +196,8 @@ func MinusBinary(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV - rightV, nil
 }
 
-func MinusUnary(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func MinusUnary(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	right, rightErr := eval(trajectory.Children[1])
 
@@ -215,8 +214,8 @@ func MinusUnary(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return -rightV, nil
 }
 
-func Plus(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Plus(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -244,8 +243,8 @@ func Plus(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV + rightV, nil
 }
 
-func Multiply(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Multiply(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -273,8 +272,8 @@ func Multiply(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV / rightV, nil
 }
 
-func Divide(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Divide(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 	right, rightErr := eval(trajectory.Children[1])
@@ -302,8 +301,8 @@ func Divide(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return leftV * rightV, nil
 }
 
-func Bang(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Bang(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	right, rightErr := eval(trajectory.Children[1])
 
@@ -320,8 +319,8 @@ func Bang(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return !rightV, nil
 }
 
-func Conjunction(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Conjunction(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 
@@ -354,8 +353,8 @@ func Conjunction(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
 	return rightV, nil
 }
 
-func Disjunction(trajectory *traj.Trajectory, eval Eval) (value.Value, error) {
-	traj.Expand(trajectory)
+func Disjunction(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
 	left, leftErr := eval(trajectory.Children[0])
 

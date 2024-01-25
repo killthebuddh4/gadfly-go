@@ -3,20 +3,21 @@ package parse
 import (
 	"errors"
 
-	exp "github.com/killthebuddh4/gadflai/expression"
-	"github.com/killthebuddh4/gadflai/lex"
+	"github.com/killthebuddh4/gadflai/types"
+	lib "github.com/killthebuddh4/gadflai/types"
 )
 
-func Parse(root *exp.Expression, lexemes []lex.Lexeme) error {
+func Parse(root *types.Expression, lexemes []lib.Lexeme) error {
 	parser := Parser{
 		Lexemes: lexemes,
+
 		Current: 0,
 	}
 
 	return parser.program(root)
 }
 
-func (p *Parser) program(root *exp.Expression) error {
+func (p *Parser) program(root *types.Expression) error {
 	for !p.isAtEnd() {
 		err := p.expression(root)
 
@@ -28,7 +29,7 @@ func (p *Parser) program(root *exp.Expression) error {
 	return nil
 }
 
-func (p *Parser) expression(parent *exp.Expression) error {
+func (p *Parser) expression(parent *types.Expression) error {
 	if parent == nil {
 		return errors.New("cannot parse expression with nil parent")
 	}

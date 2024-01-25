@@ -3,15 +3,15 @@ package parse
 import (
 	"errors"
 
-	"github.com/killthebuddh4/gadflai/lex"
+	lib "github.com/killthebuddh4/gadflai/types"
 )
 
 type Parser struct {
-	Lexemes []lex.Lexeme
+	Lexemes []lib.Lexeme
 	Current int
 }
 
-func accept(p *Parser, predicate func(lexeme lex.Lexeme) bool) bool {
+func accept(p *Parser, predicate func(lexeme lib.Lexeme) bool) bool {
 	token := p.read()
 	if predicate(token) {
 		p.advance()
@@ -31,11 +31,11 @@ func (p *Parser) advance() error {
 	return nil
 }
 
-func (p Parser) read() lex.Lexeme {
+func (p Parser) read() lib.Lexeme {
 	return p.Lexemes[p.Current]
 }
 
-func (p Parser) previous() lex.Lexeme {
+func (p Parser) previous() lib.Lexeme {
 	return p.Lexemes[p.Current-1]
 }
 
