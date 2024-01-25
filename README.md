@@ -2,13 +2,14 @@ __Gadfly__ is an experimental expression-oriented functional programming
 language and treewalk interpreter. The ultimate goal is to provide a development
 environment for [autopoietic](https://en.wikipedia.org/wiki/Autopoiesis) copilot
 programs. The conventional aspects of the system are inspired by
-[scheme](https://www.scheme.org/) and [ruby](https://www.ruby-lang.org/en/).
-The (highly) experimental features draw on ideas from
-[cybernetics](https://en.wikipedia.org/wiki/Cybernetics), [symbolic
-AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence), and
-[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning)
-as well as more recent research surrounding how to build and orchestrate
-autonomous agents.
+[Scheme](https://www.scheme.org/),
+[Smalltalk](https://en.wikipedia.org/wiki/Smalltalk) and
+[Ruby](https://www.ruby-lang.org/en/).  The (highly) experimental features draw
+on ideas from [cybernetics](https://en.wikipedia.org/wiki/Cybernetics),
+[symbolic AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence),
+and [reinforcement
+learning](https://en.wikipedia.org/wiki/Reinforcement_learning) as well as more
+recent research surrounding how to build and orchestrate autonomous agents.
 
 _This project and documentation are under heavy development. If you
 see something is missing, find an error, have a question, or have anything at
