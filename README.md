@@ -19,6 +19,7 @@ For a (slightly) more detailed overview of the project, check out the [roadmap](
 # Contents
 
 - [Contents](#contents)
+- [The interesting part](#the-interesting-part)
 - [The language](#the-language)
     - [Blocks](#blocks)
     - [Variables](#variables)
@@ -42,6 +43,10 @@ For a (slightly) more detailed overview of the project, check out the [roadmap](
     - [Phase 3, intelligence](#phase-3-intelligence)
     - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
 - [Work in progress](#work-in-progress)
+
+# The interesting part
+
+- [ ] Write about daemons, ghosts, and theories.
 
 # The language
 
