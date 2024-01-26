@@ -1,25 +1,30 @@
 __Gadfly__ is an experimental expression-oriented functional programming
-language and treewalk interpreter. The ultimate goal is to provide a development
-environment for [autopoietic](https://en.wikipedia.org/wiki/Autopoiesis) copilot
-programs. The conventional aspects of the system are inspired by
+language, treewalk interpreter, and development environment. The ultimate goal
+is to provide a development environment for [autopoietic copilot
+programs](#autopoietic-copilot-programs).  The conventional aspects of the
+system are inspired by
+[Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)),
 [Scheme](https://www.scheme.org/),
 [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk) and
-[Ruby](https://www.ruby-lang.org/en/).  The (highly) experimental features draw
+[Ruby](https://www.ruby-lang.org/en/). The (highly) experimental features draw
 on ideas from [cybernetics](https://en.wikipedia.org/wiki/Cybernetics),
 [symbolic AI](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence),
 and [reinforcement
 learning](https://en.wikipedia.org/wiki/Reinforcement_learning) as well as more
 recent research surrounding how to build and orchestrate autonomous agents.
 
-_This project and documentation are under heavy development. If you
-see something is missing, find an error, have a question, or have anything at
-all to say, please don't hesitate to open an issue or reach out to me directly.
-For a (slightly) more detailed overview of the project, check out the [roadmap](#roadmap)_
+_This project and documentation are under heavy development. If you see
+something is missing, find an error, have a question, or have anything at all to
+say, please don't hesitate to open an issue or reach out to me directly.  For a
+(slightly) more detailed overview of the project, check out the
+[roadmap](#roadmap)_
 
 # Contents
 
 - [Contents](#contents)
-- [The interesting part](#the-interesting-part)
+- [Autopoietic copilot programs](#autopoietic-copilot-programs)
+  - [The central idea, the idea](#the-central-idea-the-idea)
+  - [The central idea, the implementation](#the-central-idea-the-implementation)
 - [The language](#the-language)
     - [Blocks](#blocks)
     - [Variables](#variables)
@@ -44,9 +49,62 @@ For a (slightly) more detailed overview of the project, check out the [roadmap](
     - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
 - [Work in progress](#work-in-progress)
 
-# The interesting part
+# Autopoietic copilot programs
 
-- [ ] Write about daemons, ghosts, and theories.
+An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a system
+that is capable of producing and maintaining itself. Our first goal is to
+bootstrap autopoietic computer programs. Our second goal is to bootstrap
+autopoietic _copilot programs_ (or "copilot" for brevity's sake). We define a
+copilot as a long-running program capable of satisfying requests to solve
+_basic, human-level_ problems in some domain and whose primary user interface is
+natural language. We roughly define "baisc, human-level" as a problem that in
+the year 2020 could probably be solved by a helpful human assistant but probably
+not be solved by any single computer program.
+
+## The central idea, the idea
+
+The central idea behind Gadfly is that programming languages and language models
+have a very powerful (and very natural) kind of resonance. On the one hand, the
+structure and utilities provided by a programming language and runtime are
+perfect tools for channeling a language model's reasoning capabilities (like
+exosuits for neural nets). On the other hand, the _ontology_ provided by a
+language model is a beautiful solution to the [multi-armed bandit
+problems](https://en.wikipedia.org/wiki/Multi-armed_bandit) that plague
+automatic program synthesis. A Gadfly program is, to my knowledge, a basically
+novel form of [neuro-symbolic
+AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI).
+
+## The central idea, the implementation
+
+To solve a given problem you need a good theory of the problem's domain. We
+think of a Gadfly program as an evolving theory of a domain. This idea is behind
+all novel features of Gadfly (the language, runtime, and tooling). Certain
+keywords in the Gadfly language enumerate (more or less) these novel features.
+
+The `daemon` keyword is an expression which takes as its arguments a _problem_
+and a _theory_. It is technically an iterator (like `map` or `for`). The daemon
+applies the theory to the problem again and again until the problem is solved or
+is deemed outside the theory's domain. On each unsuccessful application of the
+theory to the problem, the daemon may modify the theory. The problem is simply a
+request encoded as a natural language string. A theory is more complicated.
+
+__domain__ A natural language description of the kinds of problems the theory
+could be applied to.
+
+__signals__ A set of potential observations that could be made about the world
+that are relevant to theory. In particular, these are the observations required
+to verify solutions.
+
+__sensors__ A set of functions that, when called, return signals.
+
+__effects__ A set of functions that, when called, created signals in the world.
+
+__analyzer__ A program that can verify solutions. An analyzer is where
+sensors are called and signals interpreted.
+
+__synthesizer__ A synthesizer is a program that solves problems.  A synthesizer
+is where effects are called.
+
 
 # The language
 
