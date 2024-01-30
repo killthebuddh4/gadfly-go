@@ -28,12 +28,43 @@ func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
 	}
 }
 
+func ExpandBy(parent *Trajectory, exp *Expression) error {
+	var isChildExpression bool = false
+
+	for _, child := range parent.Expression.Children {
+		if child == exp {
+			isChildExpression = true
+		}
+	}
+
+	if !isChildExpression {
+		return errors.New("expression is not a child of parent")
+	}
+
+	var isAlreadyExpanded bool = false
+
+	for _, child := range parent.Children {
+		if child.Expression == exp {
+			isAlreadyExpanded = true
+		}
+	}
+
+	if isAlreadyExpanded {
+		return errors.New("expression is already expanded")
+	}
+
+	child := NewTrajectory(parent, exp)
+	parent.Children = append(parent.Children, &child)
+
+	return nil
+}
+
 func ExpandTraj(parent *Trajectory) error {
 	children := []*Trajectory{}
 
 	for _, child := range parent.Expression.Children {
-		traj := NewTrajectory(parent, child)
-		children = append(children, &traj)
+		child := NewTrajectory(parent, child)
+		children = append(children, &child)
 	}
 
 	parent.Children = children

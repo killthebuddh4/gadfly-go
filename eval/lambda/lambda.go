@@ -1,4 +1,4 @@
-package eval
+package lambda
 
 import (
 	"errors"
@@ -10,10 +10,11 @@ import (
 func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
 		if len(arguments) != len(trajectory.Expression.Parameters) {
+			fmt.Println(arguments)
 			return nil, errors.New("Could not evaluate lambda, wrong number of arguments, expected " + fmt.Sprint(len(trajectory.Expression.Parameters)) + " got " + fmt.Sprint(len(arguments)))
 		}
 
-		scope := types.NewTrajectory(trajectory, trajectory.Expression)
+		scope := types.NewTrajectory(trajectory, nil)
 
 		for i, param := range trajectory.Expression.Parameters {
 			types.DefineName(&scope, param, arguments[i])

@@ -16,20 +16,22 @@ def is_palindrome
     def is_p true end
 
     while k < l
-      let s
-        array.read arr k end
-      end
+      fn 
+        let s
+          array.read arr k end
+        end
 
-      let e
-        array.read arr l - k - 1 end
-      end
+        let e
+          array.read arr l - k - 1 end
+        end
 
-      if s != e
-        let is_p false end
-        nil
-      end
+        if s != e
+          let is_p false end
+          nil
+        end
 
-      let k k + 1 end
+        let k k + 1 end
+      end
     end
 
     is_p

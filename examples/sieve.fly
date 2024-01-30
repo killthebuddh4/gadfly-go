@@ -12,19 +12,23 @@ def is_prime
     def test base end
 
     while base < n
-      let test base end
+      fn
+        let test base end
 
-      while test < n
-        let test test + base end
+        while test < n
+          fn
+            let test test + base end
 
-        let composites
-          array.push composites
-            test
+            let composites
+              array.push composites
+                test
+              end
+            end
           end
         end
-      end
 
-      let base base + 1 end
+        let base base + 1 end
+      end
     end
 
     def is_composite
@@ -40,10 +44,12 @@ end
 def k 0 end
 
 while k < 100
-  if @is_prime k end
-    io.puts k end
-    nil
-  end
+  fn 
+    if @is_prime k end
+      io.puts k end
+      nil
+    end
 
-  let k k + 1 end
+    let k k + 1 end
+  end
 end

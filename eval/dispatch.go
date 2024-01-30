@@ -6,6 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/eval/ai"
 	"github.com/killthebuddh4/gadflai/eval/array"
 	"github.com/killthebuddh4/gadflai/eval/io"
+	"github.com/killthebuddh4/gadflai/eval/lambda"
 	"github.com/killthebuddh4/gadflai/eval/maps"
 	"github.com/killthebuddh4/gadflai/eval/strings"
 	"github.com/killthebuddh4/gadflai/types"
@@ -62,9 +63,9 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 	case "def":
 		return Def, nil
 	case "fn":
-		return Lambda, nil
+		return lambda.Lambda, nil
 	case "@":
-		return Call, nil
+		return lambda.Call, nil
 	case "let":
 		return Let, nil
 	case "while":

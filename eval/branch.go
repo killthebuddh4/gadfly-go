@@ -8,11 +8,13 @@ import (
 )
 
 func If(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+	err := types.ExpandBy(trajectory, trajectory.Expression.Children[0])
+
+	if err != nil {
+		return nil, err
+	}
 
 	whenExp := trajectory.Children[0]
-	thenExp := trajectory.Children[1]
-	elseExp := trajectory.Children[2]
 
 	conditionVal, err := eval(whenExp)
 
@@ -27,22 +29,29 @@ func If(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 	}
 
 	if condition {
-		return eval(thenExp)
+		err := types.ExpandBy(trajectory, trajectory.Expression.Children[1])
+		if err != nil {
+			return nil, err
+		}
 	} else {
-		return eval(elseExp)
+		err := types.ExpandBy(trajectory, trajectory.Expression.Children[2])
+		if err != nil {
+			return nil, err
+		}
 	}
+	exp := trajectory.Children[1]
+	return eval(exp)
 }
 
 func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	if (len(trajectory.Children) % 2) != 0 {
+	if (len(trajectory.Expression.Children) % 2) != 0 {
 		return nil, errors.New("and must have even number of inputs")
 	}
 
 	var val types.Value = nil
 
-	for i := 0; i < len(trajectory.Children); i += 2 {
+	for i := 0; i < len(trajectory.Expression.Children); i += 2 {
+		types.ExpandBy(trajectory, trajectory.Expression.Children[i])
 		conditionVal, err := eval(trajectory.Children[i])
 
 		if err != nil {
@@ -59,6 +68,7 @@ func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 			return false, nil
 		}
 
+		types.ExpandBy(trajectory, trajectory.Expression.Children[i+1])
 		body, err := eval(trajectory.Children[i+1])
 
 		if err != nil {
@@ -72,14 +82,13 @@ func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 }
 
 func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	if (len(trajectory.Children) % 2) != 0 {
+	if (len(trajectory.Expression.Children) % 2) != 0 {
 		return nil, errors.New("or must have even number of inputs")
 	}
 
-	for i := 0; i < len(trajectory.Children); i += 2 {
-		conditionVal, err := eval(trajectory.Children[i])
+	for i := 0; i < len(trajectory.Expression.Children); i += 2 {
+		types.ExpandBy(trajectory, trajectory.Expression.Children[i])
+		conditionVal, err := eval(trajectory.Children[len(trajectory.Children)-1])
 
 		if err != nil {
 			return nil, err
@@ -92,7 +101,8 @@ func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 		}
 
 		if condition {
-			return eval(trajectory.Children[i+1])
+			types.ExpandBy(trajectory, trajectory.Expression.Children[i+1])
+			return eval(trajectory.Children[len(trajectory.Children)-1])
 		}
 	}
 
@@ -100,9 +110,38 @@ func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 }
 
 func While(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+	types.ExpandBy(trajectory, trajectory.Expression.Children[0])
+
+	condV, err := eval(trajectory.Children[0])
+
+	if err != nil {
+		return nil, err
+	}
+
+	cond, ok := condV.(bool)
+
+	if !ok {
+		return nil, errors.New("not a boolean")
+	}
+
+	if !cond {
+		return nil, nil
+	}
 
 	var value types.Value = nil
+
+	types.ExpandBy(trajectory, trajectory.Expression.Children[1])
+	fnV, err := eval(trajectory.Children[1])
+
+	if err != nil {
+		return nil, err
+	}
+
+	fn, ok := fnV.(types.Lambda)
+
+	if !ok {
+		return nil, errors.New("not a function")
+	}
 
 	for {
 		condV, err := eval(trajectory.Children[0])
@@ -121,15 +160,13 @@ func While(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 			break
 		}
 
-		for _, child := range trajectory.Children[1:] {
-			val, err := eval(child)
+		val, err := fn()
 
-			if err != nil {
-				return nil, err
-			}
-
-			value = val
+		if err != nil {
+			return nil, err
 		}
+
+		value = val
 	}
 
 	return value, nil
