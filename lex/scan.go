@@ -160,6 +160,27 @@ func (s *Lexer) scan() error {
 				break IdentifierLoop
 			}
 		}
+	case "G", "D", "O":
+		first, _ := s.readCurrent()
+		s.advance()
+		second, _ := s.readCurrent()
+		s.advance()
+		third, _ := s.readCurrent()
+		s.advance()
+		switch first + second + third {
+		case "GAD", "DAE", "ORA":
+			// FLY, MON, CLE
+			s.advance()
+			s.advance()
+			s.advance()
+		case "GHO":
+			// ST
+			s.advance()
+			s.advance()
+		default:
+			return errors.New("unexpected AI keyword prefix, got " + first + second + third)
+		}
+
 	default:
 		return errors.New("unexpected character " + char)
 	}

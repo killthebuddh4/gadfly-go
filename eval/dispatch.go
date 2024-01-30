@@ -3,6 +3,7 @@ package eval
 import (
 	"errors"
 
+	"github.com/killthebuddh4/gadflai/eval/ai"
 	"github.com/killthebuddh4/gadflai/eval/array"
 	"github.com/killthebuddh4/gadflai/eval/io"
 	"github.com/killthebuddh4/gadflai/eval/maps"
@@ -134,6 +135,14 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return strings.Substring, nil
 	case "concat":
 		return strings.Concat, nil
+	case "GADFLY":
+		return ai.Gadfly, nil
+	case "DAEMON":
+		return ai.Daemon, nil
+	case "GHOST":
+		return ai.Ghost, nil
+	case "ORACLE":
+		return ai.Oracle, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

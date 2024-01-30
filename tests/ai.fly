@@ -1,0 +1,22 @@
+def gadfly
+  GADFLY end
+end
+
+def daemon
+  DAEMON end
+end
+
+def ghost
+  GHOST end
+end
+
+def oracle
+  ORACLE end
+end
+
+io.puts
+  gadfly
+  daemon
+  ghost
+  oracle
+end
