@@ -226,7 +226,7 @@ is called. A lambda can have zero or more _parameters_. A __parameter__ is a
 name that is defined each time the lambda is called. Parameters are declared
 between `|` characters. If the lambda takes zero parameters, the `|` characters
 must be omitted. The  __arguments__ to the lambda are the values of the
-expressions in the calling block (using the `@` keyword) bound to the lambda's
+expressions in the calling block (using the `.` keyword) bound to the lambda's
 parameters.
 
 _`fn (|identifier+|)? expression end`_
@@ -237,7 +237,7 @@ evaluated only when the lambda is called. The lambda can take zero or more
 parameters. If the lambda takes zero parameters, the `|` characters must be
 omitted.
 
-_`@ expression* end`_
+_`. expression* end`_
 
 Calls the lambda expression. Each subexpression is evaluated and bound to the
 lambda's parameters. The lambda is then evaluated, returning the value of its
@@ -251,7 +251,7 @@ def add
   end
 end
 
-@add
+.add
   # arguments are 8 and 3, bound to a and b
   2 * 4
   3

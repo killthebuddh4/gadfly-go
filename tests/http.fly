@@ -46,7 +46,7 @@ let test_value
 end
 
 def get_worked
-  @map.equal
+  .map.equal
     test_value
     get_response
   end
@@ -80,7 +80,7 @@ let test_value
 end
 
 def post_worked
-  @map.equal
+  .map.equal
     test_value
     post_response
   end

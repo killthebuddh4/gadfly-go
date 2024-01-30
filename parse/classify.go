@@ -17,7 +17,7 @@ func isBlock(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "do", "panic":
 		return true
-	case "def", "@", "val", "let":
+	case "def", "val", "let", ".":
 		return true
 	case "if", "and", "or", "while":
 		return true
@@ -29,7 +29,7 @@ func isBlock(lexeme types.Lexeme) bool {
 		return true
 	case "io.puts", "io.http":
 		return true
-	case "GADFLY", "DAEMON", "GHOST", "ORACLE":
+	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "@":
 		return true
 	default:
 		return false

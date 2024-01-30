@@ -32,7 +32,7 @@ def is_prime
     end
 
     def is_composite
-      @includes composites n
+      .includes composites n
       end
     end
 
@@ -45,7 +45,7 @@ def k 0 end
 
 while k < 100
   fn 
-    if @is_prime k end
+    if .is_prime k end
       io.puts k end
       nil
     end

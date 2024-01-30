@@ -132,7 +132,7 @@ let test_val
 end
 
 def squares_worked
-  @equal test_val squares end
+  .equal test_val squares end
 end
 
 if squares_worked == false
@@ -150,7 +150,7 @@ let test_val
   array.filter numbers
     fn |e i|
       def rem
-        @math.mod e 2 end
+        .math.mod e 2 end
       end
 
       rem == 0
@@ -159,7 +159,7 @@ let test_val
 end
 
 def evens_worked
-  @equal test_val evens end
+  .equal test_val evens end
 end
 
 if evens_worked == false
@@ -200,7 +200,7 @@ end
 array.push numbers 20 end
 
 def push_is_immutable
-  @equal numbers_clone numbers end
+  .equal numbers_clone numbers end
 end
 
 if push_is_immutable == false
@@ -213,7 +213,7 @@ let test_val
 end
 
 def push_worked
-  @equal test_val numbers_and_twenty end
+  .equal test_val numbers_and_twenty end
 end
 
 if push_worked == false
@@ -230,7 +230,7 @@ end
 array.pop numbers end
 
 def pop_is_immutable
-  @equal numbers_clone numbers end
+  .equal numbers_clone numbers end
 end
 
 if pop_is_immutable == false
@@ -243,7 +243,7 @@ let test_val
 end
 
 def pop_worked
-  @equal test_val numbers_without_ten end
+  .equal test_val numbers_without_ten end
 end
 
 if pop_worked == false
@@ -260,7 +260,7 @@ end
 array.shift numbers end
 
 def shift_is_immutable
-  @equal numbers_clone numbers end
+  .equal numbers_clone numbers end
 end
 
 if shift_is_immutable == false
@@ -273,7 +273,7 @@ let test_val
 end
 
 def shift_worked
-  @equal test_val numbers_without_two end
+  .equal test_val numbers_without_two end
 end
 
 if shift_worked == false
@@ -290,7 +290,7 @@ end
 array.unshift numbers 0 end
 
 def unshift_is_immutable
-  @equal numbers_clone numbers end
+  .equal numbers_clone numbers end
 end
 
 if unshift_is_immutable == false
@@ -303,7 +303,7 @@ let test_val
 end
 
 def unshift_worked
-  @equal test_val numbers_with_zero end
+  .equal test_val numbers_with_zero end
 end
 
 if unshift_worked == false

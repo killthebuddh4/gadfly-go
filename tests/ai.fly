@@ -1,22 +1,31 @@
 def gadfly
-  GADFLY end
+  GADFLY "gadfly" end
 end
 
 def daemon
-  DAEMON end
+  DAEMON "daemon" end
 end
 
 def ghost
-  GHOST end
+  GHOST "ghost" end
 end
 
 def oracle
-  ORACLE end
+  ORACLE "oracle" end
 end
 
 io.puts
-  gadfly
-  daemon
-  ghost
-  oracle
+  @gadfly end
+end
+
+io.puts
+  @daemon end
+end
+
+io.puts
+  @ghost end
+end
+
+io.puts
+  @oracle end
 end

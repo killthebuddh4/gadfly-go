@@ -1,7 +1,7 @@
 def is_fizz
   fn |n|
     def r
-      @math.mod 
+      .math.mod 
         n 3
       end
     end
@@ -13,7 +13,7 @@ end
 def is_buzz
   fn |n|
     def r
-      @math.mod 
+      .math.mod 
         n 5
       end
     end
@@ -26,8 +26,8 @@ def is_fizzbuzz
   fn |n|
     def both
       and
-        @is_fizz n end true
-        @is_buzz n end true
+        .is_fizz n end true
+        .is_buzz n end true
       end
     end
 
@@ -43,9 +43,9 @@ def fizzbuzz
         io.puts k end
         
         or
-          @is_fizzbuzz k end io.puts "fizzbuzz" end
-          @is_fizz k end io.puts "fizz" end
-          @is_buzz k end io.puts "buzz" end
+          .is_fizzbuzz k end io.puts "fizzbuzz" end
+          .is_fizz k end io.puts "fizz" end
+          .is_buzz k end io.puts "buzz" end
         end
 
         let k k + 1 end
@@ -54,6 +54,6 @@ def fizzbuzz
   end
 end
 
-@fizzbuzz 20 end
+.fizzbuzz 20 end
 
 

@@ -33,7 +33,7 @@ let test_value
 end
 
 def split_worked
-  @equal test_value splitted end
+  .equal test_value splitted end
 end
 
 if

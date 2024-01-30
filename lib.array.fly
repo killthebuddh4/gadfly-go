@@ -51,11 +51,11 @@ def equal
     def result true end
 
     def arr_a_length
-      @length arr_a end
+      .length arr_a end
     end
 
     def arr_b_length
-      @length arr_b end
+      .length arr_b end
     end
 
     if arr_a_length != arr_b_length

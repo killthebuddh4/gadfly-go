@@ -64,7 +64,7 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return Def, nil
 	case "fn":
 		return lambda.Lambda, nil
-	case "@":
+	case ".":
 		return lambda.Call, nil
 	case "let":
 		return Let, nil
@@ -144,6 +144,8 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return ai.Ghost, nil
 	case "ORACLE":
 		return ai.Oracle, nil
+	case "@":
+		return ai.Call, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

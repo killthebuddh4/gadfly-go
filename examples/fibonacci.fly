@@ -14,13 +14,13 @@ def fibonacci
       n > 2
       do
         def i
-          @fibonacci
+          .fibonacci
             n - 2
           end
         end
 
         def j
-          @fibonacci
+          .fibonacci
             n - 1
           end
         end
@@ -36,7 +36,7 @@ array.for
   
   fn |e i|
     io.puts
-      @fibonacci
+      .fibonacci
         e
       end
     end

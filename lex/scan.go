@@ -33,6 +33,8 @@ func (s *Lexer) scan() error {
 		return nil
 	case "@":
 		s.advance()
+	case ".":
+		s.advance()
 	case "-":
 		s.advance()
 	case "+":
@@ -148,7 +150,7 @@ func (s *Lexer) scan() error {
 				s.advance()
 			}
 		}
-	case ".", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+	case "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
 	IdentifierLoop:
 		for {
 			n, _ := s.readCurrent()

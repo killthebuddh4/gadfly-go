@@ -8,7 +8,7 @@ def math.mod
       0
 
       n > k
-      @math.mod
+      .math.mod
         n - k
         k
       end
@@ -21,14 +21,14 @@ def math.factorial
     or
       n == 0
       do
-        @print "base case" end
+        .print "base case" end
         1
       end
 
       n > 0
       do
         def inner
-          @math.factorial
+          .math.factorial
             n - 1
           end
         end
