@@ -22,9 +22,8 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
 # Contents
 
 - [Contents](#contents)
-- [Autopoietic copilot programs](#autopoietic-copilot-programs)
-  - [The central idea, the idea](#the-central-idea-the-idea)
-  - [The central idea, the implementation](#the-central-idea-the-implementation)
+- [The big idea](#the-big-idea)
+- [Program as theory](#program-as-theory)
 - [The language](#the-language)
     - [Blocks](#blocks)
     - [Variables](#variables)
@@ -49,32 +48,71 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
     - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
 - [Work in progress](#work-in-progress)
 
-# Autopoietic copilot programs
+# The big idea
 
-An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a system
+An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a s
 that is capable of producing and maintaining itself. Our first goal is to
 bootstrap autopoietic computer programs. Our second goal is to bootstrap
 autopoietic _copilot programs_ (or "copilot" for brevity's sake). We define a
 copilot as a long-running program capable of satisfying requests to solve
 _basic, human-level_ problems in some domain and whose primary user interface is
-natural language. We roughly define "baisc, human-level" as a problem that in
-the year 2020 could probably be solved by a helpful human assistant but probably
-not be solved by any single computer program.
-
-## The central idea, the idea
+natural language. We roughly define "basic, human-level" as a problem that in
+the year 2020 could probably be solved by a helpful human assistant but could
+probably not be solved by any single computer program.
 
 The central idea behind Gadfly is that programming languages and language models
 have a very powerful (and very natural) kind of resonance. On the one hand, the
 structure and utilities provided by a programming language and runtime are
-perfect tools for channeling a language model's reasoning capabilities (like
-exosuits for neural nets). On the other hand, the _ontology_ provided by a
-language model is a beautiful solution to the [multi-armed bandit
+perfect tools for channeling a language model's reasoning capabilities. On the
+other hand, the _ontology_ provided by a language model is a beautiful solution
+to the [multi-armed bandit
 problems](https://en.wikipedia.org/wiki/Multi-armed_bandit) that plague
-automatic program synthesis. A Gadfly program is, to my knowledge, a basically
-novel form of [neuro-symbolic
-AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI).
+automatic program synthesis. A Gadfly program is, to my knowledge, a novel form
+of [neuro-symbolic AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI).
 
-## The central idea, the implementation
+The overall problem can be decomposed into 3 distinct (but related and
+overlapping) foundational problems:
+
+1. Parse tree generation. I.e. we need to implement functions.
+2. Call tree generation. I.e. we need to manage control flow.
+3. Feedback generation. I.e. we need to supervise processes that solve 1 and 2.
+
+In Gadfly the special expression types `GADFLY`, `DAEMON`, and `GHOST` implement
+solutions to these problems. A `GADFLY` expression manages feedback, a `DAEMON`
+expression manages control flow, and a `GHOST` expression generates parse trees.
+The ultimate "hello, world" of Gadfly programs would thus look like this:
+
+```text
+
+GADFLY main
+  GHOST ghost
+    "Please solve the user's problem."
+    fn end
+  end
+
+  DAEMON
+    "Please solve the user's problem."
+  end
+end
+
+@main
+
+```
+
+_Note to the discerning reader who's right now thinking "But that's just AGI?":
+Yes 🙈._
+
+__WIP, notes, ideas, under ACTIVE DEVELOPMENT__
+
+- DAEMON expressions have a bunch of implicit calls to whatever is lexically
+  available to them.
+- GHOST expressions start out as nil lambdas but then are auto-implemented over time.
+- GADFLY expressions are responsible for managing feedback. Think about the
+  details on this a little bit.
+
+# Program as theory
+
+_This section is mostly WIP and/or notes (some of them stale)._
 
 To solve a given problem you need a good theory of the problem's domain. We
 think of a Gadfly program as an evolving theory of a domain. This idea is behind
