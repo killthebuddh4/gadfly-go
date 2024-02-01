@@ -29,7 +29,7 @@ func isBlock(lexeme types.Lexeme) bool {
 		return true
 	case "io.puts", "io.http":
 		return true
-	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "@":
+	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
 	default:
 		return false

@@ -148,6 +148,8 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return ai.Muse, nil
 	case "THEORY":
 		return ai.Theory, nil
+	case "RAPTURE":
+		return ai.Rapture, nil
 	case "@":
 		return ai.Call, nil
 	default:

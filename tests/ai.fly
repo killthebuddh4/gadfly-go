@@ -1,47 +1,41 @@
 def gadfly
-  GADFLY "gadfly" end
+  GADFLY end
 end
 
 def daemon
-  DAEMON "daemon" end
+  DAEMON end
 end
 
 def ghost
-  GHOST "ghost" end
+  GHOST end
 end
 
 def oracle
-  ORACLE "oracle" end
+  ORACLE end
 end
 
 def muse
-  MUSE "muse" end
+  MUSE end
 end
 
 def theory
-  THEORY "theory" end 
+  THEORY end
 end
 
-io.puts
-  @gadfly end
+def rapture
+  RAPTURE end
 end
 
-io.puts
-  @daemon end
-end
+io.puts gadfly end
 
-io.puts
-  @ghost end
-end
+io.puts daemon end
 
-io.puts
-  @oracle end
-end
+io.puts ghost end
 
-io.puts
-  @muse end
-end
+io.puts oracle end
 
-io.puts
-  @theory end
-end
+io.puts muse end
+
+io.puts theory end
+
+io.puts rapture end

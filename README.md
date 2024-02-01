@@ -23,9 +23,8 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
 
 - [Contents](#contents)
 - [The big idea](#the-big-idea)
-    - [the autopoiesis](#the-autopoiesis)
-    - [the copilot](#the-copilot)
-- [Program as theory](#program-as-theory)
+- [The design](#the-design)
+- [Programs, theories, machines, and the world](#programs-theories-machines-and-the-world)
 - [The language](#the-language)
     - [Blocks](#blocks)
     - [Variables](#variables)
@@ -72,45 +71,51 @@ problems](https://en.wikipedia.org/wiki/Multi-armed_bandit) that plague
 automatic program synthesis. A Gadfly program is, to my knowledge, a novel form
 of [neuro-symbolic AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI).
 
-The "autopoietic copilot" part of Gadfly is implemented via 6 special keywords:
-`GADFLY`, `DAEMON`, `THEORY`, `ORACLE`, `MUSE`, and `GHOST`.
+# The design
 
-### the autopoiesis
+The `Gadfly` language includes 7 novel keywords--`GADFLY`, `DAEMON`, `RAPTURE`,
+`THEORY`, `ORACLE`, `MUSE`, and `GHOST`--whose implementations integrate
+language models directly into the core of the language.
 
-`GADFLY` and `DAEMON` expressions collaborate with eachother the produce correc
-programs.  Programs are generated incrementally as responses to user input. The
-basic flow is:
+The keywords `GADFLY`, `DAEMON` and `RAPTURE` are directly related to AI-driven
+code generation. The idea is that every child expression of a `GADFLY`
+expression can optionally be wrapped in a `DAEMON`. The parent `GADFLY`
+expression is evaluated just like a `do` expression with one major difference.
+Before a `GADFLY` expression returns its value to its parent, it analyzes the
+return value, generates feedback about the value, communicates the feedback to
+each `DAEMON` child, gives the children time to _modify themselves according to
+the feedback_, and then retries the evaluation. If the retries don't yield
+satisfactory results, the `GADFLY` expression goes into "rapture" by wrapping
+itself in a `RAPTURE` expression. A `RAPTURE` expression is an expression that
+is completely controlled by some external power and will ask for directions
+before ever evaluating itself, very analogous to a debugger session.
 
-1. A `GADFLY` expression is evaluated just like a `do` expression (each children
-   evaluated in order). A `GADFLY` expression's value is the value of its last
-   child expression.
-2. Before the expression's value is returned to the parent, the expression
-   uses its `THEORY` to analyze the value. If the value makes sense and seems to
-   be correct, then its returned to its parent. Otherwise, the expression
-   generates natural language feedback and sends it to each of its child
-   expressions that are also `DAEMON` expressions.
-3. Each `DAEMON` expression integrates the parent's feedback by (optionally)
-   modifying itself.
-4. When each `DAEMON` has integrated the feedback, go back to 1.
+The keywords `ORACLE` and `MUSE` are basically AI-implemented functions. You can
+use them as generic functions, but they exist in the language essentially as
+(de)serialization mechanisms for natural language. If you have some natural
+language data and you want a structured "response" to it, then you consult the
+oracle. If you have some structured data and you want a natural language
+response to it, you consult the oracle. In other words, if you have something to
+say and want facts, you ask the oracle. If you have some facts and need
+something to say about them, you consult the muse.
 
+The keyword `GHOST` implements AI-driven control flow. When the interpreter
+reaches a `GHOST` expression, it asks the AI which branch to evaluate.
 
-As a `GADFLY` expression generates a program, it develops a `THEORY` of the
-problem domain which is basically an embedded test suite.
-
-### the copilot
-
-An `ORACLE` expression translates from natural language into structured data and
-a `MUSE` expression translates from structured data into natural language. A
-`GHOST` expression is an expression where every child expression is understood
-to be an implementation of the same spec. `GHOST` expressions are used to find
-the best implementation among different options. 
+The `THEORY` keyword is a little bit speculative and will probably not be part
+of v0 but the tl;dr is that it's something like an embedded runtime test suite
+that's used to "prove" the correctness of return values. See the next section
+for some rambling details.
 
 __TODO: An example program__
 
+# Programs, theories, machines, and the world
 
-# Program as theory
+_This section is mostly WIP and/or notes (some of them stale). I've some vague notions
+about theories, domains, and machines that feel resonant with the more
+"concrete" goals of the project, but they've fallen to the wayside as the design
+has progressed._
 
-_This section is mostly WIP and/or notes (some of them stale)._
 
 To solve a given problem you need a good theory of the problem's domain. We
 think of a Gadfly program as an evolving theory of a domain. This idea is behind
@@ -140,7 +145,6 @@ sensors are called and signals interpreted.
 
 __synthesizer__ A synthesizer is a program that solves problems.  A synthesizer
 is where effects are called.
-
 
 # The language
 

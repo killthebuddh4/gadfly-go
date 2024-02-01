@@ -162,7 +162,7 @@ func (s *Lexer) scan() error {
 				break IdentifierLoop
 			}
 		}
-	case "G", "D", "O", "M", "T":
+	case "G", "D", "O", "M", "T", "R":
 		first, _ := s.readCurrent()
 		s.advance()
 		second, _ := s.readCurrent()
@@ -170,6 +170,12 @@ func (s *Lexer) scan() error {
 		third, _ := s.readCurrent()
 		s.advance()
 		switch first + second + third {
+		case "RAP":
+			// TURE
+			s.advance()
+			s.advance()
+			s.advance()
+			s.advance()
 		case "GAD", "DAE", "ORA", "THE":
 			// FLY, MON, CLE, ORY
 			s.advance()
