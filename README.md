@@ -23,6 +23,8 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
 
 - [Contents](#contents)
 - [The big idea](#the-big-idea)
+    - [the autopoiesis](#the-autopoiesis)
+    - [the copilot](#the-copilot)
 - [Program as theory](#program-as-theory)
 - [The language](#the-language)
     - [Blocks](#blocks)
@@ -51,7 +53,7 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
 # The big idea
 
 An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a s
-that is capable of producing and maintaining itself. Our first goal is to
+that is capable of producing and maintaining itself. Our first primary goal is to
 bootstrap autopoietic computer programs. Our second goal is to bootstrap
 autopoietic _copilot programs_ (or "copilot" for brevity's sake). We define a
 copilot as a long-running program capable of satisfying requests to solve
@@ -70,45 +72,41 @@ problems](https://en.wikipedia.org/wiki/Multi-armed_bandit) that plague
 automatic program synthesis. A Gadfly program is, to my knowledge, a novel form
 of [neuro-symbolic AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI).
 
-The overall problem can be decomposed into 3 distinct (but related and
-overlapping) foundational problems:
+The "autopoietic copilot" part of Gadfly is implemented via 6 special keywords:
+`GADFLY`, `DAEMON`, `THEORY`, `ORACLE`, `MUSE`, and `GHOST`.
 
-1. Parse tree generation. I.e. we need to implement functions.
-2. Call tree generation. I.e. we need to manage control flow.
-3. Feedback generation. I.e. we need to supervise processes that solve 1 and 2.
+### the autopoiesis
 
-In Gadfly the special expression types `GADFLY`, `DAEMON`, and `GHOST` implement
-solutions to these problems. A `GADFLY` expression manages feedback, a `DAEMON`
-expression manages control flow, and a `GHOST` expression generates parse trees.
-The ultimate "hello, world" of Gadfly programs would thus look like this:
+`GADFLY` and `DAEMON` expressions collaborate with eachother the produce correc
+programs.  Programs are generated incrementally as responses to user input. The
+basic flow is:
 
-```text
+1. A `GADFLY` expression is evaluated just like a `do` expression (each children
+   evaluated in order). A `GADFLY` expression's value is the value of its last
+   child expression.
+2. Before the expression's value is returned to the parent, the expression
+   uses its `THEORY` to analyze the value. If the value makes sense and seems to
+   be correct, then its returned to its parent. Otherwise, the expression
+   generates natural language feedback and sends it to each of its child
+   expressions that are also `DAEMON` expressions.
+3. Each `DAEMON` expression integrates the parent's feedback by (optionally)
+   modifying itself.
+4. When each `DAEMON` has integrated the feedback, go back to 1.
 
-GADFLY main
-  GHOST ghost
-    "Please solve the user's problem."
-    fn end
-  end
 
-  DAEMON
-    "Please solve the user's problem."
-  end
-end
+As a `GADFLY` expression generates a program, it develops a `THEORY` of the
+problem domain which is basically an embedded test suite.
 
-@main
+### the copilot
 
-```
+An `ORACLE` expression translates from natural language into structured data and
+a `MUSE` expression translates from structured data into natural language. A
+`GHOST` expression is an expression where every child expression is understood
+to be an implementation of the same spec. `GHOST` expressions are used to find
+the best implementation among different options. 
 
-_Note to the discerning reader who's right now thinking "But that's just AGI?":
-Yes 🙈._
+__TODO: An example program__
 
-__WIP, notes, ideas, under ACTIVE DEVELOPMENT__
-
-- DAEMON expressions have a bunch of implicit calls to whatever is lexically
-  available to them.
-- GHOST expressions start out as nil lambdas but then are auto-implemented over time.
-- GADFLY expressions are responsible for managing feedback. Think about the
-  details on this a little bit.
 
 # Program as theory
 

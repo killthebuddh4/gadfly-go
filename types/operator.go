@@ -59,6 +59,8 @@ var OPERATORS = []string{
 	"DAEMON",
 	"GHOST",
 	"ORACLE",
+	"MUSE",
+	"THEORY",
 	"@",
 	"+",
 	"-",

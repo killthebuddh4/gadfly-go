@@ -144,6 +144,10 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return ai.Ghost, nil
 	case "ORACLE":
 		return ai.Oracle, nil
+	case "MUSE":
+		return ai.Muse, nil
+	case "THEORY":
+		return ai.Theory, nil
 	case "@":
 		return ai.Call, nil
 	default:

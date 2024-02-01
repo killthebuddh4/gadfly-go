@@ -14,6 +14,14 @@ def oracle
   ORACLE "oracle" end
 end
 
+def muse
+  MUSE "muse" end
+end
+
+def theory
+  THEORY "theory" end 
+end
+
 io.puts
   @gadfly end
 end
@@ -28,4 +36,12 @@ end
 
 io.puts
   @oracle end
+end
+
+io.puts
+  @muse end
+end
+
+io.puts
+  @theory end
 end
