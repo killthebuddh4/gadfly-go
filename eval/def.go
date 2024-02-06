@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/killthebuddh4/gadflai/types"
-	traj "github.com/killthebuddh4/gadflai/types"
 )
 
 func Def(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
@@ -24,7 +23,7 @@ func Def(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 		value = val
 	}
 
-	traj.DefineName(trajectory.Parent, identifier, value)
+	types.DefineName(trajectory.Parent, identifier, value)
 
 	return value, nil
 }
@@ -46,7 +45,7 @@ func Let(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 		value = val
 	}
 
-	traj.EditName(trajectory.Parent, identifier, value)
+	types.EditName(trajectory.Parent, identifier, value)
 
 	return value, nil
 }
@@ -55,5 +54,5 @@ func Identifier(trajectory *types.Trajectory, eval types.Exec) (types.Value, err
 	if trajectory.Parent == nil {
 		return nil, errors.New("cannot evaluate identifier " + trajectory.Expression.Operator.Value + " with nil parent")
 	}
-	return traj.ResolveName(trajectory.Parent, trajectory.Expression.Operator.Value)
+	return types.ResolveName(trajectory.Parent, trajectory.Expression.Operator.Value)
 }

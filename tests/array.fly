@@ -1,9 +1,9 @@
-io.puts "#######################################################" end
-io.puts "" "" end
-io.puts "Testing gadfly.array package..." end
-io.puts "" "" end
-io.puts "#######################################################" end
-io.puts "" "" end
+std.write "#######################################################" end
+std.write "" "" end
+std.write "Testing gadfly.array package..." end
+std.write "" "" end
+std.write "#######################################################" end
+std.write "" "" end
 
 #
 #
@@ -63,8 +63,8 @@ end
 
 if
   test_val != 6
-  io.puts "FAIL: array.Read" end
-  io.puts "PASS: array.Read" end
+  std.write "FAIL: array.Read" end
+  std.write "PASS: array.Read" end
 end
 
 #
@@ -79,8 +79,8 @@ let test_val array.read numbers 2 end
 
 if
   test_val != 6
-  io.puts "FAIL: array.Write immutability" end
-  io.puts "PASS: array.Write immutability" end
+  std.write "FAIL: array.Write immutability" end
+  std.write "PASS: array.Write immutability" end
 end
 
 def new_numbers
@@ -93,8 +93,8 @@ end
 
 if
   test_val != 12
-  io.puts "FAIL: array.Write" end
-  io.puts "PASS: array.Write" end
+  std.write "FAIL: array.Write" end
+  std.write "PASS: array.Write" end
 end
 
 #
@@ -113,8 +113,8 @@ end
 
 if
   test_val != numbers_sum
-  io.puts "FAIL: array.For" end
-  io.puts "PASS: array.For" end
+  std.write "FAIL: array.For" end
+  std.write "PASS: array.For" end
 end
 
 #
@@ -136,8 +136,8 @@ def squares_worked
 end
 
 if squares_worked == false
-  io.puts "FAIL: array.Map" end
-  io.puts "PASS: array.Map" end
+  std.write "FAIL: array.Map" end
+  std.write "PASS: array.Map" end
 end 
 
 #
@@ -163,8 +163,8 @@ def evens_worked
 end
 
 if evens_worked == false
-  io.puts "FAIL: array.Filter" end
-  io.puts "PASS: array.Filter" end
+  std.write "FAIL: array.Filter" end
+  std.write "PASS: array.Filter" end
 end
 
 #
@@ -187,8 +187,8 @@ end
 
 if
   test_val != numbers_sum
-  io.puts "FAIL: array.Reduce" end
-  io.puts "PASS: array.Reduce" end
+  std.write "FAIL: array.Reduce" end
+  std.write "PASS: array.Reduce" end
 end
 
 #
@@ -204,8 +204,8 @@ def push_is_immutable
 end
 
 if push_is_immutable == false
-  io.puts "FAIL: array.Push immutability" end
-  io.puts "PASS: array.Push immutability" end
+  std.write "FAIL: array.Push immutability" end
+  std.write "PASS: array.Push immutability" end
 end
 
 let test_val
@@ -217,8 +217,8 @@ def push_worked
 end
 
 if push_worked == false
-  io.puts "FAIL: array.Push" end
-  io.puts "PASS: array.Push" end
+  std.write "FAIL: array.Push" end
+  std.write "PASS: array.Push" end
 end
 
 #
@@ -234,8 +234,8 @@ def pop_is_immutable
 end
 
 if pop_is_immutable == false
-  io.puts "FAIL: array.Pop immutability" end
-  io.puts "PASS: array.Pop immutability" end
+  std.write "FAIL: array.Pop immutability" end
+  std.write "PASS: array.Pop immutability" end
 end
 
 let test_val
@@ -247,8 +247,8 @@ def pop_worked
 end
 
 if pop_worked == false
-  io.puts "FAIL: array.Pop" end
-  io.puts "PASS: array.Pop" end
+  std.write "FAIL: array.Pop" end
+  std.write "PASS: array.Pop" end
 end
 
 #
@@ -264,8 +264,8 @@ def shift_is_immutable
 end
 
 if shift_is_immutable == false
-  io.puts "FAIL: array.Shift immutability" end
-  io.puts "PASS: array.Shift immutability" end
+  std.write "FAIL: array.Shift immutability" end
+  std.write "PASS: array.Shift immutability" end
 end
 
 let test_val
@@ -277,8 +277,8 @@ def shift_worked
 end
 
 if shift_worked == false
-  io.puts "FAIL: array.Shift" end
-  io.puts "PASS: array.Shift" end
+  std.write "FAIL: array.Shift" end
+  std.write "PASS: array.Shift" end
 end
 
 #
@@ -294,8 +294,8 @@ def unshift_is_immutable
 end
 
 if unshift_is_immutable == false
-  io.puts "FAIL: array.Unshift immutability" end
-  io.puts "PASS: array.Unshift immutability" end
+  std.write "FAIL: array.Unshift immutability" end
+  std.write "PASS: array.Unshift immutability" end
 end
 
 let test_val
@@ -307,6 +307,6 @@ def unshift_worked
 end
 
 if unshift_worked == false
-  io.puts "FAIL: array.Unshift" end
-  io.puts "PASS: array.Unshift" end
+  std.write "FAIL: array.Unshift" end
+  std.write "PASS: array.Unshift" end
 end

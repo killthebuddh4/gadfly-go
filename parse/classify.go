@@ -8,13 +8,10 @@ import "github.com/killthebuddh4/gadflai/types"
  * violation of encapsulation, but I think it's fine in this case.
  */
 
-func isLambda(lexeme types.Lexeme) bool {
-
-	return lexeme.Text == "fn"
-}
-
-func isBlock(lexeme types.Lexeme) bool {
+func isExpression(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
+	case "fn":
+		return true
 	case "do", "panic":
 		return true
 	case "def", "val", "let", ".":
@@ -27,7 +24,7 @@ func isBlock(lexeme types.Lexeme) bool {
 		return true
 	case "split", "substring", "concat", "chars":
 		return true
-	case "io.puts", "io.http":
+	case "std.write", "http":
 		return true
 	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
@@ -134,11 +131,7 @@ func isNumber(lexeme types.Lexeme) bool {
 
 // Is an atom anything that is not more specific?
 func isAtom(lexeme types.Lexeme) bool {
-	if isBlock(lexeme) {
-		return false
-	}
-
-	if isLambda(lexeme) {
+	if isExpression(lexeme) {
 		return false
 	}
 

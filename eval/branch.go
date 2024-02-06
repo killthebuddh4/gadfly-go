@@ -4,10 +4,9 @@ import (
 	"errors"
 
 	"github.com/killthebuddh4/gadflai/types"
-	traj "github.com/killthebuddh4/gadflai/types"
 )
 
-func If(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+func If(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	err := types.ExpandBy(trajectory, trajectory.Expression.Children[0])
 
 	if err != nil {
@@ -43,7 +42,7 @@ func If(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 	return eval(exp)
 }
 
-func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+func And(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	if (len(trajectory.Expression.Children) % 2) != 0 {
 		return nil, errors.New("and must have even number of inputs")
 	}
@@ -81,7 +80,7 @@ func And(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 	return val, nil
 }
 
-func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+func Or(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	if (len(trajectory.Expression.Children) % 2) != 0 {
 		return nil, errors.New("or must have even number of inputs")
 	}
@@ -109,7 +108,7 @@ func Or(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
 	return nil, nil
 }
 
-func While(trajectory *traj.Trajectory, eval types.Exec) (types.Value, error) {
+func While(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	types.ExpandBy(trajectory, trajectory.Expression.Children[0])
 
 	condV, err := eval(trajectory.Children[0])

@@ -1,9 +1,9 @@
-io.puts "#######################################################" end
-io.puts "" "" end
-io.puts "Testing gadfly.http package..." end
-io.puts "" "" end
-io.puts "#######################################################" end
-io.puts "" "" end
+std.write "#######################################################" end
+std.write "" "" end
+std.write "Testing gadfly.http package..." end
+std.write "" "" end
+std.write "#######################################################" end
+std.write "" "" end
 
 #
 #
@@ -35,7 +35,7 @@ def test_value nil end
 #
 
 let test_value
-  io.http
+  http
     "https://jsonplaceholder.typicode.com/todos/1"
     "GET"
     map
@@ -54,8 +54,8 @@ end
 
 if
   get_worked
-  io.puts "PASS: http get request" end
-  io.puts "FAIL: http get request" end
+  std.write "PASS: http get request" end
+  std.write "FAIL: http get request" end
 end
 
 #
@@ -65,7 +65,7 @@ end
 #
 
 let test_value
-  io.http
+  http
     "https://jsonplaceholder.typicode.com/posts"
     "POST"
     map
@@ -88,6 +88,6 @@ end
 
 if
   post_worked
-  io.puts "PASS: http post request" end
-  io.puts "FAIL: http post request" end
+  std.write "PASS: http post request" end
+  std.write "FAIL: http post request" end
 end

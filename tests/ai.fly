@@ -26,16 +26,16 @@ def rapture
   RAPTURE end
 end
 
-io.puts gadfly end
+std.write gadfly end
 
-io.puts daemon end
+std.write daemon end
 
-io.puts ghost end
+std.write ghost end
 
-io.puts oracle end
+std.write oracle end
 
-io.puts muse end
+std.write muse end
 
-io.puts theory end
+std.write theory end
 
-io.puts rapture end
+std.write rapture end

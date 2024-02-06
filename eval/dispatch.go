@@ -3,12 +3,6 @@ package eval
 import (
 	"errors"
 
-	"github.com/killthebuddh4/gadflai/eval/ai"
-	"github.com/killthebuddh4/gadflai/eval/array"
-	"github.com/killthebuddh4/gadflai/eval/io"
-	"github.com/killthebuddh4/gadflai/eval/lambda"
-	"github.com/killthebuddh4/gadflai/eval/maps"
-	"github.com/killthebuddh4/gadflai/eval/strings"
 	"github.com/killthebuddh4/gadflai/types"
 )
 
@@ -63,95 +57,93 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 	case "def":
 		return Def, nil
 	case "fn":
-		return lambda.Lambda, nil
+		return Lambda, nil
 	case ".":
-		return lambda.Call, nil
+		return Call, nil
 	case "let":
 		return Let, nil
 	case "while":
 		return While, nil
 	case "map":
-		return maps.Map, nil
+		return Hash, nil
 	case "map.merge":
-		return maps.Merge, nil
+		return Merge, nil
 	case "map.delete":
-		return maps.Delete, nil
+		return Delete, nil
 	case "map.extract":
-		return maps.Extract, nil
+		return Extract, nil
 	case "map.keys":
-		return maps.Keys, nil
+		return Keys, nil
 	case "map.values":
-		return maps.Values, nil
+		return Values, nil
 	case "map.read":
-		return maps.Read, nil
+		return ReadHash, nil
 	case "map.write":
-		return maps.Write, nil
+		return WriteHash, nil
 	case "array":
-		return array.Array, nil
-	case "array.read":
-		return array.Read, nil
+		return Array, nil
 	case "array.for":
-		return array.For, nil
+		return For, nil
 	case "array.filter":
-		return array.Filter, nil
+		return Filter, nil
 	case "array.map":
-		return array.Map, nil
+		return Map, nil
 	case "array.reduce":
-		return array.Reduce, nil
+		return Reduce, nil
 	case "array.push":
-		return array.Push, nil
+		return Push, nil
 	case "array.pop":
-		return array.Pop, nil
+		return Pop, nil
+	case "array.read":
+		return ReadArray, nil
 	case "array.write":
-		return array.Write, nil
+		return WriteArray, nil
 	case "array.shift":
-		return array.Shift, nil
+		return Shift, nil
 	case "array.unshift":
-		return array.Unshift, nil
+		return Unshift, nil
 	case "array.segment":
-		return array.Segment, nil
+		return Segment, nil
 	case "array.find":
-		return array.Find, nil
+		return Find, nil
 	case "array.splice":
-		return array.Splice, nil
+		return Splice, nil
 	case "array.reverse":
-		return array.Reverse, nil
+		return Reverse, nil
 	case "array.sort":
-		return array.Sort, nil
+		return Sort, nil
 	case "if":
 		return If, nil
 	case "and":
 		return And, nil
 	case "or":
 		return Or, nil
-	case "io.puts":
-		return io.Puts, nil
-	case "io.http":
-		return io.Http, nil
+	case "std.write":
+		return WriteStd, nil
+	case "http":
+		return Http, nil
 	case "chars":
 		return Chars, nil
 	case "split":
-		return strings.Split, nil
+		return Split, nil
 	case "substring":
-		return strings.Substring, nil
+		return Substring, nil
 	case "concat":
-		return strings.Concat, nil
+		return Concat, nil
 	case "GADFLY":
-		return ai.Gadfly, nil
+		return Gadfly, nil
 	case "DAEMON":
-		return ai.Daemon, nil
+		return Daemon, nil
 	case "GHOST":
-		return ai.Ghost, nil
+		return Ghost, nil
 	case "ORACLE":
-		return ai.Oracle, nil
+		return Oracle, nil
 	case "MUSE":
-		return ai.Muse, nil
+		return Muse, nil
 	case "THEORY":
-		return ai.Theory, nil
+		return Theory, nil
 	case "RAPTURE":
-		return ai.Rapture, nil
-	case "@":
-		return ai.Call, nil
+		return Rapture, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

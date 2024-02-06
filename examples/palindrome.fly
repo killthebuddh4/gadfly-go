@@ -57,7 +57,7 @@ end
 
 array.for words
   fn |w i|
-    io.puts
+    std.write
       .is_palindrome w end
     end
   end

@@ -324,7 +324,7 @@ not, we'll see._
 # Not predicates.
 
 fn
-  io.puts "hi" end
+  std.write "hi" end
 end
 
 def val "hi" end
@@ -532,10 +532,10 @@ __TODO__
 
 __TODO__
 
-- [x] `io.puts`
+- [x] `std.write`
 - [ ] `io.gets`
 - [ ] `io.err`
-- [ ] _WIP_ `io.http`
+- [ ] _WIP_ `http`
 - [ ] `io.file.read`
 - [ ] `io.file.write`
 - [ ] documentation

@@ -1,12 +1,12 @@
-io.puts "#######################################################" end
-io.puts "" end
-io.puts "" end
-io.puts "Testing gadfly.strings package..." end
-io.puts "" end
-io.puts "" end
-io.puts "#######################################################" end
-io.puts "" end
-io.puts "" end
+std.write "#######################################################" end
+std.write "" end
+std.write "" end
+std.write "Testing gadfly.strings package..." end
+std.write "" end
+std.write "" end
+std.write "#######################################################" end
+std.write "" end
+std.write "" end
 
 #
 #
@@ -38,8 +38,8 @@ end
 
 if
   split_worked == false
-  io.puts "FAIL: strings.Split" end
-  io.puts "PASS: strings.Split" end
+  std.write "FAIL: strings.Split" end
+  std.write "PASS: strings.Split" end
 end
 
 #
@@ -54,8 +54,8 @@ end
 
 if
   test_value == "fly"
-  io.puts "PASS: strings.Substring" end
-  io.puts "FAIL: strings.Substring" end
+  std.write "PASS: strings.Substring" end
+  std.write "FAIL: strings.Substring" end
 end
 
 #
@@ -75,6 +75,6 @@ end
 
 if
   test_value == "gadfly"
-  io.puts "PASS: strings.Concat" end
-  io.puts "FAIL: strings.Concat" end
+  std.write "PASS: strings.Concat" end
+  std.write "FAIL: strings.Concat" end
 end

@@ -46,7 +46,7 @@ def k 0 end
 while k < 100
   fn 
     if .is_prime k end
-      io.puts k end
+      std.write k end
       nil
     end
 
