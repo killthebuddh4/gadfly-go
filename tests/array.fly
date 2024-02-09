@@ -23,9 +23,9 @@ end
 
 def numbers_clone
   array.map numbers
-    fn |ab i|
+    fn |ab: Number i: Number|
       ab
-    end
+    end -> Number
   end
 end -> Array
 

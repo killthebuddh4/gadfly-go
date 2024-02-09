@@ -21,6 +21,22 @@ func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) 
 			types.DefineName(&scope, param.Children[0].Operator.Value, arguments[i])
 		}
 
+		for _, child := range trajectory.Expression.Parameters {
+			validationTrajectory := types.NewTrajectory(&scope, child)
+
+			eval, dispatchErr := dispatch(&validationTrajectory)
+
+			if dispatchErr != nil {
+				return nil, dispatchErr
+			}
+
+			_, err := eval(&validationTrajectory, Exec)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		var value types.Value
 
 		for _, exp := range trajectory.Expression.Children {
@@ -35,7 +51,30 @@ func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) 
 			value = val
 		}
 
-		return value, nil
+		if len(trajectory.Expression.Returns) == 0 {
+			return value, nil
+		} else {
+			validationTrajectory := types.NewTrajectory(trajectory, trajectory.Expression.Returns[0])
+			eval, dispatchErr := dispatch(&validationTrajectory)
+
+			if dispatchErr != nil {
+				return nil, dispatchErr
+			}
+
+			schemaV, err := eval(&validationTrajectory, Exec)
+
+			if err != nil {
+				return nil, err
+			}
+
+			schema, ok := schemaV.(types.Lambda)
+
+			if !ok {
+				return nil, fmt.Errorf("not a function")
+			}
+
+			return schema(value)
+		}
 	}
 
 	return lambda, nil
