@@ -36,7 +36,14 @@ func (s *Lexer) scan() error {
 	case ".":
 		s.advance()
 	case "-":
-		s.advance()
+		n, _ := s.readNext()
+
+		if n != ">" {
+			s.advance()
+		} else {
+			s.advance()
+			s.advance()
+		}
 	case "+":
 		s.advance()
 	case "*":
@@ -70,6 +77,8 @@ func (s *Lexer) scan() error {
 			s.advance()
 			s.advance()
 		}
+	case ":":
+		s.advance()
 	case "&":
 		n, _ := s.readNext()
 
@@ -161,6 +170,36 @@ func (s *Lexer) scan() error {
 			default:
 				break IdentifierLoop
 			}
+		}
+	case "A", "H", "N", "F", "S", "I":
+		first, _ := s.readCurrent()
+		s.advance()
+		second, _ := s.readCurrent()
+		s.advance()
+		third, _ := s.readCurrent()
+		s.advance()
+		switch first + second + third {
+		case "Arr":
+			// ay
+			s.advance()
+			s.advance()
+		case "Has":
+			// h
+			s.advance()
+		case "Num", "Str":
+			// ber, ing
+			s.advance()
+			s.advance()
+			s.advance()
+		case "Fun", "Ide":
+			// ction
+			s.advance()
+			s.advance()
+			s.advance()
+			s.advance()
+			s.advance()
+		default:
+			return errors.New("unexpected Schema keyword prefix, got " + first + second + third)
 		}
 	case "G", "D", "O", "M", "T", "R":
 		first, _ := s.readCurrent()

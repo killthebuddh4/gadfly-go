@@ -28,6 +28,8 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
+	case "Array", "Number", "Hash", "String", "Function", "Identity":
+		return true
 	default:
 		return false
 	}
@@ -58,8 +60,25 @@ func isIdentifier(lexeme types.Lexeme) bool {
 	}
 }
 
+func isSchema(lexeme types.Lexeme) bool {
+	switch lexeme.Text {
+	case "Array", "Number", "Hash", "String", "Function", "Identity":
+		return true
+	default:
+		return false
+	}
+}
+
 func isPipe(lexeme types.Lexeme) bool {
 	return lexeme.Text == "|"
+}
+
+func isColon(lexeme types.Lexeme) bool {
+	return lexeme.Text == ":"
+}
+
+func isArrow(lexeme types.Lexeme) bool {
+	return lexeme.Text == "->"
 }
 
 func isLogical(lexeme types.Lexeme) bool {

@@ -144,6 +144,18 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return Theory, nil
 	case "RAPTURE":
 		return Rapture, nil
+	case "Identity":
+		return SchemaIdentity, nil
+	case "String":
+		return SchemaString, nil
+	case "Number":
+		return SchemaNumber, nil
+	case "Array":
+		return SchemaArray, nil
+	case "Hash":
+		return SchemaHash, nil
+	case ":":
+		return Schema, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

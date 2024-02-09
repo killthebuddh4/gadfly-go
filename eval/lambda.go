@@ -17,7 +17,8 @@ func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) 
 		scope := types.NewTrajectory(trajectory, nil)
 
 		for i, param := range trajectory.Expression.Parameters {
-			types.DefineName(&scope, param, arguments[i])
+			// TODO ! HACK HACK HACK OH NO MY EYES
+			types.DefineName(&scope, param.Children[0].Operator.Value, arguments[i])
 		}
 
 		var value types.Value

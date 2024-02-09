@@ -6,7 +6,8 @@ type Expression struct {
 	Parent     *Expression
 	Operator   Operator
 	Children   []*Expression
-	Parameters []string
+	Parameters []*Expression
+	Returns    []*Expression
 }
 
 func NewExpression(parent *Expression, operator Operator, children []*Expression) Expression {
@@ -14,7 +15,8 @@ func NewExpression(parent *Expression, operator Operator, children []*Expression
 		Parent:     parent,
 		Operator:   operator,
 		Children:   children,
-		Parameters: []string{},
+		Parameters: []*Expression{},
+		Returns:    []*Expression{},
 	}
 }
 
@@ -22,8 +24,12 @@ func ExpandExp(parent *Expression, children []*Expression) {
 	parent.Children = append(parent.Children, children...)
 }
 
-func Parameterize(parent *Expression, parameters []string) {
+func Parameterize(parent *Expression, parameters []*Expression) {
 	parent.Parameters = parameters
+}
+
+func Returnize(parent *Expression, returns []*Expression) {
+	parent.Returns = returns
 }
 
 func Print(expression Expression, depth int) error {

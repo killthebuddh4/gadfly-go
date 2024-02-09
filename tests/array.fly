@@ -11,17 +11,24 @@ std.write "" "" end
 #
 #
 
+def orange
+  "HEllo"
+end
+
 def numbers
-  array 
+  array |orange: String|
     2 4 6 7 8 10
   end
 end
 
 def numbers_clone
   array.map numbers
-    fn |e i| e end
+    fn |ab i|
+      ab
+    end
   end
-end
+end -> Array
+
 
 def numbers_and_twenty
   array 2 4 6 7 8 10 20 end
@@ -106,8 +113,8 @@ end
 let test_val 0 end
 
 array.for numbers
-  fn |e i|
-    let test_val test_val + e end
+  fn |a i|
+    let test_val test_val + a end
   end
 end
 
@@ -125,8 +132,8 @@ end
 
 let test_val
   array.map numbers
-    fn |e i|
-      e * e
+    fn |a i|
+      a * a
     end
   end
 end
@@ -148,9 +155,9 @@ end
 
 let test_val
   array.filter numbers
-    fn |e i|
+    fn |a i|
       def rem
-        .math.mod e 2 end
+        .math.mod a 2 end
       end
 
       rem == 0
@@ -179,8 +186,8 @@ let test_val
 
     0
 
-    fn |acc e i|
-      acc + e
+    fn |acc a i|
+      acc + a
     end
   end
 end

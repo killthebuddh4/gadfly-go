@@ -81,7 +81,7 @@ func eval(pathToFile string) {
 		return
 	}
 
-	_, err = eval1.Eval(&root)
+	_, err = eval1.Exec(&root)
 
 	if err != nil {
 		fmt.Println("Error evaluating: ", err)

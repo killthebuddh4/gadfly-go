@@ -82,6 +82,14 @@ var OPERATORS = []string{
 	"true",
 	"false",
 	"nil",
+	"Number",
+	"String",
+	"Array",
+	"Hash",
+	"Function",
+	"Identity",
+	"->",
+	":",
 }
 
 func NewOperator(from string) (Operator, error) {
