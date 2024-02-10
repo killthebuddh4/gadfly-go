@@ -24,12 +24,16 @@
       "match": "\\b\\d+(\\.\\d+)?\\b"
     },
     {
-      "name": "keyword.other.typename.gadfly",
+      "name": "entity.name.function.gadfly",
       "match": "\\b(String|Identity|Hash|Function|Number|Array)\\b"
     },
     {
       "name": "variable.other",
       "match": "\\b[a-z_]+\\b"
+    },
+    {
+      "name": "variable.other.object",
+      "match": " (\\.[a-z_]+)+\\b"
     }
   ],
   "repository": {
