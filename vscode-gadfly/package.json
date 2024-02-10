@@ -1,0 +1,25 @@
+{
+  "name": "vscode-gadfly",
+  "displayName": "vscode-gadfly",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "gadfly",
+      "aliases": ["gadfly", "gadfly"],
+      "extensions": [".fly"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "gadfly",
+      "scopeName": "source.gadfly",
+      "path": "./syntaxes/gadfly.tmLanguage.json"
+    }]
+  }
+}

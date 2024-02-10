@@ -11,12 +11,8 @@ std.write "" "" end
 #
 #
 
-def orange
-  "HEllo"
-end
-
 def numbers
-  array |orange: String|
+  array
     2 4 6 7 8 10
   end
 end

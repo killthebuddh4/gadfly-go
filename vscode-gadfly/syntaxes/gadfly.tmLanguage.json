@@ -1,0 +1,53 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "gadfly",
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.gadfly",
+      "match": "#.*$"
+    },
+    {
+      "name": "string.quoted.double.gadfly",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "keyword.control.gadfly",
+      "match": "\\b(end|fn|def|val|let|if|do|panic|and|or|while|map|map.merge|map.delete|map.keys|map.values|map.read|map.write|map.extract|array|array.read|array.write|array.for|array.map|array.filter|array.reduce|array.push|array.pop|array.shift|array.unshift|array.segment|array.find|array.splice|array.reverse|array.sort|std.write|http|split|substring|concat|chars|effect)\\b"
+    },
+    {
+      "name": "keyword.operator.gadfly",
+      "match": "\\b==|!=|>=|<=|<|>|\\+|-|\\*\\b"
+    },
+    {
+      "name": "constant.numeric.gadfly",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    {
+      "name": "keyword.other.typename.gadfly",
+      "match": "\\b(String|Identity|Hash|Function|Number|Array)\\b"
+    },
+    {
+      "name": "variable.other",
+      "match": "\\b[a-z_]+\\b"
+    }
+  ],
+  "repository": {
+    "nested_parentheses": {
+      "patterns": [
+        {
+          "include": "#nested_parentheses"
+        },
+        {
+          "match": "\\(",
+          "name": "punctuation.section.parentheses.begin.gadfly"
+        },
+        {
+          "match": "\\)",
+          "name": "punctuation.section.parentheses.end.gadfly"
+        }
+      ]
+    }
+  },
+	"scopeName": "source.gadfly"
+}
