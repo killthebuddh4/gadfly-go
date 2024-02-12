@@ -38,6 +38,10 @@
     {
       "name": "variable.other",
       "match": "\\b[a-z_][a-z_.]+\\b"
+    },
+    {
+      "name": "variable.other",
+      "match": "[a-z_]+"
     }
   ],
   "repository": {
