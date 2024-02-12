@@ -51,10 +51,10 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
 
 # The big idea
 
-An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a s
+An _[autopoietic](https://en.wikipedia.org/wiki/Autopoiesis)_ system is a system
 that is capable of producing and maintaining itself. Our first primary goal is to
 bootstrap autopoietic computer programs. Our second goal is to bootstrap
-autopoietic _copilot programs_ (or "copilot" for brevity's sake). We define a
+autopoietic _copilot programs_ (or just "copilot"). We define a
 copilot as a long-running program capable of satisfying requests to solve
 _basic, human-level_ problems in some domain and whose primary user interface is
 natural language. We roughly define "basic, human-level" as a problem that in
