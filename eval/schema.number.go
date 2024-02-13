@@ -6,50 +6,18 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func SchemaNumber(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	schemas := []types.Lambda{}
-
-	for _, child := range trajectory.Children {
-		schemaV, err := eval(child)
-
-		if err != nil {
-			return nil, err
-		}
-
-		schema, ok := schemaV.(types.Lambda)
-
-		if !ok {
-			return nil, errors.New("not a function")
-		}
-
-		schemas = append(schemas, schema)
-	}
-
+func SchemaNumber() types.Lambda {
 	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
 		raw := arguments[0]
 
-		arr, ok := raw.(float64)
+		num, ok := raw.(float64)
 
 		if !ok {
 			return nil, errors.New("not a number")
 		}
 
-		var val types.Value = arr
-
-		for _, schema := range schemas {
-			v, err := schema(val)
-
-			if err != nil {
-				return nil, err
-			}
-
-			val = v
-		}
-
-		return val, nil
+		return num, nil
 	}
 
-	return lambda, nil
+	return lambda
 }

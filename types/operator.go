@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Operator struct {
@@ -12,7 +13,9 @@ type Operator struct {
 var OPERATORS = []string{
 	"program",
 	"fn",
-	"|",
+	"(",
+	"(->",
+	")",
 	"def",
 	".",
 	"val",
@@ -82,19 +85,21 @@ var OPERATORS = []string{
 	"true",
 	"false",
 	"nil",
-	"Number",
-	"String",
-	"Array",
-	"Hash",
-	"Function",
-	"Identity",
 	"->",
 	":",
 }
 
-func NewOperator(from string) (Operator, error) {
+func NewOperator(from string, isInSig bool) (Operator, error) {
 	for _, operator := range OPERATORS {
 		if operator == from {
+			if from == "Number" {
+				fmt.Println("FOUND NUMBER OPERATOR")
+				fmt.Println("FOUND NUMBER OPERATOR")
+				fmt.Println("FOUND NUMBER OPERATOR")
+				fmt.Println("FOUND NUMBER OPERATOR")
+				fmt.Println("FOUND NUMBER OPERATOR")
+				fmt.Println("FOUND NUMBER OPERATOR")
+			}
 			return Operator{
 				Type:  from,
 				Value: from,
@@ -118,6 +123,18 @@ func NewOperator(from string) (Operator, error) {
 			Type:  "identifier",
 			Value: from,
 		}, nil
+	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+		if isInSig {
+			return Operator{
+				Type:  "identifier",
+				Value: from,
+			}, nil
+		} else {
+			return Operator{
+				Type:  "schema",
+				Value: from,
+			}, nil
+		}
 	default:
 		return Operator{}, errors.New("Could not resolve to operator from text: <" + from + ">")
 	}

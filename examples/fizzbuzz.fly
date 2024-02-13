@@ -1,42 +1,46 @@
 def is_fizz
-  fn |n|
-    def r
-      .math.mod 
-        n 3
+  (n)
+    fn
+      def r
+        .math.mod 
+          n 3
+        end
       end
-    end
 
-    r == 0
-  end
+      r == 0
+    end
 end
 
 def is_buzz
-  fn |n|
-    def r
-      .math.mod 
-        n 5
+  (n)
+    fn
+      def r
+        .math.mod 
+          n 5
+        end
       end
-    end
 
-    r == 0
-  end
+      r == 0
+    end
 end
 
 def is_fizzbuzz
-  fn |n|
-    def both
-      and
-        .is_fizz n end true
-        .is_buzz n end true
+  (n)
+    fn
+      def both
+        and
+          .is_fizz n end true
+          .is_buzz n end true
+        end
       end
-    end
 
-    both == true
-  end
+      both == true
+    end
 end
 
 def fizzbuzz
-  fn |n|
+  (n)
+  fn
     def k 1 end
     while k <= n
       fn

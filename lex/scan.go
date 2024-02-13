@@ -72,11 +72,23 @@ func (s *Lexer) scan() error {
 		n, _ := s.readNext()
 
 		if n != "|" {
-			s.advance()
+			return errors.New("unexpected character, expected '|' after '|'")
 		} else {
 			s.advance()
 			s.advance()
 		}
+	case "(":
+		n, _ := s.readNext()
+
+		if n == "-" {
+			s.advance()
+			s.advance()
+			s.advance()
+		} else {
+			s.advance()
+		}
+	case ")":
+		s.advance()
 	case ":":
 		s.advance()
 	case "&":
@@ -171,66 +183,20 @@ func (s *Lexer) scan() error {
 				break IdentifierLoop
 			}
 		}
-	case "A", "H", "N", "F", "S", "I":
-		first, _ := s.readCurrent()
+	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
 		s.advance()
-		second, _ := s.readCurrent()
-		s.advance()
-		third, _ := s.readCurrent()
-		s.advance()
-		switch first + second + third {
-		case "Arr":
-			// ay
-			s.advance()
-			s.advance()
-		case "Has":
-			// h
-			s.advance()
-		case "Num", "Str":
-			// ber, ing
-			s.advance()
-			s.advance()
-			s.advance()
-		case "Fun", "Ide":
-			// ction
-			s.advance()
-			s.advance()
-			s.advance()
-			s.advance()
-			s.advance()
-		default:
-			return errors.New("unexpected Schema keyword prefix, got " + first + second + third)
-		}
-	case "G", "D", "O", "M", "T", "R":
-		first, _ := s.readCurrent()
-		s.advance()
-		second, _ := s.readCurrent()
-		s.advance()
-		third, _ := s.readCurrent()
-		s.advance()
-		switch first + second + third {
-		case "RAP":
-			// TURE
-			s.advance()
-			s.advance()
-			s.advance()
-			s.advance()
-		case "GAD", "DAE", "ORA", "THE":
-			// FLY, MON, CLE, ORY
-			s.advance()
-			s.advance()
-			s.advance()
-		case "GHO":
-			// ST
-			s.advance()
-			s.advance()
-		case "MUS":
-			// E
-			s.advance()
-		default:
-			return errors.New("unexpected AI keyword prefix, got " + first + second + third)
-		}
 
+	SchemaLoop:
+		for {
+			n, _ := s.readCurrent()
+
+			switch n {
+			case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+				s.advance()
+			default:
+				break SchemaLoop
+			}
+		}
 	default:
 		return errors.New("unexpected character " + char)
 	}

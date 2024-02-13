@@ -1,37 +1,39 @@
 def map.equal
-  fn |a b|
-    def result true end
+  (a b)
+    fn
+      def result true end
 
-    def test
-      fn |key i|
-        def a_val
-          map.read a key end
-        end
-        
-        def b_val
-          map.read b key end
-        end
+      def test
+        (key i)
+          fn
+            def a_val
+              map.read a key end
+            end
+            
+            def b_val
+              map.read b key end
+            end
 
-        if result == true
-          if a_val != b_val
-            let result false end
-            nil
+            if result == true
+              if a_val != b_val
+                let result false end
+                nil
+              end
+              nil
+            end
           end
-          nil
-        end
       end
-    end
 
-    array.for
-      map.keys a end
-      test
-    end
+      array.for
+        map.keys a end
+        test
+      end
 
-    array.for
-      map.keys b end
-      test
+      array.for
+        map.keys b end
+        test
+      end
+        
+      result
     end
-      
-    result
-  end
 end

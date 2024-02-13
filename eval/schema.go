@@ -9,23 +9,41 @@ import (
 func Schema(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
-	arg, err := eval(trajectory.Children[0])
+	schemas := []types.Lambda{}
 
-	if err != nil {
-		return nil, err
+	for _, child := range trajectory.Children {
+		schemaV, err := eval(child)
+
+		if err != nil {
+			return nil, err
+		}
+
+		schema, ok := schemaV.(types.Lambda)
+
+		if !ok {
+			return nil, errors.New("not a function")
+		}
+
+		schemas = append(schemas, schema)
 	}
 
-	schemaV, err := eval(trajectory.Children[1])
+	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+		raw := arguments[0]
 
-	if err != nil {
-		return nil, err
+		var val types.Value = raw
+
+		for _, schema := range schemas {
+			v, err := schema(val)
+
+			if err != nil {
+				return nil, err
+			}
+
+			val = v
+		}
+
+		return val, nil
 	}
 
-	schema, ok := schemaV.(types.Lambda)
-
-	if !ok {
-		return nil, errors.New("not a function")
-	}
-
-	return schema(arg)
+	return lambda, nil
 }

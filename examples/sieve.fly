@@ -1,43 +1,44 @@
 # An innefficient sieve of Eratosthenes.
 
 def is_prime
-  fn |n|
-    def
-      composites
-      array end
-    end
+  (n)
+    fn
+      def
+        composites
+        array end
+      end
 
-    def base 2 end
-    
-    def test base end
+      def base 2 end
+      
+      def test base end
 
-    while base < n
-      fn
-        let test base end
+      while base < n
+        fn
+          let test base end
 
-        while test < n
-          fn
-            let test test + base end
+          while test < n
+            fn
+              let test test + base end
 
-            let composites
-              array.push composites
-                test
+              let composites
+                array.push composites
+                  test
+                end
               end
             end
           end
+
+          let base base + 1 end
         end
-
-        let base base + 1 end
       end
-    end
 
-    def is_composite
-      .includes composites n
+      def is_composite
+        .includes composites n
+        end
       end
-    end
 
-    is_composite == false
-  end
+      is_composite == false
+    end
 end
 
 

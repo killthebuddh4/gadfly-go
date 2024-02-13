@@ -8,14 +8,14 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) expression(parent *types.Expression) (*types.Expression, error) {
+func (p *Parser) expression(parent *types.Expression, withSignature bool) (*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {
 		fmt.Println("Parsing block for lexeme:", p.previous().Text)
 	}
 
-	operator, err := types.NewOperator(p.previous().Text)
+	operator, err := types.NewOperator(p.previous().Text, false)
 
 	if err != nil {
 		return nil, err
@@ -25,9 +25,9 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 
 	parameters := []*types.Expression{}
 
-	if accept(p, isPipe) {
+	if withSignature {
 		for accept(p, isIdentifier) {
-			param, err := types.NewOperator(p.previous().Text)
+			param, err := types.NewOperator(p.previous().Text, true)
 
 			if err != nil {
 				return nil, err
@@ -39,7 +39,7 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 			var schema types.Operator
 
 			if !accept(p, isColon) {
-				colonOp, err := types.NewOperator(":")
+				colonOp, err := types.NewOperator(":", true)
 
 				if err != nil {
 					return nil, err
@@ -47,7 +47,7 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 
 				colon = colonOp
 
-				schemaOp, err := types.NewOperator("Identity")
+				schemaOp, err := types.NewOperator("Identity", true)
 
 				if err != nil {
 					return nil, err
@@ -55,7 +55,7 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 
 				schema = schemaOp
 			} else {
-				colonOp, err := types.NewOperator(p.previous().Text)
+				colonOp, err := types.NewOperator(p.previous().Text, true)
 
 				if err != nil {
 					return nil, err
@@ -67,7 +67,7 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 					return nil, errors.New("expected identifier after colon")
 				}
 
-				schemaOp, err := types.NewOperator(p.previous().Text)
+				schemaOp, err := types.NewOperator(p.previous().Text, true)
 
 				if err != nil {
 					return nil, err
@@ -85,10 +85,37 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 
 		types.Parameterize(&root, parameters)
 
-		if !accept(p, isPipe) {
+		if !accept(p, isEndSignature) {
 			return nil, errors.New("expected closing pipe")
 		}
 
+		if !accept(p, isExpression) {
+			return nil, errors.New("expected expression after signature")
+		}
+	}
+
+	operator, err = types.NewOperator(p.previous().Text, false)
+
+	if err != nil {
+		return nil, err
+	}
+
+	root.Operator = operator
+
+	if operator.Type == "def" {
+		if !accept(p, isIdentifier) {
+			return nil, errors.New("expected identifier after def")
+		}
+
+		idOp, err := types.NewOperator(p.previous().Text, false)
+
+		if err != nil {
+			return nil, err
+		}
+
+		idExp := types.NewExpression(&root, idOp, []*types.Expression{})
+
+		root.Children = append(root.Children, &idExp)
 	}
 
 	for {
@@ -97,7 +124,7 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 		}
 
 		if p.isAtEnd() {
-			break
+			return nil, errors.New("expected end of expression")
 		}
 
 		err := p.parse(&root)
@@ -107,12 +134,13 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 		}
 	}
 
-	if accept(p, isArrow) {
+	if accept(p, isReturn) {
+		fmt.Println("Parsing signature for lexeme:", p.previous().Text)
 		if !(accept(p, isIdentifier) || accept(p, isSchema)) {
 			return nil, errors.New("expected identifier after arrow")
 		}
 
-		schema, err := types.NewOperator(p.previous().Text)
+		schema, err := types.NewOperator(p.previous().Text, true)
 
 		if err != nil {
 			return nil, err
@@ -121,6 +149,10 @@ func (p *Parser) expression(parent *types.Expression) (*types.Expression, error)
 		schemaExp := types.NewExpression(nil, schema, []*types.Expression{})
 
 		types.Returnize(&root, []*types.Expression{&schemaExp})
+
+		if !accept(p, isEndSignature) {
+			return nil, errors.New("expected end of return signature")
+		}
 	}
 
 	return &root, nil

@@ -1,81 +1,89 @@
 def slice
-  fn |arr start finish|
-    array.filter arr 
-      fn |el i|
-        def result
-          and
-            i >= start true
-            i < finish true
-          end
-        end
+  (arr start finish)
+    fn 
+      array.filter arr 
+        (el i)
+          fn
+            def result
+              and
+                i >= start true
+                i < finish true
+              end
+            end
 
-        result == true
+            result == true
+          end
       end
     end
-  end
 end
 
 def length
-  fn |arr|
-    def result 0 end
+  (arr)
+    fn
+      def result 0 end
 
-    array.for arr
-      fn |e i|
-        let result i end
+      array.for arr
+        (e i)
+          fn
+            let result i end
+          end
       end
-    end
 
-    result + 1
-  end
+      result + 1
+    end
 end
 
 def includes
-  fn |arr e|
-    def includes false end
+  (arr e)
+    fn
+      def includes false end
 
-    array.for arr
-      fn |test i|
-        if test == e
-          let includes true end
-          nil
-        end
+      array.for arr
+        (test i)
+          fn
+            if test == e
+              let includes true end
+              nil
+            end
+          end
       end
-    end
 
-    includes
-  end
+      includes
+    end
 end
 
 def equal
-  fn |arr_a arr_b|
-    def result true end
+  (arr_a arr_b)
+    fn
+      def result true end
 
-    def arr_a_length
-      .length arr_a end
-    end
-
-    def arr_b_length
-      .length arr_b end
-    end
-
-    if arr_a_length != arr_b_length
-      let result false end
-      nil
-    end
-
-    array.for arr_a
-      fn |e i|
-        def b
-          array.read arr_b i end
-        end
-
-        if e != b
-          let result false end
-          nil
-        end
+      def arr_a_length
+        .length arr_a end
       end
-    end
 
-    result
-  end
+      def arr_b_length
+        .length arr_b end
+      end
+
+      if arr_a_length != arr_b_length
+        let result false end
+        nil
+      end
+
+      array.for arr_a
+        (e i)
+          fn
+            def b
+              array.read arr_b i end
+            end
+
+            if e != b
+              let result false end
+              nil
+            end
+          end
+      end
+
+      result
+    end
 end

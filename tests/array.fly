@@ -17,14 +17,17 @@ def numbers
   end
 end
 
-def numbers_clone
-  array.map numbers
-    fn |ab: Number i: Number|
-      ab
-    end -> Number
-  end
-end -> Array
 
+def numbers_clone
+  array.map
+    numbers
+
+    (ab: Number i)
+      fn
+        ab
+      end
+  end
+end
 
 def numbers_and_twenty
   array 2 4 6 7 8 10 20 end
@@ -64,10 +67,12 @@ let test_val
   array.read numbers 2 end
 end
 
-if
-  test_val != 6
-  std.write "FAIL: array.Read" end
-  std.write "PASS: array.Read" end
+std.write
+  if
+    test_val != 6
+    "FAIL: array.Read"
+    "PASS: array.Read"
+  end
 end
 
 #
@@ -78,12 +83,16 @@ end
 
 array.write numbers 2 12 end
 
-let test_val array.read numbers 2 end
+let test_val
+  array.read numbers 2 end
+end
 
-if
-  test_val != 6
-  std.write "FAIL: array.Write immutability" end
-  std.write "PASS: array.Write immutability" end
+std.write
+  if
+    test_val != 6
+    "FAIL: array.Write immutability"
+    "PASS: array.Write immutability"
+  end
 end
 
 def new_numbers
@@ -109,9 +118,10 @@ end
 let test_val 0 end
 
 array.for numbers
-  fn |a i|
-    let test_val test_val + a end
-  end
+  (a i)
+    fn
+      let test_val test_val + a end
+    end
 end
 
 if
@@ -128,9 +138,10 @@ end
 
 let test_val
   array.map numbers
-    fn |a i|
-      a * a
-    end
+    (a i)
+      fn
+        a * a
+      end
   end
 end
 
@@ -151,13 +162,14 @@ end
 
 let test_val
   array.filter numbers
-    fn |a i|
-      def rem
-        .math.mod a 2 end
-      end
+    (a i)
+      fn
+        def rem
+          .math.mod a 2 end
+        end
 
-      rem == 0
-    end
+        rem == 0
+      end
   end
 end
 
@@ -182,9 +194,10 @@ let test_val
 
     0
 
-    fn |acc a i|
-      acc + a
-    end
+    (acc a i)
+      fn
+        acc + a
+      end
   end
 end
 

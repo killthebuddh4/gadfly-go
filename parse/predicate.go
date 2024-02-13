@@ -22,7 +22,7 @@ func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) 
 			fmt.Println("Parsing logical for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -56,7 +56,7 @@ func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing equality for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -90,7 +90,7 @@ func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error)
 			fmt.Println("Parsing comparison for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -124,7 +124,7 @@ func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing term for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -158,7 +158,7 @@ func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing factor for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -186,7 +186,7 @@ func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing unary for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err
@@ -214,7 +214,7 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing atom for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text)
+		operator, err := types.NewOperator(p.previous().Text, false)
 
 		if err != nil {
 			return nil, err

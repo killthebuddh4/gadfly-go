@@ -1,6 +1,8 @@
 package parse
 
-import "github.com/killthebuddh4/gadflai/types"
+import (
+	"github.com/killthebuddh4/gadflai/types"
+)
 
 /*
  * Note that these classifiers are very much coupled to the grammar and must be
@@ -28,11 +30,41 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
-	case "Array", "Number", "Hash", "String", "Function", "Identity":
+	default:
+		return false
+	}
+}
+
+func isIdentifier(lexeme types.Lexeme) bool {
+	switch string(lexeme.Text[0]) {
+	case ".", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+		return true
+	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
 		return true
 	default:
 		return false
 	}
+}
+
+func isSchema(lexeme types.Lexeme) bool {
+	switch string(lexeme.Text[0]) {
+	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+		return true
+	default:
+		return false
+	}
+}
+
+func isSignature(lexeme types.Lexeme) bool {
+	return lexeme.Text == "("
+}
+
+func isReturn(lexeme types.Lexeme) bool {
+	return lexeme.Text == "(->"
+}
+
+func isEndSignature(lexeme types.Lexeme) bool {
+	return lexeme.Text == ")"
 }
 
 func isEnd(lexeme types.Lexeme) bool {
@@ -51,34 +83,12 @@ func isNil(lexeme types.Lexeme) bool {
 	return lexeme.Text == "nil"
 }
 
-func isIdentifier(lexeme types.Lexeme) bool {
-	switch string(lexeme.Text[0]) {
-	case ".", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
-		return true
-	default:
-		return false
-	}
-}
-
-func isSchema(lexeme types.Lexeme) bool {
-	switch lexeme.Text {
-	case "Array", "Number", "Hash", "String", "Function", "Identity":
-		return true
-	default:
-		return false
-	}
-}
-
 func isPipe(lexeme types.Lexeme) bool {
 	return lexeme.Text == "|"
 }
 
 func isColon(lexeme types.Lexeme) bool {
 	return lexeme.Text == ":"
-}
-
-func isArrow(lexeme types.Lexeme) bool {
-	return lexeme.Text == "->"
 }
 
 func isLogical(lexeme types.Lexeme) bool {

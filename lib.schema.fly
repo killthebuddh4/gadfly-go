@@ -1,0 +1,16 @@
+def NonEmptyString
+  String
+    (s) 
+      fn
+        def l
+          .length
+            chars s end
+          end
+        end
+
+        std.write l < 0 end
+
+        l < 0
+      end
+  end
+end

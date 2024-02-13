@@ -12,7 +12,7 @@
       "end": "\""
     },
     {
-      "name": "variable.other.object",
+      "name": "entity.name.function.gadfly",
       "match": "\\.[a-z_][a-z_.]+[a-z]"
     },
     {
@@ -32,8 +32,8 @@
       "match": "\\b\\d+(\\.\\d+)?\\b"
     },
     {
-      "name": "entity.name.function.gadfly",
-      "match": "\\b(String|Identity|Hash|Function|Number|Array)\\b"
+      "name": "variable.other.object",
+      "match": "\\b(String|Identity|Hash|Function|Number|Array|Boolean)\\b"
     },
     {
       "name": "variable.other",
