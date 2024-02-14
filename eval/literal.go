@@ -8,19 +8,19 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func True(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func True(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return true, nil
 }
 
-func False(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func False(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return false, nil
 }
 
-func Nil(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Nil(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return nil, nil
 }
 
-func Number(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Number(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	num, parseErr := strconv.ParseFloat(trajectory.Expression.Operator.Value, 64)
 
 	if parseErr != nil {
@@ -30,6 +30,6 @@ func Number(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) 
 	return num, nil
 }
 
-func String(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func String(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return strings.Trim(trajectory.Expression.Operator.Value, "\""), nil
 }

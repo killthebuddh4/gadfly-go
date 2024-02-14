@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Schema(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Schema(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	schemas := []types.Lambda{}

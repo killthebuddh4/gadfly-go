@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Substring(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Substring(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	arg, err := eval(trajectory.Children[0])

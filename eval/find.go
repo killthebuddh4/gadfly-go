@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Find(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Find(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	arrV, err := eval(trajectory.Children[0])

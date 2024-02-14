@@ -29,8 +29,15 @@ def is_fizzbuzz
     fn
       def both
         and
-          .is_fizz n end true
-          .is_buzz n end true
+          case
+            fn .is_fizz n end end
+            fn true end
+          end
+
+          case
+            fn .is_buzz n end end
+            fn true end
+          end
         end
       end
 
@@ -47,9 +54,20 @@ def fizzbuzz
         std.write k end
         
         or
-          .is_fizzbuzz k end std.write "fizzbuzz" end
-          .is_fizz k end std.write "fizz" end
-          .is_buzz k end std.write "buzz" end
+          case
+            fn .is_fizzbuzz k end end
+            fn std.write "fizzbuzz" end end
+          end
+
+          case
+            fn .is_fizz k end end
+            fn std.write "fizz" end end
+          end
+
+          case
+            fn .is_buzz k end end
+            fn std.write "buzz" end end
+          end
         end
 
         let k k + 1 end

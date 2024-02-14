@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func If(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func If(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	err := types.ExpandBy(trajectory, trajectory.Expression.Children[0])
 
 	if err != nil {
@@ -42,73 +42,101 @@ func If(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	return eval(exp)
 }
 
-func And(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
-	if (len(trajectory.Expression.Children) % 2) != 0 {
-		return nil, errors.New("and must have even number of inputs")
-	}
+func And(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
-	var val types.Value = nil
+	cases := []CaseHandler{}
 
-	for i := 0; i < len(trajectory.Expression.Children); i += 2 {
-		types.ExpandBy(trajectory, trajectory.Expression.Children[i])
-		conditionVal, err := eval(trajectory.Children[i])
+	for _, child := range trajectory.Children {
+		caseHandlerV, err := eval(child)
 
 		if err != nil {
 			return nil, err
 		}
 
-		condition, ok := conditionVal.(bool)
+		caseHandler, ok := caseHandlerV.(CaseHandler)
 
 		if !ok {
-			return nil, errors.New("condition is not a boolean")
+			return nil, errors.New("not a case handler")
 		}
 
-		if !condition {
-			return false, nil
-		}
+		cases = append(cases, caseHandler)
+	}
 
-		types.ExpandBy(trajectory, trajectory.Expression.Children[i+1])
-		body, err := eval(trajectory.Children[i+1])
+	var value types.Value = nil
+
+	for _, caseHandler := range cases {
+		condV, err := caseHandler.Cond()
 
 		if err != nil {
 			return nil, err
 		}
 
-		val = body
+		cond, ok := condV.(bool)
+
+		if !ok {
+			return nil, errors.New("not a boolean")
+		}
+
+		if !cond {
+			return nil, nil
+		} else {
+			val, err := caseHandler.Body()
+
+			if err != nil {
+				return nil, err
+			}
+
+			value = val
+		}
 	}
 
-	return val, nil
+	return value, nil
 }
 
-func Or(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
-	if (len(trajectory.Expression.Children) % 2) != 0 {
-		return nil, errors.New("or must have even number of inputs")
-	}
+func Or(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
+	types.ExpandTraj(trajectory)
 
-	for i := 0; i < len(trajectory.Expression.Children); i += 2 {
-		types.ExpandBy(trajectory, trajectory.Expression.Children[i])
-		conditionVal, err := eval(trajectory.Children[len(trajectory.Children)-1])
+	cases := []CaseHandler{}
+
+	for _, child := range trajectory.Children {
+		caseHandlerV, err := eval(child)
 
 		if err != nil {
 			return nil, err
 		}
 
-		condition, ok := conditionVal.(bool)
+		caseHandler, ok := caseHandlerV.(CaseHandler)
 
 		if !ok {
-			return nil, errors.New("condition is not a boolean")
+			return nil, errors.New("not a case handler")
 		}
 
-		if condition {
-			types.ExpandBy(trajectory, trajectory.Expression.Children[i+1])
-			return eval(trajectory.Children[len(trajectory.Children)-1])
+		cases = append(cases, caseHandler)
+	}
+
+	for _, caseHandler := range cases {
+		condV, err := caseHandler.Cond()
+
+		if err != nil {
+			return nil, err
+		}
+
+		cond, ok := condV.(bool)
+
+		if !ok {
+			return nil, errors.New("not a boolean")
+		}
+
+		if cond {
+			return caseHandler.Body()
 		}
 	}
 
 	return nil, nil
 }
 
-func While(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func While(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandBy(trajectory, trajectory.Expression.Children[0])
 
 	condV, err := eval(trajectory.Children[0])

@@ -7,7 +7,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Lambda(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
 		if len(arguments) != len(trajectory.Expression.Parameters) {
 			fmt.Println(arguments)
@@ -80,7 +80,7 @@ func Lambda(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) 
 	return lambda, nil
 }
 
-func Call(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Call(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	fnVal, err := eval(trajectory.Children[0])

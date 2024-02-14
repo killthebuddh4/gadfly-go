@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Merge(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Merge(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	baseV, err := eval(trajectory.Children[0])

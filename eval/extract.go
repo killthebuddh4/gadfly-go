@@ -7,7 +7,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Extract(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Extract(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	baseV, err := eval(trajectory.Children[0])

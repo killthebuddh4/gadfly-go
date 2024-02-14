@@ -8,7 +8,7 @@ import (
 
 type SignalHandler func(string) (types.Lambda, error)
 
-func On(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func On(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	signalExpr := trajectory.Children[0]

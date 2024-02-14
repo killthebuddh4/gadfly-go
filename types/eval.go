@@ -1,3 +1,3 @@
 package types
 
-type Exec func(trajectory *Trajectory) (Value, error)
+type Eval func(trajectory *Trajectory) (Value, error)

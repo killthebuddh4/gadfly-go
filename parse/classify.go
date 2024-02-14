@@ -18,7 +18,7 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "def", "val", "let", ".":
 		return true
-	case "if", "and", "or", "while":
+	case "if", "and", "or", "while", "case":
 		return true
 	case "array", "array.read", "array.write", "array.for", "array.map", "array.filter", "array.reduce", "array.push", "array.pop", "array.shift", "array.unshift", "array.segment", "array.find", "array.splice", "array.reverse", "array.sort":
 		return true
@@ -30,7 +30,7 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
-	case "signal", "emit", "on":
+	case "signal", "emit", "on", "catch", "throw":
 		return true
 	default:
 		return false
@@ -51,7 +51,12 @@ func isIdentifier(lexeme types.Lexeme) bool {
 func isSchema(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
-		return true
+		switch string(lexeme.Text[1]) {
+		case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+			return true
+		default:
+			return false
+		}
 	default:
 		return false
 	}

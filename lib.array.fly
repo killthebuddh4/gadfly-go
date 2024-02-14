@@ -6,8 +6,15 @@ def slice
           fn
             def result
               and
-                i >= start true
-                i < finish true
+                case
+                  fn i >= start end
+                  fn true end
+                end
+
+                case
+                  fn i < finish end
+                  fn true end
+                end
               end
             end
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Void struct{}
@@ -16,6 +17,7 @@ type Trajectory struct {
 	Expression  *Expression
 	Environment map[string]Value
 	Signals     map[string]Lambda
+	Errors      map[string]Lambda
 }
 
 func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
@@ -25,6 +27,7 @@ func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
 		Expression:  expr,
 		Environment: map[string]Value{},
 		Signals:     map[string]Lambda{},
+		Errors:      map[string]Lambda{},
 	}
 }
 
@@ -128,6 +131,7 @@ func DefineSignal(trajectory *Trajectory, name string, handler Lambda) error {
 		return errors.New("signal " + name + " is already defined")
 	}
 
+	fmt.Println("Defining signal", name)
 	trajectory.Signals[name] = handler
 
 	return nil
@@ -139,10 +143,42 @@ func ResolveSignal(trajectory *Trajectory, name string) (Value, error) {
 	}
 
 	for key, handler := range trajectory.Signals {
+		fmt.Println("Check signal with name", key, name)
 		if key == name {
+			fmt.Println("Found signal with name", key, name)
 			return handler, nil
 		}
 	}
 
 	return ResolveSignal(trajectory.Parent, name)
+}
+
+func DefineError(trajectory *Trajectory, name string, handler Lambda) error {
+	if trajectory == nil {
+		return errors.New("cannot define error in nil expression")
+	}
+
+	_, ok := trajectory.Errors[name]
+
+	if ok {
+		return errors.New("error " + name + " is already defined")
+	}
+
+	trajectory.Errors[name] = handler
+
+	return nil
+}
+
+func ResolveError(trajectory *Trajectory, name string) (Value, error) {
+	if trajectory == nil {
+		return nil, errors.New("error not found for " + name)
+	}
+
+	for key, handler := range trajectory.Errors {
+		if key == name {
+			return handler, nil
+		}
+	}
+
+	return ResolveError(trajectory.Parent, name)
 }

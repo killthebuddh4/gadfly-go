@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Signal(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
+func Catch(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
@@ -25,7 +25,7 @@ func Signal(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 		return nil, errors.New("not a function")
 	}
 
-	types.DefineSignal(trajectory.Parent, identifier, handler)
+	types.DefineError(trajectory.Parent, identifier, handler)
 
 	return handler, nil
 }

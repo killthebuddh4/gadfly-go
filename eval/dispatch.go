@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-type D func(t *types.Trajectory, e types.Exec) (types.Value, error)
+type D func(t *types.Trajectory, e types.Eval) (types.Value, error)
 
 func dispatch(trajectory *types.Trajectory) (D, error) {
 	switch trajectory.Expression.Operator.Type {
@@ -44,6 +44,8 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return False, nil
 	case "nil":
 		return Nil, nil
+	case "symbol":
+		return Symbol, nil
 	case "number":
 		return Number, nil
 	case "string":
@@ -118,6 +120,8 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return And, nil
 	case "or":
 		return Or, nil
+	case "case":
+		return Case, nil
 	case "std.write":
 		return WriteStd, nil
 	case "http":
@@ -148,6 +152,10 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return Colon, nil
 	case "schema":
 		return Schema, nil
+	case "catch":
+		return Catch, nil
+	case "throw":
+		return Throw, nil
 	case "signal":
 		return Signal, nil
 	case "emit":

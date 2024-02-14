@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Def(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Def(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
@@ -28,7 +28,7 @@ func Def(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	return value, nil
 }
 
-func Let(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Let(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
@@ -50,7 +50,7 @@ func Let(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
 	return value, nil
 }
 
-func Identifier(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Identifier(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	if trajectory.Parent == nil {
 		return nil, errors.New("cannot evaluate identifier " + trajectory.Expression.Operator.Value + " with nil parent")
 	}

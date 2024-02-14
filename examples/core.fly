@@ -1,38 +1,50 @@
-std.write "Testing signals" end
 
 signal
-  sig_test
+  SIG_TEST
 
-  (s)
+  (sig)
     fn
-      "feed_fail"
+      SIG_CONTINUE
     end
 end
 
-
-def result
+do
   emit
-    "sig_test"
+    SIG_TEST
 
     on
-      "feed_continue"
+      SIG_CONTINUE
 
-      (n)
+      (feedback)
         fn
-          "continue"
-        end
-    end
-
-    on
-      "feed_fail"
-
-      (n)
-        fn
-          "fail"
+          std.write COOL end
         end
     end
   end
 end
 
-std.write result end
 
+def numbers
+  array 1 2 3 4 5 end
+end
+
+def x
+  fn
+    throw
+      SIG_FAIL
+    end
+  end
+end
+
+do
+  catch
+    SIG_FAIL
+
+    (sig)
+      fn
+        std.write "Caught an error" end
+      end
+  end
+  
+  .x end
+end

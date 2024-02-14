@@ -25,6 +25,7 @@ var OPERATORS = []string{
 	"and",
 	"or",
 	"while",
+	"case",
 	"map",
 	"map.merge",
 	"map.delete",
@@ -89,6 +90,8 @@ var OPERATORS = []string{
 	"signal",
 	"emit",
 	"on",
+	"catch",
+	"throw",
 }
 
 func NewOperator(from string, isInSig bool) (Operator, error) {
@@ -124,10 +127,18 @@ func NewOperator(from string, isInSig bool) (Operator, error) {
 				Value: from,
 			}, nil
 		} else {
-			return Operator{
-				Type:  "schema",
-				Value: from,
-			}, nil
+			switch string(from[1]) {
+			case "_", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+				return Operator{
+					Type:  "symbol",
+					Value: from,
+				}, nil
+			default:
+				return Operator{
+					Type:  "schema",
+					Value: from,
+				}, nil
+			}
 		}
 	default:
 		return Operator{}, errors.New("Could not resolve to operator from text: <" + from + ">")

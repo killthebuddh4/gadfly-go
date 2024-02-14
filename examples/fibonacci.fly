@@ -1,32 +1,34 @@
 def fibonacci
-  (n)
+  (n: Number)
     fn
       or
-        n == 1
-        do
-          1
+        case
+          fn n == 1 end
+          fn 1 end
         end
 
-        n == 2
-        do
-          1
+        case 
+          fn n == 2 end
+          fn 1 end
         end
 
-        n > 2
-        do
-          def i
-            .fibonacci
-              n - 2
+        case
+          fn n > 2 end
+          fn
+            def i
+              .fibonacci
+                n - 2
+              end
             end
-          end
 
-          def j
-            .fibonacci
-              n - 1
+            def j
+              .fibonacci
+                n - 1
+              end
             end
-          end
 
-          i + j
+            i + j
+          end
         end
       end
     end

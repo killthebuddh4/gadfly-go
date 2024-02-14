@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Hash(trajectory *types.Trajectory, eval types.Exec) (types.Value, error) {
+func Hash(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
 	if (len(trajectory.Children) % 2) != 0 {
