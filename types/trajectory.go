@@ -2,7 +2,6 @@ package types
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Void struct{}
@@ -129,7 +128,6 @@ func DefineSignal(trajectory *Trajectory, name string, handler Lambda) error {
 		return errors.New("signal " + name + " is already defined")
 	}
 
-	fmt.Println("Defining Signal name is: ", name)
 	trajectory.Signals[name] = handler
 
 	return nil
@@ -140,10 +138,7 @@ func ResolveSignal(trajectory *Trajectory, name string) (Value, error) {
 		return nil, errors.New("signal not found for " + name)
 	}
 
-	fmt.Println("Trying to resolve signal name in a trajectory: ", trajectory)
-
 	for key, handler := range trajectory.Signals {
-		fmt.Println("Signal name is: ", key)
 		if key == name {
 			return handler, nil
 		}
