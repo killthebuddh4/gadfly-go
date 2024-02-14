@@ -1,0 +1,42 @@
+std.write "Testing signals" end
+
+do
+  signal
+    sig_test
+
+    (s)
+      fn
+        std.write "GOT sig_test" end
+
+        "feed_fail"
+      end
+  end
+
+
+  def result
+    emit
+      "sig_test"
+
+      on
+        "feed_continue"
+
+        (n)
+          fn
+            "continue"
+          end
+      end
+
+      on
+        "feed_fail"
+
+        (n)
+          fn
+            "fail"
+          end
+      end
+    end
+  end
+
+  std.write result end
+end
+

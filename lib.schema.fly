@@ -10,7 +10,10 @@ def NonEmptyString
 
         std.write l < 0 end
 
-        l < 0
+        map
+          "parsed" s
+          "err" l < 0
+        end
       end
   end
 end

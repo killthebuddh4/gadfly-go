@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Void struct{}
@@ -15,7 +16,7 @@ type Trajectory struct {
 	Children    []*Trajectory
 	Expression  *Expression
 	Environment map[string]Value
-	Yield       Value
+	Signals     map[string]Lambda
 }
 
 func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
@@ -24,7 +25,7 @@ func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
 		Children:    []*Trajectory{},
 		Expression:  expr,
 		Environment: map[string]Value{},
-		Yield:       VOID,
+		Signals:     map[string]Lambda{},
 	}
 }
 
@@ -115,4 +116,38 @@ func EditName(trajectory *Trajectory, name string, val Value) error {
 	}
 
 	return EditName(trajectory.Parent, name, val)
+}
+
+func DefineSignal(trajectory *Trajectory, name string, handler Lambda) error {
+	if trajectory == nil {
+		return errors.New("cannot define signal in nil expression")
+	}
+
+	_, ok := trajectory.Signals[name]
+
+	if ok {
+		return errors.New("signal " + name + " is already defined")
+	}
+
+	fmt.Println("Defining Signal name is: ", name)
+	trajectory.Signals[name] = handler
+
+	return nil
+}
+
+func ResolveSignal(trajectory *Trajectory, name string) (Value, error) {
+	if trajectory == nil {
+		return nil, errors.New("signal not found for " + name)
+	}
+
+	fmt.Println("Trying to resolve signal name in a trajectory: ", trajectory)
+
+	for key, handler := range trajectory.Signals {
+		fmt.Println("Signal name is: ", key)
+		if key == name {
+			return handler, nil
+		}
+	}
+
+	return ResolveSignal(trajectory.Parent, name)
 }

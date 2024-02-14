@@ -148,6 +148,12 @@ func dispatch(trajectory *types.Trajectory) (D, error) {
 		return Colon, nil
 	case "schema":
 		return Schema, nil
+	case "signal":
+		return Signal, nil
+	case "emit":
+		return Emit, nil
+	case "on":
+		return On, nil
 	default:
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
 	}

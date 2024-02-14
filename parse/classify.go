@@ -30,6 +30,8 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "GADFLY", "DAEMON", "GHOST", "ORACLE", "THEORY", "MUSE", "RAPTURE", "@":
 		return true
+	case "signal", "emit", "on":
+		return true
 	default:
 		return false
 	}

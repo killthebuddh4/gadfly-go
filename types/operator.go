@@ -2,7 +2,6 @@ package types
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Operator struct {
@@ -87,19 +86,14 @@ var OPERATORS = []string{
 	"nil",
 	"->",
 	":",
+	"signal",
+	"emit",
+	"on",
 }
 
 func NewOperator(from string, isInSig bool) (Operator, error) {
 	for _, operator := range OPERATORS {
 		if operator == from {
-			if from == "Number" {
-				fmt.Println("FOUND NUMBER OPERATOR")
-				fmt.Println("FOUND NUMBER OPERATOR")
-				fmt.Println("FOUND NUMBER OPERATOR")
-				fmt.Println("FOUND NUMBER OPERATOR")
-				fmt.Println("FOUND NUMBER OPERATOR")
-				fmt.Println("FOUND NUMBER OPERATOR")
-			}
 			return Operator{
 				Type:  from,
 				Value: from,
