@@ -28,7 +28,7 @@ func Emit(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		return nil, err
 	}
 
-	sigHandler, ok := sigHandlerV.(types.Lambda)
+	sigHandler, ok := sigHandlerV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("Emit :: sigHandler is not a function")

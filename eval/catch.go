@@ -6,26 +6,20 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Catch(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	identifier := trajectory.Children[0].Expression.Operator.Value
-
-	var handler types.Lambda
-
-	handlerV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	handler, ok := handlerV.(types.Lambda)
+var Catch types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	identifier, ok := arguments[0].(string)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("Catch :: identifier is not a string")
 	}
 
-	types.DefineError(trajectory.Parent, identifier, handler)
+	handler, ok := arguments[1].(types.Exec)
+
+	if !ok {
+		return nil, errors.New("Catch :: handler is not a lambda")
+	}
+
+	types.DefineError(scope.Parent, identifier, handler)
 
 	return handler, nil
 }

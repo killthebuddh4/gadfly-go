@@ -9,26 +9,31 @@ type Void struct{}
 
 var VOID Void = Void{}
 
-type Lambda func(args ...Value) (Value, error)
+type Closure func(context *Trajectory, args ...Value) (Value, error)
+type Exec func(scope *Trajectory, args ...Value) (Value, error)
 
 type Trajectory struct {
 	Parent      *Trajectory
 	Children    []*Trajectory
 	Expression  *Expression
 	Environment map[string]Value
-	Signals     map[string]Lambda
-	Errors      map[string]Lambda
+	Signals     map[string]Exec
+	Errors      map[string]Exec
 }
 
 func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
-	return Trajectory{
+	trajectory := Trajectory{
 		Parent:      parent,
 		Children:    []*Trajectory{},
 		Expression:  expr,
 		Environment: map[string]Value{},
-		Signals:     map[string]Lambda{},
-		Errors:      map[string]Lambda{},
+		Signals:     map[string]Exec{},
+		Errors:      map[string]Exec{},
 	}
+
+	expr.Trajectories = append(expr.Trajectories, &trajectory)
+
+	return trajectory
 }
 
 func ExpandBy(parent *Trajectory, exp *Expression) error {
@@ -120,7 +125,7 @@ func EditName(trajectory *Trajectory, name string, val Value) error {
 	return EditName(trajectory.Parent, name, val)
 }
 
-func DefineSignal(trajectory *Trajectory, name string, handler Lambda) error {
+func DefineSignal(trajectory *Trajectory, name string, handler Exec) error {
 	if trajectory == nil {
 		return errors.New("cannot define signal in nil expression")
 	}
@@ -153,7 +158,7 @@ func ResolveSignal(trajectory *Trajectory, name string) (Value, error) {
 	return ResolveSignal(trajectory.Parent, name)
 }
 
-func DefineError(trajectory *Trajectory, name string, handler Lambda) error {
+func DefineError(trajectory *Trajectory, name string, handler Exec) error {
 	if trajectory == nil {
 		return errors.New("cannot define error in nil expression")
 	}

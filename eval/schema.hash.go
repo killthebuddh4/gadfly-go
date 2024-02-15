@@ -6,8 +6,8 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func SchemaHash() types.Lambda {
-	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+func SchemaHash() types.Exec {
+	var lambda types.Exec = func(arguments ...types.Value) (types.Value, error) {
 		raw := arguments[0]
 
 		hash, ok := raw.(map[string]types.Value)

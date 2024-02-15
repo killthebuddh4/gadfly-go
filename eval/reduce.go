@@ -33,7 +33,7 @@ func Reduce(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 		return nil, err
 	}
 
-	fn, ok := fnV.(types.Lambda)
+	fn, ok := fnV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("not a function")

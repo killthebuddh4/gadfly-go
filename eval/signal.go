@@ -11,7 +11,7 @@ func Signal(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 
 	identifier := trajectory.Children[0].Expression.Operator.Value
 
-	var handler types.Lambda
+	var handler types.Exec
 
 	handlerV, err := eval(trajectory.Children[1])
 
@@ -19,7 +19,7 @@ func Signal(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 		return nil, err
 	}
 
-	handler, ok := handlerV.(types.Lambda)
+	handler, ok := handlerV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("not a function")

@@ -6,9 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-type D func(t *types.Trajectory, e types.Eval) (types.Value, error)
-
-func dispatch(trajectory *types.Trajectory) (D, error) {
+func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 	switch trajectory.Expression.Operator.Type {
 	case "program":
 		return Do, nil

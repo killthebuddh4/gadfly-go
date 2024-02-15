@@ -27,7 +27,7 @@ func Throw(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		return nil, err
 	}
 
-	errHandler, ok := errHandlerV.(types.Lambda)
+	errHandler, ok := errHandlerV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("Throw :: errHandler is not a function")

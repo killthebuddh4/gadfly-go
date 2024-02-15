@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-type SignalHandler func(string) (types.Lambda, error)
+type SignalHandler func(string) (types.Exec, error)
 
 func On(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
@@ -33,13 +33,13 @@ func On(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		return nil, err
 	}
 
-	handlerBody, ok := handlerV.(types.Lambda)
+	handlerBody, ok := handlerV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("not a function")
 	}
 
-	var handler SignalHandler = func(dispatched string) (types.Lambda, error) {
+	var handler SignalHandler = func(dispatched string) (types.Exec, error) {
 		if dispatched != signal {
 			return nil, errors.New("signal mismatch")
 		} else {

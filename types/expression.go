@@ -3,20 +3,22 @@ package types
 import "fmt"
 
 type Expression struct {
-	Parent     *Expression
-	Operator   Operator
-	Children   []*Expression
-	Parameters []*Expression
-	Returns    []*Expression
+	Parent       *Expression
+	Operator     Operator
+	Children     []*Expression
+	Parameters   []*Expression
+	Returns      []*Expression
+	Trajectories []*Trajectory
 }
 
 func NewExpression(parent *Expression, operator Operator, children []*Expression) Expression {
 	return Expression{
-		Parent:     parent,
-		Operator:   operator,
-		Children:   children,
-		Parameters: []*Expression{},
-		Returns:    []*Expression{},
+		Parent:       parent,
+		Operator:     operator,
+		Children:     children,
+		Parameters:   []*Expression{},
+		Returns:      []*Expression{},
+		Trajectories: []*Trajectory{},
 	}
 }
 

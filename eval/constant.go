@@ -4,6 +4,6 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Symbol(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	return trajectory.Expression.Operator.Value, nil
+var Symbol types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	return scope.Expression.Operator.Value, nil
 }

@@ -9,7 +9,7 @@ import (
 func Schema(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	types.ExpandTraj(trajectory)
 
-	schemas := []types.Lambda{}
+	schemas := []types.Exec{}
 
 	for _, child := range trajectory.Children {
 		schemaV, err := eval(child)
@@ -18,7 +18,7 @@ func Schema(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 			return nil, err
 		}
 
-		schema, ok := schemaV.(types.Lambda)
+		schema, ok := schemaV.(types.Exec)
 
 		if !ok {
 			return nil, errors.New("not a function")
@@ -27,7 +27,7 @@ func Schema(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 		schemas = append(schemas, schema)
 	}
 
-	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+	var lambda types.Exec = func(arguments ...types.Value) (types.Value, error) {
 		raw := arguments[0]
 
 		var val types.Value = raw

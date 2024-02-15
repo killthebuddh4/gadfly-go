@@ -6,36 +6,12 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Colon(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arg, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	schemaV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	schema, ok := schemaV.(types.Lambda)
+var Colon types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	schema, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("Schema is not a function")
+		return nil, errors.New("Colon :: Schema is not a function")
 	}
 
-	parsed, err := schema(arg)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if !ok {
-		return nil, errors.New("Schema did not return a boolean")
-	}
-
-	return parsed, nil
+	return schema(scope, arguments[0])
 }

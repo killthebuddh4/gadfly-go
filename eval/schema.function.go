@@ -6,11 +6,11 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func SchemaFunction() types.Lambda {
-	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+func SchemaFunction() types.Exec {
+	var lambda types.Exec = func(arguments ...types.Value) (types.Value, error) {
 		raw := arguments[0]
 
-		f, ok := raw.(types.Lambda)
+		f, ok := raw.(types.Exec)
 
 		if !ok {
 			return nil, errors.New("SchemaFunction: not a function")

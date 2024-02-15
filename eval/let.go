@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-var Def types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+var Let types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	name, ok := arguments[0].(string)
 
 	if !ok {
@@ -19,7 +19,7 @@ var Def types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (ty
 
 	value := arguments[len(arguments)-1]
 
-	err := types.DefineName(scope.Parent, name, value)
+	err := types.EditName(scope.Parent, name, value)
 
 	if err != nil {
 		return nil, err

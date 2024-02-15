@@ -8,7 +8,7 @@ import (
 )
 
 func Lambda(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+	var lambda types.Exec = func(arguments ...types.Value) (types.Value, error) {
 		if len(arguments) != len(trajectory.Expression.Parameters) {
 			fmt.Println(arguments)
 			return nil, errors.New("Could not evaluate lambda, wrong number of arguments, expected " + fmt.Sprint(len(trajectory.Expression.Parameters)) + " got " + fmt.Sprint(len(arguments)))
@@ -67,7 +67,7 @@ func Lambda(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 				return nil, err
 			}
 
-			schema, ok := schemaV.(types.Lambda)
+			schema, ok := schemaV.(types.Exec)
 
 			if !ok {
 				return nil, fmt.Errorf("not a function")
@@ -89,7 +89,7 @@ func Call(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		return nil, err
 	}
 
-	fn, ok := fnVal.(types.Lambda)
+	fn, ok := fnVal.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("Error evaluating call, expression that didn't evaluate to a Lambda, got " + fmt.Sprint(fnVal))

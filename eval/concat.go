@@ -6,22 +6,14 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Concat(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
+var Concat types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	result := ""
 
-	for _, child := range trajectory.Children {
-		arg, err := eval(child)
-
-		if err != nil {
-			return nil, err
-		}
-
+	for _, arg := range arguments {
 		str, strOk := arg.(string)
 
 		if !strOk {
-			return nil, errors.New("concat only accepts strings")
+			return nil, errors.New("Concat :: not a string")
 		}
 
 		result += str

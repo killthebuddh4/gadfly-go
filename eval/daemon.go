@@ -4,6 +4,6 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Daemon(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
+var Daemon types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	return "daemon", nil
 }

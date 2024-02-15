@@ -7,35 +7,21 @@ import (
 )
 
 type CaseHandler struct {
-	Cond types.Lambda
-	Body types.Lambda
+	Cond types.Closure
+	Body types.Closure
 }
 
-func Case(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	condV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	cond, ok := condV.(types.Lambda)
+var Case types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	cond, ok := arguments[0].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("condition is not a lambda")
 	}
 
-	bodyV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	body, ok := bodyV.(types.Lambda)
+	body, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("body is not a lambda")
 	}
 
 	handler := CaseHandler{Cond: cond, Body: body}

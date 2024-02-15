@@ -6,8 +6,8 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func SchemaBoolean() types.Lambda {
-	var lambda types.Lambda = func(arguments ...types.Value) (types.Value, error) {
+func SchemaBoolean() types.Exec {
+	var lambda types.Exec = func(arguments ...types.Value) (types.Value, error) {
 		raw := arguments[0]
 
 		val, ok := raw.(bool)

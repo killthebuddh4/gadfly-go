@@ -27,7 +27,7 @@ func Sort(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		return nil, err
 	}
 
-	compare, ok := compareV.(types.Lambda)
+	compare, ok := compareV.(types.Exec)
 
 	if !ok {
 		return nil, errors.New("not a function")
@@ -44,7 +44,7 @@ func Sort(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return sorted, nil
 }
 
-func sort(arr []types.Value, compare types.Lambda) error {
+func sort(arr []types.Value, compare types.Exec) error {
 	if len(arr) <= 1 {
 		return nil
 	}
