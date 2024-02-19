@@ -6,36 +6,38 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Sort(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+type Compare func(types.Value, types.Value) (float64, error)
 
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Sort types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Sort :: not an array")
 	}
 
-	compareV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	compare, ok := compareV.(types.Exec)
+	compare, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("Sort :: not a function")
 	}
 
 	sorted := append([]types.Value{}, arr...)
 
-	err = sort(sorted, compare)
+	err := sort(sorted, func(a types.Value, b types.Value) (float64, error) {
+		lessV, err := compare(scope, a, b)
+
+		if err != nil {
+			return 0, err
+		}
+
+		less, ok := lessV.(float64)
+
+		if !ok {
+			return 0, errors.New("Sort :: less is not a number")
+		}
+
+		return less, nil
+	})
 
 	if err != nil {
 		return nil, err
@@ -44,7 +46,7 @@ func Sort(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	return sorted, nil
 }
 
-func sort(arr []types.Value, compare types.Exec) error {
+func sort(arr []types.Value, compare Compare) error {
 	if len(arr) <= 1 {
 		return nil
 	}
@@ -56,16 +58,10 @@ func sort(arr []types.Value, compare types.Exec) error {
 	arr[pivot], arr[right] = arr[right], arr[pivot]
 
 	for i := range arr {
-		lessV, err := compare(arr[i], arr[right])
+		less, err := compare(arr[i], arr[right])
 
 		if err != nil {
 			return err
-		}
-
-		less, ok := lessV.(float64)
-
-		if !ok {
-			return errors.New("less is not a boolean")
 		}
 
 		if less < 0 {

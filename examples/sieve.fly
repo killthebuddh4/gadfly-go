@@ -12,11 +12,11 @@ def is_prime
       
       def test base end
 
-      while base < n
+      while fn base < n end
         fn
           let test base end
 
-          while test < n
+          while fn test < n end
             fn
               let test test + base end
 
@@ -44,11 +44,10 @@ end
 
 def k 0 end
 
-while k < 100
+while fn k < 100 end
   fn 
     if .is_prime k end
-      std.write k end
-      nil
+      fn std.write k end end
     end
 
     let k k + 1 end

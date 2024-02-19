@@ -14,12 +14,8 @@ def map.equal
               map.read b key end
             end
 
-            if result == true
-              if a_val != b_val
-                let result false end
-                nil
-              end
-              nil
+            if a_val != b_val
+              fn let result false end end
             end
           end
       end

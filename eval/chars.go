@@ -6,11 +6,11 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-var Split types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+var Chars types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	str, ok := arguments[0].(string)
 
 	if !ok {
-		return nil, errors.New("Split :: split only accepts strings")
+		return nil, errors.New("Chars :: chars only accepts strings")
 	}
 
 	result := []types.Value{}

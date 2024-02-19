@@ -15,10 +15,18 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 		fmt.Println("Parsing block for lexeme:", p.previous().Text)
 	}
 
-	operator, err := types.NewOperator(p.previous().Text, false)
+	var operator types.Operator
 
-	if err != nil {
-		return nil, err
+	if isSchema(p.previous()) {
+		operator = types.Operator{
+			Type:  "schema",
+			Value: p.previous().Text,
+		}
+	} else {
+		operator = types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
+		}
 	}
 
 	root := types.NewExpression(parent, operator, []*types.Expression{})
@@ -27,53 +35,34 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 
 	if withSignature {
 		for accept(p, isIdentifier) {
-			param, err := types.NewOperator(p.previous().Text, true)
-
-			if err != nil {
-				return nil, err
+			param := types.Operator{
+				Type:  "identifier",
+				Value: p.previous().Text,
 			}
 
 			paramExp := types.NewExpression(nil, param, []*types.Expression{})
 
-			var colon types.Operator
+			colon := types.Operator{
+				Type:  ":",
+				Value: ":",
+			}
+
 			var schema types.Operator
 
 			if !accept(p, isColon) {
-				colonOp, err := types.NewOperator(":", true)
-
-				if err != nil {
-					return nil, err
+				schema = types.Operator{
+					Type:  "identifier",
+					Value: "Identity",
 				}
-
-				colon = colonOp
-
-				schemaOp, err := types.NewOperator("Identity", true)
-
-				if err != nil {
-					return nil, err
-				}
-
-				schema = schemaOp
 			} else {
-				colonOp, err := types.NewOperator(p.previous().Text, true)
-
-				if err != nil {
-					return nil, err
-				}
-
-				colon = colonOp
-
 				if !(accept(p, isIdentifier) || accept(p, isSchema)) {
 					return nil, errors.New("expected identifier after colon")
 				}
 
-				schemaOp, err := types.NewOperator(p.previous().Text, true)
-
-				if err != nil {
-					return nil, err
+				schema = types.Operator{
+					Type:  "identifier",
+					Value: p.previous().Text,
 				}
-
-				schema = schemaOp
 			}
 
 			schemaExp := types.NewExpression(nil, schema, []*types.Expression{})
@@ -86,7 +75,7 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 		types.Parameterize(&root, parameters)
 
 		if !accept(p, isEndSignature) {
-			return nil, errors.New("expected closing pipe")
+			return nil, errors.New("expected closing parenthesis")
 		}
 
 		if !accept(p, isExpression) {
@@ -94,23 +83,29 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 		}
 	}
 
-	operator, err = types.NewOperator(p.previous().Text, false)
-
-	if err != nil {
-		return nil, err
+	if isSchema(p.previous()) {
+		operator = types.Operator{
+			Type:  "schema",
+			Value: p.previous().Text,
+		}
+	} else {
+		operator = types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
+		}
 	}
 
 	root.Operator = operator
 
-	if operator.Type == "def" {
+	switch operator.Type {
+	case "def", "let", "signal", "emit", "on", "throw", "catch":
 		if !accept(p, isIdentifier) {
 			return nil, errors.New("expected identifier after def")
 		}
 
-		idOp, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		idOp := types.Operator{
+			Type:  "string",
+			Value: p.previous().Text,
 		}
 
 		idExp := types.NewExpression(&root, idOp, []*types.Expression{})
@@ -135,15 +130,13 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 	}
 
 	if accept(p, isReturn) {
-		fmt.Println("Parsing signature for lexeme:", p.previous().Text)
 		if !(accept(p, isIdentifier) || accept(p, isSchema)) {
 			return nil, errors.New("expected identifier after arrow")
 		}
 
-		schema, err := types.NewOperator(p.previous().Text, true)
-
-		if err != nil {
-			return nil, err
+		schema := types.Operator{
+			Type:  "identifier",
+			Value: p.previous().Text,
 		}
 
 		schemaExp := types.NewExpression(nil, schema, []*types.Expression{})

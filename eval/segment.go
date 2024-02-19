@@ -6,51 +6,31 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Segment(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Segment types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Segment :: first argument is not an array")
 	}
 
-	startV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	start, ok := startV.(float64)
+	start, ok := arguments[1].(float64)
 
 	if !ok {
-		return nil, errors.New("not an integer")
+		return nil, errors.New("Segment :: second argument is not an integer")
 	}
 
 	if start < 0 {
-		return nil, errors.New("start index cannot be negative")
+		return nil, errors.New("Segment :: start index cannot be negative")
 	}
 
-	endV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
-	}
-
-	end, ok := endV.(float64)
+	end, ok := arguments[2].(float64)
 
 	if !ok {
-		return nil, errors.New("not an integer")
+		return nil, errors.New("Segment :: third argument is not an integer")
 	}
 
 	if end < start {
-		return nil, errors.New("end index cannot be less than start index")
+		return nil, errors.New("Segment :: end index cannot be less than start index")
 	}
 
 	return append([]types.Value{}, arr[int(start):int(end)]...), nil

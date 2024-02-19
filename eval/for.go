@@ -2,39 +2,33 @@ package eval
 
 import (
 	"errors"
+	"fmt"
+	"os"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func For(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+var For types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	_, debug := os.LookupEnv("GADFLY_DEBUG_EVAL")
 
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
+	if debug {
+		fmt.Println(":: For :: called")
 	}
 
-	arr, ok := arrV.([]types.Value)
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New(":: For :: not an array")
 	}
 
-	fnV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	fn, ok := fnV.(types.Exec)
+	fn, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New(":: For :: not a closure")
 	}
 
 	for i, v := range arr {
-		_, err := fn(v, float64(i))
+		_, err := fn(scope, v, float64(i))
 
 		if err != nil {
 			return nil, err

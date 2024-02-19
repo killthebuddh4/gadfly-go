@@ -6,37 +6,17 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func WriteHash(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	baseV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	base, ok := baseV.(map[string]types.Value)
+var WriteHash types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	base, ok := arguments[0].(map[string]types.Value)
 
 	if !ok {
-		return nil, errors.New("not a map")
+		return nil, errors.New("WriteHash :: not a map")
 	}
 
-	keyV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	key, ok := keyV.(string)
+	key, ok := arguments[1].(string)
 
 	if !ok {
-		return nil, errors.New("not a string")
-	}
-
-	valV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
+		return nil, errors.New("Writehash :: not a string")
 	}
 
 	written := make(map[string]types.Value)
@@ -45,7 +25,7 @@ func WriteHash(trajectory *types.Trajectory, eval types.Eval) (types.Value, erro
 		written[k] = v
 	}
 
-	written[key] = valV
+	written[key] = arguments[2]
 
 	return written, nil
 }

@@ -3,27 +3,20 @@ package eval
 import (
 	"errors"
 	"fmt"
+	"os"
 	"reflect"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func WriteStd(trajecotry *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajecotry)
+var WriteStd types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	_, debug := os.LookupEnv("GADFLY_DEBUG_EVAL")
 
-	args := []types.Value{}
-
-	for _, child := range trajecotry.Children {
-		arg, err := eval(child)
-
-		if err != nil {
-			return nil, err
-		}
-
-		args = append(args, arg)
+	if debug {
+		fmt.Println(":: WriteStd :: called")
 	}
 
-	for _, arg := range args {
+	for _, arg := range arguments {
 		m, mOk := arg.(map[string]types.Value)
 		str, strOk := arg.(string)
 		float, floatOk := arg.(float64)

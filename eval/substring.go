@@ -6,43 +6,23 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Substring(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+var Substring types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	str, ok := arguments[0].(string)
 
-	arg, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
+	if !ok {
+		return nil, errors.New(":: Substring :: not a string")
 	}
 
-	str, strOk := arg.(string)
+	start, ok := arguments[1].(float64)
 
-	if !strOk {
-		return nil, errors.New("split only accepts strings")
+	if !ok {
+		return nil, errors.New(":: Substring :: not a number")
 	}
 
-	startV, err := eval(trajectory.Children[1])
+	end, ok := arguments[2].(float64)
 
-	if err != nil {
-		return nil, err
-	}
-
-	start, startOk := startV.(float64)
-
-	if !startOk {
-		return nil, errors.New("start index must be a number")
-	}
-
-	endV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
-	}
-
-	end, endOk := endV.(float64)
-
-	if !endOk {
-		return nil, errors.New("end index must be a number")
+	if !ok {
+		return nil, errors.New(":: Substring :: not a number")
 	}
 
 	return str[int(start):int(end)], nil

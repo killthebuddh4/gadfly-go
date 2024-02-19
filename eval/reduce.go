@@ -6,51 +6,35 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Reduce(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Reduce types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Reduce :: not an array")
 	}
 
-	initV, err := eval(trajectory.Children[1])
+	init := arguments[1]
 
-	if err != nil {
-		return nil, err
-	}
-
-	fnV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
-	}
-
-	fn, ok := fnV.(types.Exec)
+	fn, ok := arguments[2].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("Reduce :: not a function")
 	}
 
 	if (len(arr)) == 0 {
-		return nil, nil
+		return init, nil
 	}
 
-	reduction := initV
+	reduction := init
 
 	for i, v := range arr {
-		reduction, err = fn(reduction, v, float64(i))
+		next, err := fn(scope, reduction, v, float64(i))
 
 		if err != nil {
 			return nil, err
 		}
+
+		reduction = next
 	}
 
 	return reduction, nil

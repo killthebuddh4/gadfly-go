@@ -6,37 +6,23 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Filter(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Filter types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Filter :: not an array")
 	}
 
-	fnV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	fn, ok := fnV.(types.Exec)
+	fn, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("Filter :: not a function")
 	}
 
 	vals := []types.Value{}
 
 	for i, v := range arr {
-		filterV, err := fn(v, float64(i))
+		filterV, err := fn(scope, v, float64(i))
 
 		if err != nil {
 			return nil, err
@@ -45,7 +31,7 @@ func Filter(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 		filter, ok := filterV.(bool)
 
 		if !ok {
-			return nil, errors.New("filter is not a boolean")
+			return nil, errors.New("Filter :: filter result is not a boolean")
 		}
 
 		if filter {

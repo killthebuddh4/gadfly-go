@@ -6,53 +6,33 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Splice(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Splice types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Splice :: not an array")
 	}
 
-	indexV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	indexF, ok := indexV.(float64)
+	indexF, ok := arguments[1].(float64)
 
 	if !ok {
-		return nil, errors.New("not a number")
+		return nil, errors.New("Splice :: not a number")
 	}
 
 	index := int(indexF)
 
 	if index < 0 {
-		return nil, errors.New("index cannot be negative")
+		return nil, errors.New("Splice :: index cannot be negative")
 	}
 
 	if index > len(arr) {
-		return nil, errors.New("index cannot be greater than array length")
+		return nil, errors.New("Splice :: index cannot be greater than array length")
 	}
 
-	valuesV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
-	}
-
-	values, ok := valuesV.([]types.Value)
+	values, ok := arguments[2].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Splice :: not an array")
 	}
 
 	head := arr[:index]

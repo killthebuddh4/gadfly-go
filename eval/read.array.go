@@ -7,34 +7,26 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func ReadArray(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	dataV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
+var ReadArray types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	if len(arguments) != 2 {
+		return nil, errors.New("ReadArray :: wrong number of arguments")
 	}
 
-	data, ok := dataV.([]types.Value)
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("error getting from array, data is not an array, it is " + fmt.Sprint(dataV))
+		return nil, errors.New(":: ReadArray :: not an array")
 	}
 
-	indexV, err := eval(trajectory.Children[1])
-
-	index, ok := indexV.(float64)
+	idx, ok := arguments[1].(float64)
 
 	if !ok {
-		return nil, errors.New("error getting from array, index is not a number, it is " + fmt.Sprint(indexV))
+		return nil, errors.New(":: ReadArray :: not an integer")
 	}
 
-	if err != nil {
-		return nil, err
+	if int(idx) < 0 || int(idx) >= len(arr) {
+		return nil, fmt.Errorf(":: ReadArray :: index out of range: %d, length is %d", int(idx), len(arr))
 	}
 
-	val := data[int(index)]
-
-	return val, nil
+	return arr[int(idx)], nil
 }

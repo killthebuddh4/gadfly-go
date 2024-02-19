@@ -6,36 +6,22 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Hash(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	if (len(trajectory.Children) % 2) != 0 {
-		return nil, errors.New("map must have even number of inputs")
+var Hash types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	if (len(arguments) % 2) != 0 {
+		return nil, errors.New("Hash :: map must have even number of inputs")
 	}
 
-	maps := make(map[string]types.Value)
+	hash := make(map[string]types.Value)
 
-	for i := 0; i < len(trajectory.Children); i += 2 {
-		keyVal, err := eval(trajectory.Children[i])
-
-		if err != nil {
-			return nil, err
-		}
-
-		key, ok := keyVal.(string)
+	for i := 0; i < len(arguments); i += 2 {
+		key, ok := arguments[i].(string)
 
 		if !ok {
-			return nil, errors.New("key is not a string")
+			return nil, errors.New("Hash :: key is not a string")
 		}
 
-		valV, err := eval(trajectory.Children[i+1])
-
-		if err != nil {
-			return nil, err
-		}
-
-		maps[key] = valV
+		hash[key] = arguments[i+1]
 	}
 
-	return maps, nil
+	return hash, nil
 }

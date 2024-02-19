@@ -54,8 +54,8 @@ end
 
 if
   get_worked
-  std.write "PASS: http get request" end
-  std.write "FAIL: http get request" end
+  fn std.write "PASS: http get request" end end
+  fn std.write "FAIL: http get request" end end
 end
 
 #
@@ -88,6 +88,6 @@ end
 
 if
   post_worked
-  std.write "PASS: http post request" end
-  std.write "FAIL: http post request" end
+  fn std.write "PASS: http post request" end end
+  fn std.write "FAIL: http post request" end end
 end

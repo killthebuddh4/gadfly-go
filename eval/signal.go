@@ -6,26 +6,17 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Signal(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+var Signal types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	// HACK this is a hack this is a hack this is a hack
+	identifier := scope.Children[0].Expression.Operator.Value
 
-	identifier := trajectory.Children[0].Expression.Operator.Value
-
-	var handler types.Exec
-
-	handlerV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	handler, ok := handlerV.(types.Exec)
+	handler, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("Signal :: handler not a function")
 	}
 
-	types.DefineSignal(trajectory.Parent, identifier, handler)
+	types.DefineSignal(scope.Parent, identifier, handler)
 
 	return handler, nil
 }

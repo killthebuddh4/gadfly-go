@@ -6,26 +6,16 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Push(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+var Push types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	types.ExpandTraj(scope)
 
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Push :: first argument is not an array")
 	}
 
-	val, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
+	val := arguments[1]
 
 	arr = append(arr, val)
 

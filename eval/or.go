@@ -36,4 +36,6 @@ var Or types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (typ
 			return val, nil
 		}
 	}
+
+	return nil, nil
 }

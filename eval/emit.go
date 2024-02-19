@@ -7,34 +7,26 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Emit(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
+var Emit types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	signal, ok := arguments[0].(string)
 
-	signalV, err := eval(trajectory.Children[0])
+	if !ok {
+		return nil, errors.New(":: Emit :: signal is not a string")
+	}
+
+	sigHandlerV, err := types.ResolveSignal(scope.Parent, signal)
 
 	if err != nil {
 		return nil, err
 	}
 
-	signal, ok := signalV.(string)
+	sigHandler, ok := sigHandlerV.(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a string")
+		return nil, errors.New(":: Emit :: sigHandler is not a function")
 	}
 
-	sigHandlerV, err := types.ResolveSignal(trajectory.Parent, signal)
-
-	if err != nil {
-		return nil, err
-	}
-
-	sigHandler, ok := sigHandlerV.(types.Exec)
-
-	if !ok {
-		return nil, errors.New("Emit :: sigHandler is not a function")
-	}
-
-	feedbackV, err := sigHandler(signal)
+	feedbackV, err := sigHandler(scope, signal)
 
 	if err != nil {
 		return nil, err
@@ -43,22 +35,16 @@ func Emit(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 	feedback, ok := feedbackV.(string)
 
 	if !ok {
-		return nil, errors.New("Emit :: feedback is not a string")
+		return nil, errors.New(":: Emit :: feedback is not a string")
 	}
 
 	fbHandlers := []SignalHandler{}
 
-	for _, child := range trajectory.Children[1:] {
-		fbHandlerV, err := eval(child)
-
-		if err != nil {
-			return nil, err
-		}
-
+	for _, fbHandlerV := range arguments[1:] {
 		fbHandler, ok := fbHandlerV.(SignalHandler)
 
 		if !ok {
-			return nil, errors.New("Emit :: fbHandler is not a function , it's a " + reflect.TypeOf(fbHandlerV).String())
+			return nil, errors.New(":: Emit :: fbHandler is not a function , it's a " + reflect.TypeOf(fbHandlerV).String())
 		}
 
 		fbHandlers = append(fbHandlers, fbHandler)
@@ -72,11 +58,11 @@ func Emit(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
 		}
 
 		if !ok {
-			return nil, errors.New("not a function")
+			return nil, errors.New(":: Emit :: fbHandler not a function")
 		}
 
-		return handler(feedbackV)
+		return handler(scope, feedback)
 	}
 
-	return nil, errors.New("no feedback handler found for signal")
+	return nil, errors.New(":: Emit :: no feedback handler found for signal")
 }

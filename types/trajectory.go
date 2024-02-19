@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"os"
 )
 
 type Void struct{}
@@ -17,8 +18,9 @@ type Trajectory struct {
 	Children    []*Trajectory
 	Expression  *Expression
 	Environment map[string]Value
-	Signals     map[string]Exec
+	Signals     map[string]Closure
 	Errors      map[string]Exec
+	Arguments   map[string]Value
 }
 
 func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
@@ -27,11 +29,10 @@ func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
 		Children:    []*Trajectory{},
 		Expression:  expr,
 		Environment: map[string]Value{},
-		Signals:     map[string]Exec{},
+		Signals:     map[string]Closure{},
 		Errors:      map[string]Exec{},
+		Arguments:   map[string]Value{},
 	}
-
-	expr.Trajectories = append(expr.Trajectories, &trajectory)
 
 	return trajectory
 }
@@ -86,6 +87,12 @@ func ResolveName(trajectory *Trajectory, name string) (Value, error) {
 	}
 
 	for key, val := range trajectory.Environment {
+		_, debug := os.LookupEnv("GADFLY_DEBUG_NAMES")
+
+		if debug {
+			fmt.Println("Found name ", key, " while looking for ", name)
+		}
+
 		if key == name {
 			return val, nil
 		}
@@ -103,6 +110,12 @@ func DefineName(trajectory *Trajectory, name string, val Value) error {
 
 	if ok {
 		return errors.New("name " + name + " is already defined")
+	}
+
+	_, debug := os.LookupEnv("GADFLY_DEBUG_NAMES")
+
+	if debug {
+		fmt.Println("Defining name for ", name)
 	}
 
 	trajectory.Environment[name] = val
@@ -125,7 +138,7 @@ func EditName(trajectory *Trajectory, name string, val Value) error {
 	return EditName(trajectory.Parent, name, val)
 }
 
-func DefineSignal(trajectory *Trajectory, name string, handler Exec) error {
+func DefineSignal(trajectory *Trajectory, name string, handler Closure) error {
 	if trajectory == nil {
 		return errors.New("cannot define signal in nil expression")
 	}

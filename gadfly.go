@@ -84,23 +84,72 @@ func exec(pathToFile string) {
 
 	root := types.NewTrajectory(nil, &rootExp)
 
-	types.DefineName(&root, "String", eval.SchemaString())
-	types.DefineName(&root, "Number", eval.SchemaNumber())
-	types.DefineName(&root, "Boolean", eval.SchemaBoolean())
-	types.DefineName(&root, "Array", eval.SchemaArray())
-	types.DefineName(&root, "Hash", eval.SchemaHash())
-	types.DefineName(&root, "Function", eval.SchemaFunction())
-	types.DefineName(&root, "Identity", eval.SchemaIdentity())
+	sString, err := eval.SchemaString(&root)
+
+	if err != nil {
+		fmt.Println("Error creating string schema: ", err)
+		return
+	}
+
+	sNumber, err := eval.SchemaNumber(&root)
+
+	if err != nil {
+		fmt.Println("Error creating number schema: ", err)
+		return
+	}
+
+	sBoolean, err := eval.SchemaBoolean(&root)
+
+	if err != nil {
+		fmt.Println("Error creating boolean schema: ", err)
+		return
+	}
+
+	sArray, err := eval.SchemaArray(&root)
+
+	if err != nil {
+		fmt.Println("Error creating array schema: ", err)
+		return
+	}
+
+	sHash, err := eval.SchemaHash(&root)
+
+	if err != nil {
+		fmt.Println("Error creating hash schema: ", err)
+		return
+	}
+
+	sFunction, err := eval.SchemaFunction(&root)
+
+	if err != nil {
+		fmt.Println("Error creating function schema: ", err)
+		return
+	}
+
+	sIdentity, err := eval.SchemaIdentity(&root)
+
+	if err != nil {
+		fmt.Println("Error creating identity schema: ", err)
+		return
+	}
+
+	types.DefineName(&root, "String", sString)
+	types.DefineName(&root, "Number", sNumber)
+	types.DefineName(&root, "Boolean", sBoolean)
+	types.DefineName(&root, "Array", sArray)
+	types.DefineName(&root, "Hash", sHash)
+	types.DefineName(&root, "Function", sFunction)
+	types.DefineName(&root, "Identity", sIdentity)
 
 	if parseErr != nil {
 		fmt.Println("Error parsing: ", parseErr)
 		return
 	}
 
-	_, err = eval.Exec(&root)
+	_, err = eval.Exec(nil, &root, root.Expression)
 
 	if err != nil {
-		fmt.Println("Error evaluating: ", err)
+		fmt.Println("Gadfly :: Error evaluating: ", err)
 		return
 	}
 

@@ -22,10 +22,9 @@ func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) 
 			fmt.Println("Parsing logical for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.equality(parent)
@@ -56,10 +55,9 @@ func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing equality for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.comparison(parent)
@@ -90,10 +88,9 @@ func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error)
 			fmt.Println("Parsing comparison for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.term(parent)
@@ -124,10 +121,9 @@ func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing term for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.factor(parent)
@@ -158,10 +154,9 @@ func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing factor for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.unary(parent)
@@ -186,10 +181,9 @@ func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing unary for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		operator := types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
 		}
 
 		right, err := p.unary(parent)
@@ -214,10 +208,39 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 			fmt.Println("Parsing atom for lexeme:", p.previous().Text)
 		}
 
-		operator, err := types.NewOperator(p.previous().Text, false)
-
-		if err != nil {
-			return nil, err
+		var operator types.Operator
+		if isNumber(p.previous()) {
+			operator = types.Operator{
+				Type:  "number",
+				Value: p.previous().Text,
+			}
+		} else if isString(p.previous()) {
+			operator = types.Operator{
+				Type:  "string",
+				Value: p.previous().Text,
+			}
+		} else if isTrue(p.previous()) {
+			operator = types.Operator{
+				Type:  "true",
+				Value: "true",
+			}
+		} else if isFalse(p.previous()) {
+			operator = types.Operator{
+				Type:  "false",
+				Value: "false",
+			}
+		} else if isNil(p.previous()) {
+			operator = types.Operator{
+				Type:  "nil",
+				Value: "nil",
+			}
+		} else if isIdentifier(p.previous()) {
+			operator = types.Operator{
+				Type:  "identifier",
+				Value: p.previous().Text,
+			}
+		} else {
+			return nil, errors.New("expected atom but got <" + p.previous().Text + ">")
 		}
 
 		result := types.NewExpression(nil, operator, []*types.Expression{})

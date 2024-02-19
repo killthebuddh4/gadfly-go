@@ -6,31 +6,17 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Delete(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	baseV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	base, ok := baseV.(map[string]types.Value)
+var Delete types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	base, ok := arguments[0].(map[string]types.Value)
 
 	if !ok {
-		return nil, errors.New("not a map")
+		return nil, errors.New("Delete :: not a map")
 	}
 
-	keysV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	keys, ok := keysV.([]types.Value)
+	keys, ok := arguments[1].([]types.Value)
 
 	if !ok {
-		return nil, errors.New("not an array")
+		return nil, errors.New("Delete :: not an array")
 	}
 
 	remainder := make(map[string]types.Value)
@@ -41,7 +27,7 @@ func Delete(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) 
 			key, ok := keyV.(string)
 
 			if !ok {
-				return nil, errors.New("key is not a string")
+				return nil, errors.New("Delete :: key is not a string")
 			}
 
 			if k == key {

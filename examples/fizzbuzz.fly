@@ -49,7 +49,7 @@ def fizzbuzz
   (n)
   fn
     def k 1 end
-    while k <= n
+    while fn k <= n end
       fn
         std.write k end
         

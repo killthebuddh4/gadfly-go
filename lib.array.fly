@@ -49,8 +49,7 @@ def includes
         (test i)
           fn
             if test == e
-              let includes true end
-              nil
+              fn let includes true end end
             end
           end
       end
@@ -73,8 +72,7 @@ def equal
       end
 
       if arr_a_length != arr_b_length
-        let result false end
-        nil
+        fn let result false end end
       end
 
       array.for arr_a
@@ -85,8 +83,7 @@ def equal
             end
 
             if e != b
-              let result false end
-              nil
+              fn let result false end end
             end
           end
       end

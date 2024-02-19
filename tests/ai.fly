@@ -1,3 +1,10 @@
+std.write "#######################################################" end
+std.write "" "" end
+std.write "Testing gadfly.ai package..." end
+std.write "" "" end
+std.write "#######################################################" end
+std.write "" "" end
+
 def gadfly
   GADFLY end
 end
@@ -18,10 +25,6 @@ def muse
   MUSE end
 end
 
-def theory
-  THEORY end
-end
-
 def rapture
   RAPTURE end
 end
@@ -35,7 +38,5 @@ std.write ghost end
 std.write oracle end
 
 std.write muse end
-
-std.write theory end
 
 std.write rapture end

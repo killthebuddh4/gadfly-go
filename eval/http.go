@@ -12,52 +12,26 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Http(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	urlV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	url, ok := urlV.(string)
+var Http types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	url, ok := arguments[0].(string)
 
 	if !ok {
 		return nil, errors.New("url is not a string")
 	}
 
-	requestMethodV, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	requestMethod, ok := requestMethodV.(string)
+	requestMethod, ok := arguments[1].(string)
 
 	if !ok {
 		return nil, errors.New("method is not a string")
 	}
 
-	requestHeadersV, err := eval(trajectory.Children[2])
-
-	if err != nil {
-		return nil, err
-	}
-
-	requestHeaders, ok := requestHeadersV.(map[string]types.Value)
+	requestHeaders, ok := arguments[2].(map[string]types.Value)
 
 	if !ok {
 		return nil, errors.New("headers is not a map")
 	}
 
-	requestBodyV, err := eval(trajectory.Children[3])
-
-	if err != nil {
-		return nil, err
-	}
-
-	requestBody, ok := requestBodyV.(map[string]types.Value)
+	requestBody, ok := arguments[3].(map[string]types.Value)
 
 	if !ok {
 		return nil, errors.New("body is not a map")

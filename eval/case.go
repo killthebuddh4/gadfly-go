@@ -15,13 +15,13 @@ var Case types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (t
 	cond, ok := arguments[0].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("condition is not a lambda")
+		return nil, errors.New(":: Case :: condition is not a lambda")
 	}
 
 	body, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("body is not a lambda")
+		return nil, errors.New(":: Case :: body is not a lambda")
 	}
 
 	handler := CaseHandler{Cond: cond, Body: body}

@@ -6,40 +6,22 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-type SignalHandler func(string) (types.Exec, error)
+type SignalHandler func(string) (types.Closure, error)
 
-func On(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	signalExpr := trajectory.Children[0]
-
-	signalV, err := eval(signalExpr)
-
-	if err != nil {
-		return nil, err
-	}
-
-	signal, ok := signalV.(string)
+var On types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	signal, ok := arguments[0].(string)
 
 	if !ok {
-		return nil, errors.New("not a string")
+		return nil, errors.New("On :: not a string")
 	}
 
-	handlerExpr := trajectory.Children[1]
-
-	handlerV, err := eval(handlerExpr)
-
-	if err != nil {
-		return nil, err
-	}
-
-	handlerBody, ok := handlerV.(types.Exec)
+	handlerBody, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("not a function")
+		return nil, errors.New("On :: not a function")
 	}
 
-	var handler SignalHandler = func(dispatched string) (types.Exec, error) {
+	var handler SignalHandler = func(dispatched string) (types.Closure, error) {
 		if dispatched != signal {
 			return nil, errors.New("signal mismatch")
 		} else {

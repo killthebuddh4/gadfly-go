@@ -10,7 +10,7 @@ var Colon types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (
 	schema, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("Colon :: Schema is not a function")
+		return nil, errors.New(":: Colon :: Schema is not a function")
 	}
 
 	return schema(scope, arguments[0])

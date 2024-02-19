@@ -6,28 +6,14 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func Unshift(trajectory *types.Trajectory, eval types.Eval) (types.Value, error) {
-	types.ExpandTraj(trajectory)
-
-	arrV, err := eval(trajectory.Children[0])
-
-	if err != nil {
-		return nil, err
-	}
-
-	arr, ok := arrV.([]types.Value)
+var Unshift types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {
 		return nil, errors.New("not an array")
 	}
 
-	val, err := eval(trajectory.Children[1])
-
-	if err != nil {
-		return nil, err
-	}
-
-	head := []types.Value{val}
+	head := []types.Value{arguments[1]}
 
 	return append(head, arr...), nil
 }
