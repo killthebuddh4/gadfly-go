@@ -11,6 +11,7 @@ type Lexer struct {
 	Tokens  []types.Lexeme
 	Start   int
 	Current int
+	Line    int
 }
 
 func NewLexer(source string) Lexer {
@@ -19,6 +20,7 @@ func NewLexer(source string) Lexer {
 		Tokens:  []types.Lexeme{},
 		Start:   0,
 		Current: 0,
+		Line:    0,
 	}
 }
 

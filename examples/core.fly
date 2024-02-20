@@ -1,3 +1,0 @@
-def test 20 end
-
-std.write test end

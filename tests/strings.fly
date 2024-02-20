@@ -36,10 +36,9 @@ def split_worked
   .equal test_value splitted end
 end
 
-if
-  split_worked == false
-  fn std.write "FAIL: strings.Split" end end
-  fn std.write "PASS: strings.Split" end end
+if split_worked == false
+  std.write "FAIL: strings.Split" end
+  std.write "PASS: strings.Split" end
 end
 
 #
@@ -52,10 +51,9 @@ let test_value
   substring lang 3 6 end
 end
 
-if
-  test_value == "fly"
-  fn std.write "PASS: strings.Substring" end end
-  fn std.write "FAIL: strings.Substring" end end
+if test_value == "fly"
+  std.write "PASS: strings.Substring" end
+  std.write "FAIL: strings.Substring" end
 end
 
 #
@@ -73,8 +71,7 @@ let test_value
   end
 end
 
-if
-  test_value == "gadfly"
-  fn std.write "PASS: strings.Concat" end end
-  fn std.write "FAIL: strings.Concat" end end
+if test_value == "gadfly"
+  std.write "PASS: strings.Concat" end
+  std.write "FAIL: strings.Concat" end
 end

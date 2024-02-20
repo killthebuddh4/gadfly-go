@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"errors"
+
 	"github.com/killthebuddh4/gadflai/types"
 )
 
@@ -10,6 +12,123 @@ import (
  * violation of encapsulation, but I think it's fine in this case.
  */
 
+func arityForOperator(lexeme types.Lexeme) (int, error) {
+	switch lexeme.Text {
+	case "fn":
+		return 1, nil
+	case "do":
+		return -1, nil
+	case "panic":
+		return 1, nil
+	case "def":
+		return 2, nil
+	case "val":
+		return 2, nil
+	case "let":
+		return 2, nil
+	case ".":
+		return -1, nil
+	case "if":
+		return 3, nil
+	case "and":
+		return -1, nil
+	case "or":
+		return -1, nil
+	case "while":
+		return 2, nil
+	case "when":
+		return 2, nil
+	case "array":
+		return -1, nil
+	case "array.read":
+		return 2, nil
+	case "array.write":
+		return 3, nil
+	case "array.for":
+		return 2, nil
+	case "array.map":
+		return 2, nil
+	case "array.filter":
+		return 2, nil
+	case "array.reduce":
+		return 2, nil
+	case "array.push":
+		return 2, nil
+	case "array.pop":
+		return 1, nil
+	case "array.shift":
+		return 1, nil
+	case "array.unshift":
+		return 2, nil
+	case "array.segment":
+		return 3, nil
+	case "array.find":
+		return 2, nil
+	case "array.splice":
+		return 3, nil
+	case "array.reverse":
+		return 1, nil
+	case "array.sort":
+		return 2, nil
+	case "map":
+		return -1, nil
+	case "map.merge":
+		return 2, nil
+	case "map.delete":
+		return 2, nil
+	case "map.keys":
+		return 1, nil
+	case "map.values":
+		return 1, nil
+	case "map.read":
+		return 2, nil
+	case "map.write":
+		return 3, nil
+	case "map.extract":
+		return 2, nil
+	case "split":
+		return 2, nil
+	case "substring":
+		return 3, nil
+	case "concat":
+		return 2, nil
+	case "chars":
+		return 1, nil
+	case "std.write":
+		return 1, nil
+	case "http":
+		return 1, nil
+	case "GADFLY":
+		return 1, nil
+	case "DAEMON":
+		return 1, nil
+	case "GHOST":
+		return 1, nil
+	case "ORACLE":
+		return 1, nil
+	case "THEORY":
+		return 1, nil
+	case "MUSE":
+		return 1, nil
+	case "RAPTURE":
+		return 1, nil
+	case "@":
+		return 1, nil
+	case "signal":
+		return 2, nil
+	case "emit":
+		return -1, nil
+	case "on":
+		return 2, nil
+	case "catch":
+		return 2, nil
+	case "throw":
+		return 1, nil
+	default:
+		return 0, errors.New("unknown operator, could not get arity " + lexeme.Text)
+	}
+}
+
 func isExpression(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "fn":
@@ -18,7 +137,7 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "def", "val", "let", ".":
 		return true
-	case "if", "and", "or", "while", "case":
+	case "if", "and", "or", "while", "when":
 		return true
 	case "array", "array.read", "array.write", "array.for", "array.map", "array.filter", "array.reduce", "array.push", "array.pop", "array.shift", "array.unshift", "array.segment", "array.find", "array.splice", "array.reverse", "array.sort":
 		return true

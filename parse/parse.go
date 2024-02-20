@@ -32,6 +32,7 @@ func (p *Parser) parse(parent *types.Expression) error {
 	// WARNING := The order of these two expressions matters. If you check
 	// expression first, then withSig will pick up the signature of the NEXT
 	// expression if it exists.
+
 	withSig := accept(p, isSignature)
 	isExpr := accept(p, isExpression) || accept(p, isSchema)
 

@@ -8,31 +8,19 @@ import (
 
 var Or types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	for _, arg := range arguments {
-		child, ok := arg.(CaseHandler)
+		child, ok := arg.(types.Thunk)
 
 		if !ok {
-			return nil, errors.New("not a case handler")
+			return nil, errors.New(":: Or :: argument is not a thunk")
 		}
 
-		condV, err := child.Cond(scope)
+		val, err := child()
 
 		if err != nil {
 			return nil, err
 		}
 
-		cond, ok := condV.(bool)
-
-		if !ok {
-			return nil, errors.New("not a boolean")
-		}
-
-		if cond {
-			val, err := child.Body(scope)
-
-			if err != nil {
-				return nil, err
-			}
-
+		if val != nil {
 			return val, nil
 		}
 	}

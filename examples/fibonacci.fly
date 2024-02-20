@@ -2,19 +2,10 @@ def fibonacci
   (n: Number)
     fn
       or
-        case
-          fn n == 1 end
-          fn 1 end
-        end
-
-        case 
-          fn n == 2 end
-          fn 1 end
-        end
-
-        case
-          fn n > 2 end
-          fn
+        when n == 1 1 end
+        when n == 2 1 end
+        when n > 2
+          do
             def i
               .fibonacci
                 n - 2

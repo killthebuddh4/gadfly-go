@@ -29,14 +29,12 @@ def is_fizzbuzz
     fn
       def both
         and
-          case
-            fn .is_fizz n end end
-            fn true end
+          when .is_fizz n end
+            true
           end
 
-          case
-            fn .is_buzz n end end
-            fn true end
+          when .is_buzz n end
+            true
           end
         end
       end
@@ -49,24 +47,30 @@ def fizzbuzz
   (n)
   fn
     def k 1 end
-    while fn k <= n end
-      fn
+    while k <= n
+      do
         std.write k end
-        
+
         or
-          case
-            fn .is_fizzbuzz k end end
-            fn std.write "fizzbuzz" end end
+          when .is_fizzbuzz k end
+            do
+              std.write "fizzbuzz" end
+              true
+            end
           end
 
-          case
-            fn .is_fizz k end end
-            fn std.write "fizz" end end
+          when .is_fizz k end
+            do
+              std.write "fizz" end
+              true
+            end
           end
 
-          case
-            fn .is_buzz k end end
-            fn std.write "buzz" end end
+          when .is_buzz k end
+            do
+              std.write "buzz" end
+              true
+            end
           end
         end
 

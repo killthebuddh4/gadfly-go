@@ -2,19 +2,10 @@ def math.mod
   (n k)
     fn
       or
-        case
-          fn n < k end
-          fn n end
-        end
-
-        case
-          fn n == k end
-          fn 0 end
-        end
-
-        case
-          fn n > k end
-          fn
+        when n < k n end
+        when n == k 0 end
+        when n > k
+          do
             .math.mod
               n - k
               k
@@ -29,17 +20,9 @@ def math.factorial
   (n)
     fn
       or
-        case
-          fn n == 0 end
-          fn
-            std.write "base case" end
-            1
-          end
-        end
-
-        case
-          fn n > 0 end
-          fn
+        when n == 0 1 end
+        when n > 0
+          do
             def inner
               .math.factorial
                 n - 1

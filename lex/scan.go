@@ -16,7 +16,11 @@ func (s *Lexer) scan() error {
 	}
 
 	switch char {
-	case "\n", "\r", "\t", " ":
+	case "\n":
+		s.advance()
+		s.Line = s.Line + 1
+		return nil
+	case "\r", "\t", " ":
 		s.advance()
 		return nil
 	case "#":
@@ -211,6 +215,7 @@ func (s *Lexer) scan() error {
 		Start:  s.Start,
 		Length: s.Current - s.Start,
 		Text:   s.Source[s.Start:s.Current],
+		Line:   s.Line,
 	})
 
 	return nil

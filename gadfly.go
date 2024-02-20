@@ -65,7 +65,10 @@ func exec(pathToFile string) {
 		return
 	}
 
-	rootOperator, err := types.NewOperator("program", false)
+	rootOperator := types.Operator{
+		Type:  "program",
+		Value: "program",
+	}
 
 	if err != nil {
 		fmt.Println("Error creating root operator: ", err)

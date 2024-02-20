@@ -10,33 +10,21 @@ var And types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (ty
 	var value types.Value = nil
 
 	for _, arg := range arguments {
-		child, ok := arg.(CaseHandler)
+		child, ok := arg.(types.Thunk)
 
 		if !ok {
-			return nil, errors.New("And :: not a case handler")
+			return nil, errors.New(":: And :: argument is not a thunk")
 		}
 
-		condV, err := child.Cond(scope, nil)
+		val, err := child()
 
 		if err != nil {
 			return nil, err
 		}
 
-		cond, ok := condV.(bool)
-
-		if !ok {
-			return nil, errors.New("And :: not a boolean")
-		}
-
-		if !cond {
+		if val == nil {
 			return nil, nil
 		} else {
-			val, err := child.Body(scope, nil)
-
-			if err != nil {
-				return nil, err
-			}
-
 			value = val
 		}
 	}

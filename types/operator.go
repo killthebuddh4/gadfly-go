@@ -1,9 +1,5 @@
 package types
 
-import (
-	"errors"
-)
-
 type Operator struct {
 	Type  string
 	Value string
@@ -92,55 +88,4 @@ var OPERATORS = []string{
 	"on",
 	"catch",
 	"throw",
-}
-
-func NewOperator(from string, isInSig bool) (Operator, error) {
-	for _, operator := range OPERATORS {
-		if operator == from {
-			return Operator{
-				Type:  from,
-				Value: from,
-			}, nil
-		}
-	}
-
-	switch string(from[0]) {
-	case "\"":
-		return Operator{
-			Type:  "string",
-			Value: from,
-		}, nil
-	case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
-		return Operator{
-			Type:  "number",
-			Value: from,
-		}, nil
-	case "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "x", "w", "y", "z":
-		return Operator{
-			Type:  "identifier",
-			Value: from,
-		}, nil
-	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
-		if isInSig {
-			return Operator{
-				Type:  "identifier",
-				Value: from,
-			}, nil
-		} else {
-			switch string(from[1]) {
-			case "_", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
-				return Operator{
-					Type:  "symbol",
-					Value: from,
-				}, nil
-			default:
-				return Operator{
-					Type:  "schema",
-					Value: from,
-				}, nil
-			}
-		}
-	default:
-		return Operator{}, errors.New("Could not resolve to operator from text: <" + from + ">")
-	}
 }

@@ -70,8 +70,8 @@ end
 std.write
   if
     test_val != 6
-    fn "FAIL: array.Read" end
-    fn "PASS: array.Read" end
+    "FAIL: array.Read"
+    "PASS: array.Read"
   end
 end
 
@@ -90,8 +90,8 @@ end
 std.write
   if
     test_val != 6
-    fn "FAIL: array.Write immutability" end
-    fn "PASS: array.Write immutability" end
+    "FAIL: array.Write immutability"
+    "PASS: array.Write immutability"
   end
 end
 
@@ -105,8 +105,8 @@ end
 
 if
   test_val != 12
-  fn std.write "FAIL: array.Write" end end
-  fn std.write "PASS: array.Write" end end
+  std.write "FAIL: array.Write" end
+  std.write "PASS: array.Write" end
 end
 
 #
@@ -126,8 +126,8 @@ end
 
 if
   test_val != numbers_sum
-  fn std.write "FAIL: array.For" end end
-  fn std.write "PASS: array.For" end end
+  std.write "FAIL: array.For" end
+  std.write "PASS: array.For" end
 end
 
 #
@@ -150,8 +150,8 @@ def squares_worked
 end
 
 if squares_worked == false
-  fn std.write "FAIL: array.Map" end end
-  fn std.write "PASS: array.Map" end end
+  std.write "FAIL: array.Map" end
+  std.write "PASS: array.Map" end
 end 
 
 #
@@ -178,8 +178,8 @@ def evens_worked
 end
 
 if evens_worked == false
-  fn std.write "FAIL: array.Filter" end end
-  fn std.write "PASS: array.Filter" end end
+  std.write "FAIL: array.Filter" end
+  std.write "PASS: array.Filter" end
 end
 
 #
@@ -203,8 +203,8 @@ end
 
 if
   test_val != numbers_sum
-  fn std.write "FAIL: array.Reduce" end end
-  fn std.write "PASS: array.Reduce" end end
+  std.write "FAIL: array.Reduce" end
+  std.write "PASS: array.Reduce" end
 end
 
 #
@@ -220,8 +220,8 @@ def push_is_immutable
 end
 
 if push_is_immutable == false
-  fn std.write "FAIL: array.Push immutability" end end
-  fn std.write "PASS: array.Push immutability" end end
+  std.write "FAIL: array.Push immutability" end
+  std.write "PASS: array.Push immutability" end
 end
 
 let test_val
@@ -233,8 +233,8 @@ def push_worked
 end
 
 if push_worked == false
-  fn std.write "FAIL: array.Push" end end
-  fn std.write "PASS: array.Push" end end
+  std.write "FAIL: array.Push" end
+  std.write "PASS: array.Push" end
 end
 
 #
@@ -250,8 +250,8 @@ def pop_is_immutable
 end
 
 if pop_is_immutable == false
-  fn std.write "FAIL: array.Pop immutability" end end
-  fn std.write "PASS: array.Pop immutability" end end
+  std.write "FAIL: array.Pop immutability" end
+  std.write "PASS: array.Pop immutability" end
 end
 
 let test_val
@@ -263,8 +263,8 @@ def pop_worked
 end
 
 if pop_worked == false
-  fn std.write "FAIL: array.Pop" end end
-  fn std.write "PASS: array.Pop" end end
+  std.write "FAIL: array.Pop" end
+  std.write "PASS: array.Pop" end
 end
 
 #
@@ -280,8 +280,8 @@ def shift_is_immutable
 end
 
 if shift_is_immutable == false
-  fn std.write "FAIL: array.Shift immutability" end end
-  fn std.write "PASS: array.Shift immutability" end end
+  std.write "FAIL: array.Shift immutability" end
+  std.write "PASS: array.Shift immutability" end
 end
 
 let test_val
@@ -293,8 +293,8 @@ def shift_worked
 end
 
 if shift_worked == false
-  fn std.write "FAIL: array.Shift" end end
-  fn std.write "PASS: array.Shift" end end
+  std.write "FAIL: array.Shift" end
+  std.write "PASS: array.Shift" end
 end
 
 #
@@ -310,8 +310,8 @@ def unshift_is_immutable
 end
 
 if unshift_is_immutable == false
-  fn std.write "FAIL: array.Unshift immutability" end end
-  fn std.write "PASS: array.Unshift immutability" end end
+  std.write "FAIL: array.Unshift immutability" end
+  std.write "PASS: array.Unshift immutability" end
 end
 
 let test_val
@@ -323,6 +323,6 @@ def unshift_worked
 end
 
 if unshift_worked == false
-  fn std.write "FAIL: array.Unshift" end end
-  fn std.write "PASS: array.Unshift" end end
+  std.write "FAIL: array.Unshift" end
+  std.write "PASS: array.Unshift" end
 end

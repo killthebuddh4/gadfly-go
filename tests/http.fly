@@ -52,10 +52,9 @@ def get_worked
   end
 end
 
-if
-  get_worked
-  fn std.write "PASS: http get request" end end
-  fn std.write "FAIL: http get request" end end
+if get_worked
+  std.write "PASS: http get request" end
+  std.write "FAIL: http get request" end
 end
 
 #
@@ -86,8 +85,7 @@ def post_worked
   end
 end
 
-if
-  post_worked
-  fn std.write "PASS: http post request" end end
-  fn std.write "FAIL: http post request" end end
+if post_worked
+  std.write "PASS: http post request" end
+  std.write "FAIL: http post request" end
 end

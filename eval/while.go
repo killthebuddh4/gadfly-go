@@ -10,13 +10,13 @@ var While types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (
 	var value types.Value = nil
 
 	for {
-		cond, ok := arguments[0].(types.Closure)
+		condT, ok := arguments[0].(types.Thunk)
 
 		if !ok {
-			return nil, errors.New(":: While :: condition is not a boolean")
+			return nil, errors.New(":: While :: condition is not a thunk")
 		}
 
-		condV, err := cond(scope)
+		condV, err := condT()
 
 		if err != nil {
 			return nil, err
@@ -31,19 +31,21 @@ var While types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (
 		if !cont {
 			break
 		} else {
-			body, ok := arguments[1].(types.Closure)
+			for _, arg := range arguments[1:] {
+				bodyT, ok := arg.(types.Thunk)
 
-			if !ok {
-				return nil, errors.New(":: While :: body is not a lambda")
+				if !ok {
+					return nil, errors.New(":: While :: body is not a thunk")
+				}
+
+				val, err := bodyT()
+
+				if err != nil {
+					return nil, err
+				}
+
+				value = val
 			}
-
-			val, err := body(scope)
-
-			if err != nil {
-				return nil, err
-			}
-
-			value = val
 		}
 	}
 

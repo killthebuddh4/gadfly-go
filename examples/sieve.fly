@@ -12,12 +12,12 @@ def is_prime
       
       def test base end
 
-      while fn base < n end
-        fn
+      while base < n
+        do
           let test base end
 
-          while fn test < n end
-            fn
+          while test < n
+            do
               let test test + base end
 
               let composites
@@ -44,10 +44,10 @@ end
 
 def k 0 end
 
-while fn k < 100 end
-  fn 
-    if .is_prime k end
-      fn std.write k end end
+while k < 100
+  do
+    when .is_prime k end
+      std.write k end
     end
 
     let k k + 1 end

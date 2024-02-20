@@ -11,16 +11,28 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 	if expr.Operator.Type == "fn" && context == scope {
 		return close(scope, expr)
-	} else {
-		eval, err := dispatch(&trajectory)
+	}
 
-		if err != nil {
-			return nil, err
-		}
+	eval, err := dispatch(&trajectory)
 
-		args := []types.Value{}
+	if err != nil {
+		return nil, err
+	}
 
-		for _, child := range expr.Children {
+	args := []types.Value{}
+
+	for _, child := range expr.Children {
+		isConditional := expr.Operator.Type == "if" || expr.Operator.Type == "and" || expr.Operator.Type == "or" || expr.Operator.Type == "when" || expr.Operator.Type == "while"
+
+		if isConditional {
+			arg, err := thunk(&trajectory, child)
+
+			if err != nil {
+				return nil, err
+			}
+
+			args = append(args, arg)
+		} else {
 			value, err := Exec(&trajectory, &trajectory, child)
 
 			if err != nil {
@@ -29,9 +41,9 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 			args = append(args, value)
 		}
-
-		return eval(&trajectory, args...)
 	}
+
+	return eval(&trajectory, args...)
 }
 
 func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, error) {
@@ -49,6 +61,12 @@ func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, erro
 		}
 
 		return Exec(context, &injected, expr)
+	}, nil
+}
+
+func thunk(scope *types.Trajectory, expr *types.Expression) (types.Thunk, error) {
+	return func() (types.Value, error) {
+		return Exec(scope, scope, expr)
 	}, nil
 }
 
@@ -162,8 +180,8 @@ func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 		return And, nil
 	case "or":
 		return Or, nil
-	case "case":
-		return Case, nil
+	case "when":
+		return When, nil
 	case "std.write":
 		return WriteStd, nil
 	case "http":

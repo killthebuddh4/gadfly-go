@@ -6,15 +6,8 @@ def slice
           fn
             def result
               and
-                case
-                  fn i >= start end
-                  fn true end
-                end
-
-                case
-                  fn i < finish end
-                  fn true end
-                end
+                when i >= start true end
+                when i < finish true end
               end
             end
 
@@ -48,8 +41,8 @@ def includes
       array.for arr
         (test i)
           fn
-            if test == e
-              fn let includes true end end
+            when test == e
+              let includes true end
             end
           end
       end
@@ -71,8 +64,8 @@ def equal
         .length arr_b end
       end
 
-      if arr_a_length != arr_b_length
-        fn let result false end end
+      when arr_a_length != arr_b_length
+        let result false end
       end
 
       array.for arr_a
@@ -82,8 +75,8 @@ def equal
               array.read arr_b i end
             end
 
-            if e != b
-              fn let result false end end
+            when e != b
+              let result false end
             end
           end
       end
