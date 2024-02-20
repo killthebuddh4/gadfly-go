@@ -181,6 +181,20 @@ func isSchema(lexeme types.Lexeme) bool {
 	}
 }
 
+func isConstant(lexeme types.Lexeme) bool {
+	switch string(lexeme.Text[0]) {
+	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+		switch string(lexeme.Text[1]) {
+		case "_", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
+			return true
+		default:
+			return false
+		}
+	default:
+		return false
+	}
+}
+
 func isSignature(lexeme types.Lexeme) bool {
 	return lexeme.Text == "("
 }

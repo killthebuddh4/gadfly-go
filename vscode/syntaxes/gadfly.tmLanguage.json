@@ -21,7 +21,7 @@
     },
     {
       "name": "keyword.control.gadfly",
-      "match": "\\b(end|throw|catch|signal|emit|on|fn|def|val|let|if|do|panic|and|or|while|case|map.merge|map.delete|map.keys|map.values|map.read|map.write|map.extract|array.read|array.write|array.for|array.map|array.filter|array.reduce|array.push|array.pop|array.shift|array.unshift|array.segment|array.find|array.splice|array.reverse|array.sort|std.write|http|split|substring|concat|chars|effect)\\b"
+      "match": "\\b(end|throw|catch|signal|emit|on|fn|def|val|let|if|do|panic|and|or|while|when|map.merge|map.delete|map.keys|map.values|map.read|map.write|map.extract|array.read|array.write|array.for|array.map|array.filter|array.reduce|array.push|array.pop|array.shift|array.unshift|array.segment|array.find|array.splice|array.reverse|array.sort|std.write|http|split|substring|concat|chars|effect)\\b"
     },
     {
       "name": "keyword.control.gadfly",

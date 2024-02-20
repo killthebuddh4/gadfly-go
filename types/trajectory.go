@@ -150,7 +150,6 @@ func DefineSignal(trajectory *Trajectory, name string, handler Closure) error {
 		return errors.New("signal " + name + " is already defined")
 	}
 
-	fmt.Println("Defining signal", name)
 	trajectory.Signals[name] = handler
 
 	return nil
@@ -162,9 +161,7 @@ func ResolveSignal(trajectory *Trajectory, name string) (Value, error) {
 	}
 
 	for key, handler := range trajectory.Signals {
-		fmt.Println("Check signal with name", key, name)
 		if key == name {
-			fmt.Println("Found signal with name", key, name)
 			return handler, nil
 		}
 	}

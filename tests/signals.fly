@@ -1,0 +1,100 @@
+def status nil end
+def got_sig_test_a false end
+def got_sig_test_b false end
+
+signal
+  SIG_TEST_A
+
+  (signal)
+    fn
+      let got_sig_test_a true end
+      let got_sig_test_b false end
+      FEED_OK
+    end
+end
+
+signal
+  SIG_TEST_B
+
+  (signal)
+    fn
+      let got_sig_test_a false end
+      let got_sig_test_b true end
+      FEED_KILL
+    end
+end
+
+emit
+  SIG_TEST_A
+
+  on
+    FEED_OK
+
+    (feedback)
+      fn
+        let status "WE ARE OK" end
+      end
+  end
+
+  on
+    FEED_KILL
+
+    (feedback)
+      fn
+        let status "OH NO, WE'RE DED" end
+      end
+  end
+end
+
+if status != "WE ARE OK"
+  std.write "FAIL: Ok status" end
+  std.write "PASS: Ok status" end
+end
+
+if got_sig_test_a
+  std.write "PASS: Got SIG_TEST_A" end
+  std.write "FAIL: Got SIG_TEST_A" end
+end
+
+if got_sig_test_b
+  std.write "FAIL: Got SIG_TEST_B" end
+  std.write "PASS: Got SIG_TEST_B" end
+end
+
+emit
+  SIG_TEST_B
+
+  on
+    FEED_OK
+
+    (feedback)
+      fn
+        let status "WE ARE GREAT" end
+      end
+  end
+
+  on
+    FEED_KILL
+
+    (feedback)
+      fn
+        let status "OH NO, WE'RE DED" end
+      end
+  end
+end
+
+if status != "OH NO, WE'RE DED"
+  std.write "FAIL: Ok sttatus" end
+  std.write "PASS: Ok status" end
+end
+
+if got_sig_test_a
+  std.write "FAIL: Got SIG_TEST_A" end
+  std.write "PASS: Got SIG_TEST_A" end
+end
+
+if got_sig_test_b
+  std.write "PASS: Got SIG_TEST_B" end
+  std.write "FAIL: Got SIG_TEST_B" end
+end
+

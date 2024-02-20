@@ -209,7 +209,12 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		var operator types.Operator
-		if isNumber(p.previous()) {
+		if isConstant(p.previous()) {
+			operator = types.Operator{
+				Type:  "string",
+				Value: p.previous().Text,
+			}
+		} else if isNumber(p.previous()) {
 			operator = types.Operator{
 				Type:  "number",
 				Value: p.previous().Text,
