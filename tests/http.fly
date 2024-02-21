@@ -11,7 +11,7 @@ std.write "" "" end
 #
 #
 
-def get_response
+def "get_response" value
   map
     "userId" 1
     "id" 1
@@ -20,13 +20,13 @@ def get_response
   end
 end
 
-def post_response
+def "post_response" value
   map
     "id" 101
   end
 end
 
-def test_value nil end
+def "test_value" value nil end
 
 #
 #
@@ -34,7 +34,7 @@ def test_value nil end
 #
 #
 
-let test_value
+let "test_value" value
   http
     "https://jsonplaceholder.typicode.com/todos/1"
     "GET"
@@ -45,15 +45,18 @@ let test_value
   end
 end
 
-def get_worked
+def "get_worked" value
   .map.equal
     test_value
     get_response
   end
 end
 
-if get_worked
+if
+  get_worked
+then
   std.write "PASS: http get request" end
+else
   std.write "FAIL: http get request" end
 end
 
@@ -63,7 +66,7 @@ end
 #
 #
 
-let test_value
+let "test_value" value
   http
     "https://jsonplaceholder.typicode.com/posts"
     "POST"
@@ -78,14 +81,17 @@ let test_value
   end
 end
 
-def post_worked
+def "post_worked" value
   .map.equal
     test_value
     post_response
   end
 end
 
-if post_worked
+if
+  post_worked
+then
   std.write "PASS: http post request" end
+else
   std.write "FAIL: http post request" end
 end

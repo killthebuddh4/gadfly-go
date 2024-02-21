@@ -1,25 +1,23 @@
-def fibonacci
+def "fibonacci" value
   (n: Number)
     fn
       or
-        when n == 1 1 end
-        when n == 2 1 end
-        when n > 2
-          do
-            def i
-              .fibonacci
-                n - 2
-              end
+        when n == 1 then 1 end
+        when n == 2 then 1 end
+        when n > 2 then
+          def "i" value
+            .fibonacci
+              n - 2
             end
-
-            def j
-              .fibonacci
-                n - 1
-              end
-            end
-
-            i + j
           end
+
+          def "j" value
+            .fibonacci
+              n - 1
+            end
+          end
+
+          i + j
         end
       end
     end

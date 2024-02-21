@@ -1,13 +1,13 @@
-def slice
+def "slice" value
   (arr start finish)
     fn 
       array.filter arr 
         (el i)
           fn
-            def result
+            def "result" value
               and
-                when i >= start true end
-                when i < finish true end
+                when i >= start then true end
+                when i < finish then true end
               end
             end
 
@@ -17,15 +17,15 @@ def slice
     end
 end
 
-def length
+def "length" value
   (arr)
     fn
-      def result 0 end
+      def "result" value 0 end
 
       array.for arr
         (e i)
           fn
-            let result i end
+            let "result" value i end
           end
       end
 
@@ -33,16 +33,16 @@ def length
     end
 end
 
-def includes
+def "includes" value
   (arr e)
     fn
-      def includes false end
+      def "includes" value false end
 
       array.for arr
         (test i)
           fn
-            when test == e
-              let includes true end
+            when test == e then
+              let "includes" value true end
             end
           end
       end
@@ -51,32 +51,32 @@ def includes
     end
 end
 
-def equal
+def "equal" value
   (arr_a arr_b)
     fn
-      def result true end
+      def "result" value true end
 
-      def arr_a_length
+      def "arr_a_length" value
         .length arr_a end
       end
 
-      def arr_b_length
+      def "arr_b_length" value
         .length arr_b end
       end
 
-      when arr_a_length != arr_b_length
-        let result false end
+      when arr_a_length != arr_b_length then
+        let "result" value false end
       end
 
       array.for arr_a
         (e i)
           fn
-            def b
+            def "b" value
               array.read arr_b i end
             end
 
-            when e != b
-              let result false end
+            when e != b then
+              let "result" value false end
             end
           end
       end

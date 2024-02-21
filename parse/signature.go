@@ -8,7 +8,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) signature(parent *types.Expression) (*types.Expression, error) {
+func (p *Parser) signature(parent *types.Expression) ([]*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {
@@ -62,10 +62,5 @@ func (p *Parser) signature(parent *types.Expression) (*types.Expression, error) 
 		return nil, errors.New("expected closing parenthesis")
 	}
 
-	parametersExp := types.NewExpression(parent, types.Operator{
-		Type:  "parameters",
-		Value: p.previous().Text,
-	}, parameters)
-
-	return &parametersExp, nil
+	return parameters, nil
 }

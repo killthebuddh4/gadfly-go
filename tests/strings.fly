@@ -14,13 +14,13 @@ std.write "" end
 #
 #
 
-def lang "gadfly" end
+def "lang" value "gadfly" end
 
-def splitted
+def "splitted" value
   array "g" "a" "d" "f" "l" "y" end
 end
 
-def test_value nil end
+def "test_value" value nil end
 
 #
 #
@@ -28,16 +28,19 @@ def test_value nil end
 #
 #
 
-let test_value
+let "test_value" value
   split lang end
 end
 
-def split_worked
+def "split_worked" value
   .equal test_value splitted end
 end
 
-if split_worked == false
+if
+  split_worked == false
+then
   std.write "FAIL: strings.Split" end
+else
   std.write "PASS: strings.Split" end
 end
 
@@ -47,12 +50,15 @@ end
 #
 #
 
-let test_value
+let "test_value" value
   substring lang 3 6 end
 end
 
-if test_value == "fly"
+if
+  test_value == "fly"
+then
   std.write "PASS: strings.Substring" end
+else
   std.write "FAIL: strings.Substring" end
 end
 
@@ -62,16 +68,19 @@ end
 #
 #
 
-def gad "gad" end
+def "gad" value "gad" end
 
-let test_value
+let "test_value" value
   concat
     gad
     "fly"
   end
 end
 
-if test_value == "gadfly"
+if
+  test_value == "gadfly"
+then
   std.write "PASS: strings.Concat" end
+else
   std.write "FAIL: strings.Concat" end
 end

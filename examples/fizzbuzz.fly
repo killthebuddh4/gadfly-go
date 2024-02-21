@@ -1,7 +1,7 @@
-def is_fizz
+def "is_fizz" value
   (n)
     fn
-      def r
+      def "r" value
         .math.mod 
           n 3
         end
@@ -11,10 +11,10 @@ def is_fizz
     end
 end
 
-def is_buzz
+def "is_buzz" value
   (n)
     fn
-      def r
+      def "r" value
         .math.mod 
           n 5
         end
@@ -24,18 +24,14 @@ def is_buzz
     end
 end
 
-def is_fizzbuzz
+def "is_fizzbuzz" value
   (n)
     fn
-      def both
+      def "both" value
         and
-          when .is_fizz n end
-            true
-          end
+          when .is_fizz n end then true end
 
-          when .is_buzz n end
-            true
-          end
+          when .is_buzz n end then true end
         end
       end
 
@@ -43,38 +39,33 @@ def is_fizzbuzz
     end
 end
 
-def fizzbuzz
+def "fizzbuzz" value
   (n)
   fn
-    def k 1 end
+    def "k" value 1 end
+
     while k <= n
       do
         std.write k end
 
         or
-          when .is_fizzbuzz k end
-            do
-              std.write "fizzbuzz" end
-              true
-            end
+          when .is_fizzbuzz k end then
+            std.write "fizzbuzz" end
+            true
           end
 
-          when .is_fizz k end
-            do
-              std.write "fizz" end
-              true
-            end
+          when .is_fizz k end then
+            std.write "fizz" end
+            true
           end
 
-          when .is_buzz k end
-            do
-              std.write "buzz" end
-              true
-            end
+          when .is_buzz k end then
+            std.write "buzz" end
+            true
           end
         end
 
-        let k k + 1 end
+        let "k" value k + 1 end
       end
     end
   end

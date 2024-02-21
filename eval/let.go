@@ -10,11 +10,11 @@ var Let types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (ty
 	name, ok := arguments[0].(string)
 
 	if !ok {
-		return nil, errors.New("Def :: identifier is not a string")
+		return nil, errors.New(":: Let :: identifier is not a string")
 	}
 
 	if len(arguments) < 2 {
-		return nil, errors.New("Def :: no value to define")
+		return nil, errors.New(":: Let :: no value to define")
 	}
 
 	value := arguments[len(arguments)-1]

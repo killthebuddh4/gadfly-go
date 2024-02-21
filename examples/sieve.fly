@@ -1,27 +1,26 @@
 # An innefficient sieve of Eratosthenes.
 
-def is_prime
+def "is_prime" value
   (n)
     fn
-      def
-        composites
+      def "composites" value
         array end
       end
 
-      def base 2 end
+      def "base" value 2 end
       
-      def test base end
+      def "test" value base end
 
       while base < n
         do
-          let test base end
+          let "test" value base end
 
           while test < n
             do
-              let test test + base end
+              let "test" value test + base end
 
 
-              let composites
+              let "composites" value
                 array.push composites
                   test
                 end
@@ -29,11 +28,11 @@ def is_prime
             end
           end
 
-          let base base + 1 end
+          let "base" value base + 1 end
         end
       end
 
-      def is_composite
+      def "is_composite" value
         .includes composites n
         end
       end
@@ -43,14 +42,14 @@ def is_prime
 end
 
 
-def k 0 end
+def "k" value 0 end
 
 while k < 100
   do
-    when .is_prime k end
+    when .is_prime k end then
       std.write k end
     end
 
-    let k k + 1 end
+    let "k" value k + 1 end
   end
 end

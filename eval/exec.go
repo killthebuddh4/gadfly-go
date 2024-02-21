@@ -2,14 +2,12 @@ package eval
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
 
 // context = caller, scope = the previous child expressions (basically)
 func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expression) (types.Value, error) {
-	fmt.Println(":: Exec ::", expr.Operator.Type, expr.Operator.Value)
 	trajectory := types.NewTrajectory(scope, expr)
 
 	if expr.Operator.Type == "fn" && context == scope {
@@ -65,27 +63,27 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 		args = append(args, elseExp)
 	} else {
-		handlers := []types.Handler{}
+		// handlers := []types.Handler{}
 
-		for _, sib := range expr.Siblings {
-			if sib.Operator.Type == "catch" {
-				handlerV, err := Exec(&trajectory, &trajectory, sib)
+		// for _, sib := range expr.Siblings {
+		// 	if sib.Operator.Type == "catch" {
+		// 		handlerV, err := Exec(&trajectory, &trajectory, sib)
 
-				if err != nil {
-					return nil, err
-				}
+		// 		if err != nil {
+		// 			return nil, err
+		// 		}
 
-				handler, ok := handlerV.(types.Handler)
+		// 		handler, ok := handlerV.(types.Handler)
 
-				if !ok {
-					return nil, errors.New(":: Exec > catch :: not a handler")
-				}
+		// 		if !ok {
+		// 			return nil, errors.New(":: Exec > catch :: not a handler")
+		// 		}
 
-				handlers = append(handlers, handler)
-			}
-		}
+		// 		handlers = append(handlers, handler)
+		// 	}
+		// }
 
-		for i, child := range expr.Keyword {
+		for _, child := range append(expr.Keyword, expr.Siblings...) {
 			if isThunk(expr.Operator.Type, child.Operator.Type) {
 				t, err := thunk(&trajectory, child)
 
@@ -104,27 +102,6 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 				args = append(args, value)
 			}
 		}
-
-		for i, child := range expr.Siblings {
-			if isThunk(expr.Operator.Type, child.Operator.Type) {
-				t, err := thunk(&trajectory, child)
-
-				if err != nil {
-					return nil, err
-				}
-
-				args = append(args, t)
-			} else {
-				value, err := Exec(&trajectory, &trajectory, child)
-
-				if err != nil {
-					return nil, err
-				}
-
-				args = append(args, value)
-			}
-		}
-
 	}
 
 	return eval(&trajectory, args...)

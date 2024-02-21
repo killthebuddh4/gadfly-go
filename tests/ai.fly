@@ -5,27 +5,27 @@ std.write "" "" end
 std.write "#######################################################" end
 std.write "" "" end
 
-def gadfly
+def "gadfly" value
   GADFLY end
 end
 
-def daemon
+def "daemon" value
   DAEMON end
 end
 
-def ghost
+def "ghost" value
   GHOST end
 end
 
-def oracle
+def "oracle" value
   ORACLE end
 end
 
-def muse
+def "muse" value
   MUSE end
 end
 
-def rapture
+def "rapture" value
   RAPTURE end
 end
 

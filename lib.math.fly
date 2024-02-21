@@ -1,36 +1,32 @@
-def math.mod
+def "math.mod" value
   (n k)
     fn
       or
-        when n < k n end
-        when n == k 0 end
-        when n > k
-          do
-            .math.mod
-              n - k
-              k
-            end
+        when n < k then n end
+        when n == k then 0 end
+        when n > k then
+          .math.mod
+            n - k
+            k
           end
         end
       end
     end
 end
 
-def math.factorial
+def "math.factorial" value
   (n)
     fn
       or
-        when n == 0 1 end
-        when n > 0
-          do
-            def inner
-              .math.factorial
-                n - 1
-              end
+        when n == 0 then 1 end
+        when n > 0 then
+          def "inner" value
+            .math.factorial
+              n - 1
             end
-
-            n * inner
           end
+
+          n * inner
         end
       end
     end

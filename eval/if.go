@@ -3,11 +3,18 @@ package eval
 import (
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
 
 var If types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	_, debug := os.LookupEnv("GADFLY_DEBUG_EVAL")
+
+	if debug {
+		fmt.Println(":: If :: called")
+	}
+
 	if len(arguments) != 3 {
 		return nil, fmt.Errorf(":: If :: requires 3 arguments but got %d", len(arguments))
 	}

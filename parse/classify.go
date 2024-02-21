@@ -129,27 +129,6 @@ func arityForOperator(lexeme types.Lexeme) (int, error) {
 	}
 }
 
-func IsThunk(lexeme types.Lexeme, index int) bool {
-	switch lexeme.Text {
-	case "if", "and", "or", "while", "when":
-		if (lexeme.Text == "if" || lexeme.Text == "when") && index > 0 {
-			return true
-		}
-
-		if lexeme.Text == "and" || lexeme.Text == "or" {
-			return true
-		}
-
-		if lexeme.Text == "while" {
-			return true
-		}
-
-		return false
-	default:
-		return false
-	}
-}
-
 func isExpression(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "fn":

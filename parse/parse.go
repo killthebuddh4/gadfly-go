@@ -38,7 +38,7 @@ func (p *Parser) parse(parent *types.Expression) error {
 			return err
 		}
 
-		root.Parameters = append(root.Parameters, signature)
+		root.Parameters = append(root.Parameters, signature...)
 	}
 
 	if accept(p, isSchema) {
@@ -104,7 +104,7 @@ func (p *Parser) parse(parent *types.Expression) error {
 			root.Siblings = append(root.Siblings, elseExp)
 		} else if root.Operator.Type == "def" || root.Operator.Type == "let" {
 			if p.previous().Text != "value" {
-				return errors.New(":: parse :: expected value after def")
+				return errors.New(":: parse :: expected value after " + root.Operator.Type)
 			}
 
 			valueExp, err := p.sibling(&root)

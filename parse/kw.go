@@ -22,7 +22,7 @@ func (p *Parser) kw(root *types.Expression) error {
 	switch root.Operator.Type {
 	case "when", "if":
 		endPredicates = append(endPredicates, isThen)
-	case "def":
+	case "def", "let":
 		endPredicates = append(endPredicates, isValue)
 	default:
 		endPredicates = append(endPredicates, isEnd, isCatch)

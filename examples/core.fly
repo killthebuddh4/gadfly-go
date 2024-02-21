@@ -1,11 +1,9 @@
-if
-  false
-then
-  std.write "then" end
-else
-  std.write "else" end
+def "f" value
+  (x)
+  fn
+    std.write x end
+  end
 end
 
-def x value 100 end
 
-std.write x end
+.f "hey" end
