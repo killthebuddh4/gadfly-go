@@ -1,0 +1,15 @@
+if
+  10 > 100
+then
+  std.write "10 > 100" end
+else
+  throw
+   "I DONNO"
+  end
+catch
+  ERR_RUNTIME
+
+  fn
+    std.write "caught" end
+  end
+end

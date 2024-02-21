@@ -2,6 +2,7 @@ package eval
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
@@ -21,25 +22,101 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 	args := []types.Value{}
 
-	for _, child := range expr.Children {
-		isConditional := expr.Operator.Type == "if" || expr.Operator.Type == "and" || expr.Operator.Type == "or" || expr.Operator.Type == "when" || expr.Operator.Type == "while"
+	if expr.Operator.Type == "when" {
+		cond, err := thunk(&trajectory, expr.Children[0])
 
-		if isConditional {
-			arg, err := thunk(&trajectory, child)
+		if err != nil {
+			return nil, err
+		}
 
-			if err != nil {
-				return nil, err
+		args = append(args, cond)
+
+		thenExp, err := thunk(&trajectory, expr.Siblings[0])
+
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, thenExp)
+	} else if expr.Operator.Type == "if" {
+		cond, err := thunk(&trajectory, expr.Children[0])
+
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, cond)
+
+		thenExp, err := thunk(&trajectory, expr.Siblings[0])
+
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, thenExp)
+
+		elseExp, err := thunk(&trajectory, expr.Siblings[1])
+
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, elseExp)
+	} else {
+		handlers := []types.Handler{}
+
+		for _, sib := range expr.Siblings {
+			if sib.Operator.Type == "catch" {
+				handlerV, err := Exec(&trajectory, &trajectory, sib)
+
+				if err != nil {
+					return nil, err
+				}
+
+				handler, ok := handlerV.(types.Handler)
+
+				if !ok {
+					return nil, errors.New(":: Exec > catch :: not a handler")
+				}
+
+				handlers = append(handlers, handler)
 			}
+		}
 
-			args = append(args, arg)
-		} else {
-			value, err := Exec(&trajectory, &trajectory, child)
+		for _, child := range expr.Children {
+			isConditional := expr.Operator.Type == "and" || expr.Operator.Type == "or" || expr.Operator.Type == "while"
 
-			if err != nil {
-				return nil, err
+			if isConditional {
+				arg, err := thunk(&trajectory, child)
+
+				if err != nil {
+					for _, handler := range handlers {
+						fmt.Println("Trying to handle an error")
+						if handler.Signal == "ERR_RUNTIME" {
+							fmt.Println("FOUND A HANDLEr")
+							return handler.Handle(&trajectory, err.Error())
+						}
+					}
+					return nil, err
+				}
+
+				args = append(args, arg)
+			} else {
+				value, err := Exec(&trajectory, &trajectory, child)
+
+				if err != nil {
+					for _, handler := range handlers {
+						if handler.Signal == "ERR_RUNTIME" {
+							fmt.Println("FOUND A HANDLEr")
+							return handler.Handle(&trajectory, err.Error())
+						}
+					}
+
+					return nil, err
+				}
+
+				args = append(args, value)
 			}
-
-			args = append(args, value)
 		}
 	}
 
@@ -114,6 +191,10 @@ func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 		return String, nil
 	case "identifier":
 		return Identifier, nil
+	case "then":
+		return Then, nil
+	case "else":
+		return Else, nil
 	case "do", "fn":
 		return Do, nil
 	case "panic":

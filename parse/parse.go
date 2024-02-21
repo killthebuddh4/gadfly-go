@@ -37,7 +37,7 @@ func (p *Parser) parse(parent *types.Expression) error {
 	isExpr := accept(p, isExpression) || accept(p, isSchema)
 
 	if isExpr || withSig {
-		child, err := p.expression(parent, withSig)
+		child, err := p.root(parent, withSig)
 
 		if err != nil {
 			return err

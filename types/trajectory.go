@@ -10,6 +10,11 @@ type Void struct{}
 
 var VOID Void = Void{}
 
+type Handler struct {
+	Signal string
+	Handle Closure
+}
+
 type Thunk func() (Value, error)
 type Closure func(context *Trajectory, args ...Value) (Value, error)
 type Exec func(scope *Trajectory, args ...Value) (Value, error)

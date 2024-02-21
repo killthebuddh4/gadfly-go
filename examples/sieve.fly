@@ -20,6 +20,13 @@ def is_prime
             do
               let test test + base end
 
+              catch ERR_DUPLICATE
+                (err)
+                  fn
+                    # do nothing
+                  end
+              end
+
               let composites
                 array.push composites
                   test

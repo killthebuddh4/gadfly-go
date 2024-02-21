@@ -8,7 +8,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) expression(parent *types.Expression, withSignature bool) (*types.Expression, error) {
+func (p *Parser) root(parent *types.Expression, withSignature bool) (*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {
@@ -98,9 +98,9 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 	root.Operator = operator
 
 	switch operator.Type {
-	case "def", "let", "signal", "emit", "on", "throw", "catch":
+	case "def", "let", "signal", "emit", "on", "catch":
 		if !accept(p, isIdentifier) {
-			return nil, errors.New("expected identifier after def")
+			return nil, errors.New("expected identifier after operator")
 		}
 
 		idOp := types.Operator{
@@ -113,8 +113,17 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 		root.Children = append(root.Children, &idExp)
 	}
 
+	var endPredicates []Predicate = []Predicate{}
+
+	switch operator.Type {
+	case "when", "if":
+		endPredicates = append(endPredicates, isThen)
+	default:
+		endPredicates = append(endPredicates, isEnd, isCatch)
+	}
+
 	for {
-		if accept(p, isEnd) {
+		if accept(p, endPredicates...) {
 			break
 		}
 
@@ -127,6 +136,44 @@ func (p *Parser) expression(parent *types.Expression, withSignature bool) (*type
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if operator.Type == "when" && p.previous().Text == "then" {
+		thenExp, err := p.sibling(&root)
+
+		if err != nil {
+			return nil, err
+		}
+
+		root.Siblings = append(root.Siblings, thenExp)
+	}
+
+	if operator.Type == "if" && p.previous().Text == "then" {
+		thenExp, err := p.sibling(&root)
+
+		if err != nil {
+			return nil, err
+		}
+
+		root.Siblings = append(root.Siblings, thenExp)
+
+		elseExp, err := p.sibling(&root)
+
+		if err != nil {
+			return nil, err
+		}
+
+		root.Siblings = append(root.Siblings, elseExp)
+	}
+
+	for p.previous().Text == "catch" {
+		catchExp, err := p.sibling(&root)
+
+		if err != nil {
+			return nil, err
+		}
+
+		root.Siblings = append(root.Siblings, catchExp)
 	}
 
 	if accept(p, isReturn) {

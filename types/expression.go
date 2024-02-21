@@ -6,6 +6,7 @@ type Expression struct {
 	Parent       *Expression
 	Operator     Operator
 	Children     []*Expression
+	Siblings     []*Expression
 	Parameters   []*Expression
 	Returns      []*Expression
 	Trajectories []*Trajectory
@@ -16,6 +17,7 @@ func NewExpression(parent *Expression, operator Operator, children []*Expression
 		Parent:       parent,
 		Operator:     operator,
 		Children:     children,
+		Siblings:     []*Expression{},
 		Parameters:   []*Expression{},
 		Returns:      []*Expression{},
 		Trajectories: []*Trajectory{},

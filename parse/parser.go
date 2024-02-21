@@ -11,14 +11,24 @@ type Parser struct {
 	Current int
 }
 
-func accept(p *Parser, predicate func(lexeme lib.Lexeme) bool) bool {
-	token := p.read()
-	if predicate(token) {
-		p.advance()
-		return true
-	} else {
-		return false
+type Predicate func(lexeme lib.Lexeme) bool
+
+func accept(p *Parser, predicates ...Predicate) bool {
+	if len(predicates) == 0 {
+		// TODO accept should return an error.
+		panic("accept called with no predicates")
 	}
+
+	token := p.read()
+
+	for _, predicate := range predicates {
+		if predicate(token) {
+			p.advance()
+			return true
+		}
+	}
+
+	return false
 }
 
 func (p *Parser) advance() error {

@@ -10,16 +10,17 @@ var Catch types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (
 	identifier, ok := arguments[0].(string)
 
 	if !ok {
-		return nil, errors.New("Catch :: identifier is not a string")
+		return nil, errors.New(":: Catch :: identifier is not a string")
 	}
 
-	handler, ok := arguments[1].(types.Exec)
+	handler, ok := arguments[1].(types.Closure)
 
 	if !ok {
-		return nil, errors.New("Catch :: handler is not a lambda")
+		return nil, errors.New(":: Catch :: handler is not a Closure")
 	}
 
-	types.DefineError(scope.Parent, identifier, handler)
-
-	return handler, nil
+	return types.Handler{
+		Signal: identifier,
+		Handle: handler,
+	}, nil
 }

@@ -156,6 +156,18 @@ func isExpression(lexeme types.Lexeme) bool {
 	}
 }
 
+func isThen(lexeme types.Lexeme) bool {
+	return lexeme.Text == "then"
+}
+
+func isElse(lexeme types.Lexeme) bool {
+	return lexeme.Text == "else"
+}
+
+func isCatch(lexeme types.Lexeme) bool {
+	return lexeme.Text == "catch"
+}
+
 func isIdentifier(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
