@@ -8,7 +8,6 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-// parse then
 func (p *Parser) sibling(parent *types.Expression) (*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
@@ -27,9 +26,11 @@ func (p *Parser) sibling(parent *types.Expression) (*types.Expression, error) {
 
 	if operator.Type == "then" {
 		if parent.Operator.Type == "when" {
-			endPredicates = append(endPredicates, isThen)
-		} else {
+			endPredicates = append(endPredicates, isEnd)
+		} else if parent.Operator.Type == "if" {
 			endPredicates = append(endPredicates, isElse)
+		} else {
+			return nil, errors.New(":: parse :: then must be inside when or if")
 		}
 	} else {
 		endPredicates = append(endPredicates, isEnd, isCatch)
@@ -41,7 +42,7 @@ func (p *Parser) sibling(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		if p.isAtEnd() {
-			return nil, errors.New("expected end of expression")
+			return nil, errors.New(":: sibling :: expected end of expression")
 		}
 
 		err := p.parse(&root)

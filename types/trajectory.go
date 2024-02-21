@@ -46,7 +46,7 @@ func NewTrajectory(parent *Trajectory, expr *Expression) Trajectory {
 func ExpandBy(parent *Trajectory, exp *Expression) error {
 	var isChildExpression bool = false
 
-	for _, child := range parent.Expression.Children {
+	for _, child := range parent.Expression.Keyword {
 		if child == exp {
 			isChildExpression = true
 		}
@@ -77,7 +77,7 @@ func ExpandBy(parent *Trajectory, exp *Expression) error {
 func ExpandTraj(parent *Trajectory) error {
 	children := []*Trajectory{}
 
-	for _, child := range parent.Expression.Children {
+	for _, child := range parent.Expression.Keyword {
 		child := NewTrajectory(parent, child)
 		children = append(children, &child)
 	}

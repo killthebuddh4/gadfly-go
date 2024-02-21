@@ -129,6 +129,27 @@ func arityForOperator(lexeme types.Lexeme) (int, error) {
 	}
 }
 
+func IsThunk(lexeme types.Lexeme, index int) bool {
+	switch lexeme.Text {
+	case "if", "and", "or", "while", "when":
+		if (lexeme.Text == "if" || lexeme.Text == "when") && index > 0 {
+			return true
+		}
+
+		if lexeme.Text == "and" || lexeme.Text == "or" {
+			return true
+		}
+
+		if lexeme.Text == "while" {
+			return true
+		}
+
+		return false
+	default:
+		return false
+	}
+}
+
 func isExpression(lexeme types.Lexeme) bool {
 	switch lexeme.Text {
 	case "fn":
@@ -168,6 +189,10 @@ func isCatch(lexeme types.Lexeme) bool {
 	return lexeme.Text == "catch"
 }
 
+func isValue(lexeme types.Lexeme) bool {
+	return lexeme.Text == "value"
+}
+
 func isIdentifier(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
@@ -182,11 +207,15 @@ func isIdentifier(lexeme types.Lexeme) bool {
 func isSchema(lexeme types.Lexeme) bool {
 	switch string(lexeme.Text[0]) {
 	case "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z":
-		switch string(lexeme.Text[1]) {
-		case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+		if len(lexeme.Text) == 1 {
 			return true
-		default:
-			return false
+		} else {
+			switch string(lexeme.Text[1]) {
+			case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z":
+				return true
+			default:
+				return false
+			}
 		}
 	default:
 		return false

@@ -6,6 +6,7 @@ type Operator struct {
 }
 
 var OPERATORS = []string{
+	"parameters",
 	"program",
 	"fn",
 	"(",

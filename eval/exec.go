@@ -7,7 +7,9 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
+// context = caller, scope = the previous child expressions (basically)
 func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expression) (types.Value, error) {
+	fmt.Println(":: Exec ::", expr.Operator.Type, expr.Operator.Value)
 	trajectory := types.NewTrajectory(scope, expr)
 
 	if expr.Operator.Type == "fn" && context == scope {
@@ -23,7 +25,7 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 	args := []types.Value{}
 
 	if expr.Operator.Type == "when" {
-		cond, err := thunk(&trajectory, expr.Children[0])
+		cond, err := thunk(&trajectory, expr.Keyword[0])
 
 		if err != nil {
 			return nil, err
@@ -39,7 +41,7 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 		args = append(args, thenExp)
 	} else if expr.Operator.Type == "if" {
-		cond, err := thunk(&trajectory, expr.Children[0])
+		cond, err := thunk(&trajectory, expr.Keyword[0])
 
 		if err != nil {
 			return nil, err
@@ -83,44 +85,63 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 			}
 		}
 
-		for _, child := range expr.Children {
-			isConditional := expr.Operator.Type == "and" || expr.Operator.Type == "or" || expr.Operator.Type == "while"
-
-			if isConditional {
-				arg, err := thunk(&trajectory, child)
+		for i, child := range expr.Keyword {
+			if isThunk(expr.Operator.Type, child.Operator.Type) {
+				t, err := thunk(&trajectory, child)
 
 				if err != nil {
-					for _, handler := range handlers {
-						fmt.Println("Trying to handle an error")
-						if handler.Signal == "ERR_RUNTIME" {
-							fmt.Println("FOUND A HANDLEr")
-							return handler.Handle(&trajectory, err.Error())
-						}
-					}
 					return nil, err
 				}
 
-				args = append(args, arg)
+				args = append(args, t)
 			} else {
 				value, err := Exec(&trajectory, &trajectory, child)
 
 				if err != nil {
-					for _, handler := range handlers {
-						if handler.Signal == "ERR_RUNTIME" {
-							fmt.Println("FOUND A HANDLEr")
-							return handler.Handle(&trajectory, err.Error())
-						}
-					}
-
 					return nil, err
 				}
 
 				args = append(args, value)
 			}
 		}
+
+		for i, child := range expr.Siblings {
+			if isThunk(expr.Operator.Type, child.Operator.Type) {
+				t, err := thunk(&trajectory, child)
+
+				if err != nil {
+					return nil, err
+				}
+
+				args = append(args, t)
+			} else {
+				value, err := Exec(&trajectory, &trajectory, child)
+
+				if err != nil {
+					return nil, err
+				}
+
+				args = append(args, value)
+			}
+		}
+
 	}
 
 	return eval(&trajectory, args...)
+}
+
+func isThunk(parent string, child string) bool {
+	switch parent {
+	case "and", "or", "while", "when":
+		return true
+	}
+
+	switch child {
+	case "then", "else":
+		return true
+	}
+
+	return false
 }
 
 func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, error) {
@@ -133,7 +154,7 @@ func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, erro
 
 		for i, arg := range arguments {
 			if i < len(expr.Parameters) {
-				types.DefineName(&injected, expr.Parameters[i].Children[0].Operator.Value, arg)
+				types.DefineName(&injected, expr.Parameters[i].Keyword[0].Operator.Value, arg)
 			}
 		}
 
@@ -195,6 +216,8 @@ func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 		return Then, nil
 	case "else":
 		return Else, nil
+	case "value":
+		return Value, nil
 	case "do", "fn":
 		return Do, nil
 	case "panic":
@@ -302,7 +325,7 @@ func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 	case "on":
 		return On, nil
 	default:
-		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type)
+		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type + ".")
 	}
 }
 

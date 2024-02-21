@@ -5,7 +5,7 @@ import "fmt"
 type Expression struct {
 	Parent       *Expression
 	Operator     Operator
-	Children     []*Expression
+	Keyword      []*Expression
 	Siblings     []*Expression
 	Parameters   []*Expression
 	Returns      []*Expression
@@ -16,7 +16,7 @@ func NewExpression(parent *Expression, operator Operator, children []*Expression
 	return Expression{
 		Parent:       parent,
 		Operator:     operator,
-		Children:     children,
+		Keyword:      children,
 		Siblings:     []*Expression{},
 		Parameters:   []*Expression{},
 		Returns:      []*Expression{},
@@ -25,7 +25,7 @@ func NewExpression(parent *Expression, operator Operator, children []*Expression
 }
 
 func ExpandExp(parent *Expression, children []*Expression) {
-	parent.Children = append(parent.Children, children...)
+	parent.Keyword = append(parent.Keyword, children...)
 }
 
 func Parameterize(parent *Expression, parameters []*Expression) {
@@ -42,7 +42,7 @@ func Print(expression Expression, depth int) error {
 	}
 	fmt.Println("<" + expression.Operator.Type + ": " + expression.Operator.Value + ">")
 
-	for _, child := range expression.Children {
+	for _, child := range expression.Keyword {
 		Print(*child, depth+1)
 	}
 

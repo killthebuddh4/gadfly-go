@@ -29,22 +29,123 @@ func (p *Parser) parse(parent *types.Expression) error {
 		return errors.New("cannot parse expression with nil parent")
 	}
 
-	// WARNING := The order of these two expressions matters. If you check
-	// expression first, then withSig will pick up the signature of the NEXT
-	// expression if it exists.
+	root := types.NewExpression(parent, types.Operator{}, []*types.Expression{})
 
-	withSig := accept(p, isSignature)
-	isExpr := accept(p, isExpression) || accept(p, isSchema)
-
-	if isExpr || withSig {
-		child, err := p.root(parent, withSig)
+	if accept(p, isSignature) {
+		signature, err := p.signature(parent)
 
 		if err != nil {
 			return err
 		}
 
-		child.Parent = parent
-		parent.Children = append(parent.Children, child)
+		root.Parameters = append(root.Parameters, signature)
+	}
+
+	if accept(p, isSchema) {
+		root.Operator = types.Operator{
+			Type:  "schema",
+			Value: p.previous().Text,
+		}
+
+		err := p.kw(&root)
+
+		if err != nil {
+			return err
+		}
+
+		parent.Keyword = append(parent.Keyword, &root)
+	} else if accept(p, isExpression) {
+		root.Operator = types.Operator{
+			Type:  p.previous().Text,
+			Value: p.previous().Text,
+		}
+
+		err := p.kw(&root)
+
+		if err != nil {
+			return err
+		}
+
+		if root.Operator.Type == "when" {
+			if p.previous().Text != "then" {
+				return errors.New(":: parse :: expected then after when")
+			}
+
+			thenExp, err := p.sibling(&root)
+
+			if err != nil {
+				return err
+			}
+
+			root.Siblings = append(root.Siblings, thenExp)
+		} else if root.Operator.Type == "if" {
+			if p.previous().Text != "then" {
+				return errors.New(":: parse :: expected then after if")
+			}
+
+			thenExp, err := p.sibling(&root)
+
+			if err != nil {
+				return err
+			}
+
+			root.Siblings = append(root.Siblings, thenExp)
+
+			if p.previous().Text != "else" {
+				return errors.New(":: parse :: expected else after then")
+			}
+
+			elseExp, err := p.sibling(&root)
+
+			if err != nil {
+				return err
+			}
+
+			root.Siblings = append(root.Siblings, elseExp)
+		} else if root.Operator.Type == "def" || root.Operator.Type == "let" {
+			if p.previous().Text != "value" {
+				return errors.New(":: parse :: expected value after def")
+			}
+
+			valueExp, err := p.sibling(&root)
+
+			if err != nil {
+				return err
+			}
+
+			root.Siblings = append(root.Siblings, valueExp)
+		}
+
+		for p.previous().Text == "catch" {
+			catchExp, err := p.sibling(&root)
+
+			if err != nil {
+				return err
+			}
+
+			root.Siblings = append(root.Siblings, catchExp)
+		}
+
+		if accept(p, isReturn) {
+			if !accept(p, isSchema) {
+				return errors.New("expected schema idf after arrow")
+			}
+
+			schema := types.Operator{
+				Type:  "identifier",
+				Value: p.previous().Text,
+			}
+
+			schemaExp := types.NewExpression(nil, schema, []*types.Expression{})
+
+			types.Returnize(&root, []*types.Expression{&schemaExp})
+
+			if !accept(p, isEndSignature) {
+				return errors.New("expected end of return signature")
+			}
+		}
+
+		parent.Keyword = append(parent.Keyword, &root)
 	} else {
 		child, err := p.predicate(parent)
 
@@ -53,7 +154,7 @@ func (p *Parser) parse(parent *types.Expression) error {
 		}
 
 		child.Parent = parent
-		parent.Children = append(parent.Children, child)
+		parent.Keyword = append(parent.Keyword, child)
 	}
 
 	return nil
