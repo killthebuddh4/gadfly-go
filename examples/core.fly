@@ -1,9 +1,16 @@
-def "f" value
-  (x)
-  fn
-    std.write x end
+def
+  "x"
+value
+  do
+    "hey"
+  catch
+    "ERROR"
+
+    (err)
+    fn  
+      std.write err end
+    end
   end
 end
 
-
-.f "hey" end
+std.write x end

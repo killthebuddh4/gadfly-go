@@ -6,6 +6,10 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
+type GadflyError struct {
+	message string
+}
+
 var Throw types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 	signal, ok := arguments[0].(string)
 
@@ -13,5 +17,5 @@ var Throw types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (
 		return nil, errors.New(":: Throw :: signal not a string")
 	}
 
-	return nil, errors.New(signal)
+	return GadflyError{message: signal}, nil
 }
