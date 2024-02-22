@@ -77,6 +77,10 @@ func exec(pathToFile string) {
 
 	rootExp := types.NewExpression(nil, rootOperator, []*types.Expression{})
 
+	rootExp.Def = &types.ExpDef{
+		Parameters: []types.Parameter{},
+	}
+
 	parseErr := parse.Parse(&rootExp, lexemes)
 
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")

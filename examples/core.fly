@@ -1,16 +1,7 @@
-def
-  "x"
-value
-  do
-    "hey"
-  catch
-    "ERROR"
-
-    (err)
-    fn  
-      std.write err end
-    end
-  end
+if
+  true
+then
+  std.write "it is T" end
+else
+  std.write "it is F" end
 end
-
-std.write x end

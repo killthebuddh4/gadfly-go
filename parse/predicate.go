@@ -19,7 +19,7 @@ func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) 
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing logical for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: LOGICAL :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -33,7 +33,14 @@ func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) 
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{left, right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		left = &exp
 	}
@@ -52,7 +59,7 @@ func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing equality for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: EQUALITY :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -66,7 +73,14 @@ func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{left, right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		left = &exp
 	}
@@ -85,7 +99,7 @@ func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error)
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing comparison for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: COMPARISON :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -99,7 +113,14 @@ func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error)
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{left, right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		left = &exp
 	}
@@ -118,7 +139,7 @@ func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing term for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: TERM :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -132,7 +153,14 @@ func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{left, right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		left = &exp
 	}
@@ -151,7 +179,7 @@ func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing factor for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: FACTOR :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -165,7 +193,14 @@ func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{left, right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{left, right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		left = &exp
 	}
@@ -178,7 +213,7 @@ func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing unary for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: UNARY :: ", p.previous().Text)
 		}
 
 		operator := types.Operator{
@@ -192,7 +227,14 @@ func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 			return nil, err
 		}
 
-		exp := types.NewExpression(nil, operator, []*types.Expression{right})
+		exp := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Parameters:   []*types.Expression{right},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		return &exp, nil
 	}
@@ -205,7 +247,7 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 		_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 		if debug {
-			fmt.Println("Parsing atom for lexeme:", p.previous().Text)
+			fmt.Println(":: PARSE :: ATOM :: ", p.previous().Text)
 		}
 
 		var operator types.Operator
@@ -248,10 +290,24 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 			return nil, errors.New("expected atom but got <" + p.previous().Text + ">")
 		}
 
-		result := types.NewExpression(nil, operator, []*types.Expression{})
+		expDef, err := GetExpDef(operator.Type)
+
+		if err != nil {
+			return nil, err
+		}
+
+		result := types.Expression{
+			Parent:       nil,
+			Operator:     operator,
+			Def:          &expDef,
+			Parameters:   []*types.Expression{},
+			Catches:      []*types.Expression{},
+			Returns:      []*types.Expression{},
+			Trajectories: []*types.Trajectory{},
+		}
 
 		return &result, nil
 	}
 
-	return nil, errors.New("expected expression but got <" + p.read().Text + ">")
+	return nil, errors.New(":: atom :: expected expression but got <" + p.read().Text + ">")
 }

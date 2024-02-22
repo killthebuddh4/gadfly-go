@@ -31,6 +31,37 @@ func accept(p *Parser, predicates ...Predicate) bool {
 	return false
 }
 
+func a(p *Parser, cur string, words []string) bool {
+	if len(words) == 0 {
+		// TODO accept should return an error.
+		panic("accept called with no words")
+	}
+
+	for _, word := range words {
+		if cur == word {
+			p.advance()
+			return true
+		}
+	}
+
+	return false
+}
+
+func couldAccept(p *Parser, cur string, words []string) bool {
+	if len(words) == 0 {
+		// TODO accept should return an error.
+		panic("accept called with no words")
+	}
+
+	for _, word := range words {
+		if cur == word {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (p *Parser) advance() error {
 	if p.isAtEnd() {
 		return errors.New("unexpected end of file")

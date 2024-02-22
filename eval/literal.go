@@ -2,6 +2,7 @@ package eval
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -31,5 +32,6 @@ var Number types.Exec = func(scope *types.Trajectory, arguments ...types.Value) 
 }
 
 var String types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
+	fmt.Println(":: EXEC :: STRING ::", scope.Expression.Operator.Value)
 	return strings.Trim(scope.Expression.Operator.Value, "\""), nil
 }

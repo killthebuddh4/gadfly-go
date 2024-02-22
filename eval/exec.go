@@ -22,103 +22,33 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 	args := []types.Value{}
 
-	if expr.Operator.Type == "when" {
-		cond, err := thunk(&trajectory, expr.Keyword[0])
+	for i, param := range expr.Parameters {
 
-		if err != nil {
-			return nil, err
+		var isThunk bool
+		if i >= len(expr.Def.Parameters) {
+			isThunk = false
+		} else {
+			isThunk = expr.Def.Parameters[i].IsThunk
 		}
 
-		args = append(args, cond)
+		var arg types.Value
 
-		thenExp, err := thunk(&trajectory, expr.Siblings[0])
+		if isThunk {
+			arg = func() (types.Value, error) {
+				return Exec(scope, scope, expr)
+			}
+		} else {
+			arg, err = Exec(&trajectory, &trajectory, param)
 
-		if err != nil {
-			return nil, err
-		}
-
-		args = append(args, thenExp)
-	} else if expr.Operator.Type == "if" {
-		cond, err := thunk(&trajectory, expr.Keyword[0])
-
-		if err != nil {
-			return nil, err
-		}
-
-		args = append(args, cond)
-
-		thenExp, err := thunk(&trajectory, expr.Siblings[0])
-
-		if err != nil {
-			return nil, err
-		}
-
-		args = append(args, thenExp)
-
-		elseExp, err := thunk(&trajectory, expr.Siblings[1])
-
-		if err != nil {
-			return nil, err
-		}
-
-		args = append(args, elseExp)
-	} else {
-		// handlers := []types.Handler{}
-
-		// for _, sib := range expr.Siblings {
-		// 	if sib.Operator.Type == "catch" {
-		// 		handlerV, err := Exec(&trajectory, &trajectory, sib)
-
-		// 		if err != nil {
-		// 			return nil, err
-		// 		}
-
-		// 		handler, ok := handlerV.(types.Handler)
-
-		// 		if !ok {
-		// 			return nil, errors.New(":: Exec > catch :: not a handler")
-		// 		}
-
-		// 		handlers = append(handlers, handler)
-		// 	}
-		// }
-
-		for _, child := range append(expr.Keyword, expr.Siblings...) {
-			if isThunk(expr.Operator.Type, child.Operator.Type) {
-				t, err := thunk(&trajectory, child)
-
-				if err != nil {
-					return nil, err
-				}
-
-				args = append(args, t)
-			} else {
-				value, err := Exec(&trajectory, &trajectory, child)
-
-				if err != nil {
-					return nil, err
-				}
-
-				args = append(args, value)
+			if err != nil {
+				return nil, err
 			}
 		}
+
+		args = append(args, arg)
 	}
 
 	return eval(&trajectory, args...)
-}
-
-func isThunk(parent string, child string) bool {
-	switch parent {
-	case "and", "or", "while", "when":
-		return true
-	}
-
-	switch child {
-	case "then", "else":
-		return true
-	}
-
-	return false
 }
 
 func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, error) {
@@ -129,19 +59,13 @@ func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, erro
 			return nil, errors.New(":: Exec > close :: not enough arguments")
 		}
 
-		for i, arg := range arguments {
-			if i < len(expr.Parameters) {
-				types.DefineName(&injected, expr.Parameters[i].Keyword[0].Operator.Value, arg)
-			}
-		}
+		// for i, arg := range arguments {
+		// 	if i < len(expr.Parameters) {
+		// 		types.DefineName(&injected, expr.Parameters[i].Keyword[0].Operator.Value, arg)
+		// 	}
+		// }
 
 		return Exec(context, &injected, expr)
-	}, nil
-}
-
-func thunk(scope *types.Trajectory, expr *types.Expression) (types.Thunk, error) {
-	return func() (types.Value, error) {
-		return Exec(scope, scope, expr)
 	}, nil
 }
 
@@ -305,64 +229,3 @@ func dispatch(trajectory *types.Trajectory) (types.Exec, error) {
 		return nil, errors.New("error dispatching, unknown operator " + trajectory.Expression.Operator.Type + ".")
 	}
 }
-
-// func Exec(trajectory *types.Trajectory) (types.Value, error) {
-// 	eval, dispatchErr := dispatch(trajectory)
-
-// 	if dispatchErr != nil {
-// 		return nil, dispatchErr
-// 	}
-
-// 	if trajectory.Expression.Operator.Value != "fn" {
-// 		for _, child := range trajectory.Expression.Parameters {
-// 			validationTrajectory := types.NewTrajectory(trajectory, child)
-
-// 			eval, dispatchErr := dispatch(&validationTrajectory)
-
-// 			if dispatchErr != nil {
-// 				return nil, dispatchErr
-// 			}
-
-// 			_, err := eval(&validationTrajectory, Exec)
-
-// 			if err != nil {
-// 				return nil, err
-// 			}
-// 		}
-// 	}
-
-// 	val, evalErr := eval(trajectory, Exec)
-
-// 	if evalErr != nil {
-// 		return nil, evalErr
-// 	}
-
-// 	if trajectory.Expression.Operator.Value == "fn" {
-// 		return val, nil
-// 	} else {
-// 		if len(trajectory.Expression.Returns) == 0 {
-// 			return val, nil
-// 		} else {
-// 			validationTrajectory := types.NewTrajectory(trajectory, trajectory.Expression.Returns[0])
-// 			eval, dispatchErr := dispatch(&validationTrajectory)
-
-// 			if dispatchErr != nil {
-// 				return nil, dispatchErr
-// 			}
-
-// 			schemaV, err := eval(&validationTrajectory, Exec)
-
-// 			if err != nil {
-// 				return nil, err
-// 			}
-
-// 			schema, ok := schemaV.(types.Lambda)
-
-// 			if !ok {
-// 				return nil, fmt.Errorf("not a function")
-// 			}
-
-// 			return schema(val)
-// 		}
-// 	}
-// }

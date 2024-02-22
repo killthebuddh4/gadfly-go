@@ -13,7 +13,7 @@ var Signal types.Exec = func(scope *types.Trajectory, arguments ...types.Value) 
 	}
 
 	// HACK this is a hack this is a hack this is a hack
-	identifier := scope.Expression.Keyword[0].Operator.Value
+	identifier := scope.Expression.Parameters[0].Operator.Value
 
 	handler, ok := arguments[1].(types.Closure)
 

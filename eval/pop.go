@@ -7,8 +7,6 @@ import (
 )
 
 var Pop types.Exec = func(scope *types.Trajectory, arguments ...types.Value) (types.Value, error) {
-	types.ExpandTraj(scope)
-
 	arr, ok := arguments[0].([]types.Value)
 
 	if !ok {

@@ -137,7 +137,7 @@ func isExpression(lexeme types.Lexeme) bool {
 		return true
 	case "def", "val", "let", ".":
 		return true
-	case "if", "and", "or", "while", "when":
+	case "if", "and", "or", "while", "when", "then", "else":
 		return true
 	case "array", "array.read", "array.write", "array.for", "array.map", "array.filter", "array.reduce", "array.push", "array.pop", "array.shift", "array.unshift", "array.segment", "array.find", "array.splice", "array.reverse", "array.sort":
 		return true
