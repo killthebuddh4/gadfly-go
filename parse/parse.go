@@ -15,7 +15,7 @@ func Parse(root *types.Expression, lexemes []types.Lexeme) error {
 	}
 
 	for !p.isAtEnd() {
-		err := p.parent(root)
+		_, err := p.parent(root)
 
 		if err != nil {
 			return err
@@ -25,80 +25,78 @@ func Parse(root *types.Expression, lexemes []types.Lexeme) error {
 	return nil
 }
 
-func (p *Parser) parent(parent *types.Expression) error {
+func (p *Parser) parent(parent *types.Expression) (*types.Expression, error) {
 	if accept(p, isExpression) {
-		def, err := GetExpDef(p.previous().Text)
-
-		if err != nil {
-			return err
-		}
-
+		fmt.Println("ACCEPTED", p.previous().Text)
 		exp := types.Expression{
-			Parent:       parent,
-			Def:          &def,
-			Operator:     types.Operator{Type: p.previous().Text, Value: p.previous().Text},
+			Parent: parent,
+			Operator: types.Operator{
+				Type:  p.previous().Text,
+				Value: p.previous().Text,
+			},
 			Parameters:   []*types.Expression{},
 			Catches:      []*types.Expression{},
 			Returns:      []*types.Expression{},
 			Trajectories: []*types.Trajectory{},
 		}
 
-		parent.Parameters = append(parent.Parameters, &exp)
+		for {
+			operator := types.Operator{
+				Type:  p.previous().Text,
+				Value: p.previous().Text,
+			}
 
-		for _, paramDef := range def.Parameters {
-			fmt.Println("DEF FOR ", exp.Operator.Value, " ", paramDef.Name)
-			paramExp := types.Expression{
+			param := types.Expression{
 				Parent:       parent,
-				Def:          &EMPTY,
-				Operator:     types.Operator{Type: p.previous().Text, Value: p.previous().Text},
+				Operator:     operator,
 				Parameters:   []*types.Expression{},
 				Catches:      []*types.Expression{},
 				Returns:      []*types.Expression{},
 				Trajectories: []*types.Trajectory{},
 			}
 
-			exp.Parameters = append(exp.Parameters, &paramExp)
+			endWords, err := GetEndwords(operator)
 
-			fmt.Println("LENG ", len(exp.Parameters))
+			if err != nil {
+				return nil, err
+			}
 
-			for {
-				if a(p, p.read().Text, paramDef.EndWords) {
-					fmt.Println("BREAKING ", paramExp.Operator.Value, " ", p.previous().Text)
+			if acc(p, p.read().Text, endWords) {
+				if p.previous().Text == "end" {
+					fmt.Println("Breaking on end")
 					break
 				} else {
-					fmt.Println("NOT BREAKING ", paramExp.Operator.Value, " ", p.read().Text)
+					p.backup()
 				}
+			}
 
-				if p.isAtEnd() {
-					return errors.New(":: BLOCK :: expected end of BLOCK")
-				}
+			if p.isAtEnd() {
+				return nil, errors.New(":: BLOCK :: expected end of BLOCK for operator <" + operator.Type)
+			}
 
-				err := p.parent(&paramExp)
+			child, err := p.parent(&param)
 
-				if err != nil {
-					return err
-				}
+			if err != nil {
+				return nil, err
+			}
+
+			fmt.Println("CHILD", child.Operator.Type)
+
+			if child.Operator.Type == "catch" {
+				exp.Catches = append(exp.Catches, child)
+			} else {
+				exp.Parameters = append(exp.Parameters, child)
 			}
 
 			if err != nil {
-				return nil
+				return nil, err
 			}
 		}
 
-		if err != nil {
-			return err
-		}
-
+		return &exp, nil
 	} else {
-		child, err := p.predicate(parent)
-
-		if err != nil {
-			return err
-		}
-
-		child.Parent = parent
-		parent.Parameters = append(parent.Parameters, child)
+		return p.predicate(parent)
 	}
 
-	return nil
+	return nil, errors.New(":: PARENT :: expected expression or predicate, but got <" + p.read().Text + ">")
 }

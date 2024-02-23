@@ -1,34 +1,24 @@
 package parse
 
 import (
+	"errors"
+
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func GetExpDef(operator string) (types.ExpDef, error) {
-	switch operator {
+func GetEndwords(operator types.Operator) ([]string, error) {
+	switch operator.Type {
 	case "if":
-		return IF, nil
+		return []string{"then"}, nil
+	case "then":
+		return []string{"else"}, nil
+	case "else":
+		return []string{"catch", "end"}, nil
+	case "do":
+		return []string{"catch", "end"}, nil
 	case "std.write":
-		return STD_WRITE, nil
+		return []string{"catch", "end"}, nil
 	default:
-		return EMPTY, nil
+		return nil, errors.New(":: GetSpec :: Unknown operator type: " + operator.Type)
 	}
-}
-
-var IF = types.ExpDef{
-	Parameters: []types.Parameter{
-		{Name: "if", IsThunk: false, EndWords: []string{"then"}},
-		{Name: "then", IsThunk: true, EndWords: []string{"else"}},
-		{Name: "else", IsThunk: true, EndWords: []string{"end", "catch"}},
-	},
-}
-
-var EMPTY = types.ExpDef{
-	Parameters: []types.Parameter{},
-}
-
-var STD_WRITE = types.ExpDef{
-	Parameters: []types.Parameter{
-		{Name: "std.write", IsThunk: false, EndWords: []string{"end", "catch"}},
-	},
 }

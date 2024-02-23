@@ -290,16 +290,9 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 			return nil, errors.New("expected atom but got <" + p.previous().Text + ">")
 		}
 
-		expDef, err := GetExpDef(operator.Type)
-
-		if err != nil {
-			return nil, err
-		}
-
 		result := types.Expression{
 			Parent:       nil,
 			Operator:     operator,
-			Def:          &expDef,
 			Parameters:   []*types.Expression{},
 			Catches:      []*types.Expression{},
 			Returns:      []*types.Expression{},

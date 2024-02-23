@@ -22,18 +22,11 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 
 	args := []types.Value{}
 
-	for i, param := range expr.Parameters {
-
-		var isThunk bool
-		if i >= len(expr.Def.Parameters) {
-			isThunk = false
-		} else {
-			isThunk = expr.Def.Parameters[i].IsThunk
-		}
+	for _, param := range expr.Parameters {
 
 		var arg types.Value
 
-		if isThunk {
+		if false {
 			arg = func() (types.Value, error) {
 				return Exec(scope, scope, expr)
 			}

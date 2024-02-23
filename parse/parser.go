@@ -31,7 +31,7 @@ func accept(p *Parser, predicates ...Predicate) bool {
 	return false
 }
 
-func a(p *Parser, cur string, words []string) bool {
+func acc(p *Parser, cur string, words []string) bool {
 	if len(words) == 0 {
 		// TODO accept should return an error.
 		panic("accept called with no words")
@@ -60,6 +60,16 @@ func couldAccept(p *Parser, cur string, words []string) bool {
 	}
 
 	return false
+}
+
+func (p *Parser) backup() error {
+	if p.Current == 0 {
+		return errors.New("cannot backup")
+	}
+
+	p.Current--
+
+	return nil
 }
 
 func (p *Parser) advance() error {

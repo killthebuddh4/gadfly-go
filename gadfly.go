@@ -75,10 +75,13 @@ func exec(pathToFile string) {
 		return
 	}
 
-	rootExp := types.NewExpression(nil, rootOperator, []*types.Expression{})
-
-	rootExp.Def = &types.ExpDef{
-		Parameters: []types.Parameter{},
+	rootExp := types.Expression{
+		Parent:       nil,
+		Operator:     rootOperator,
+		Parameters:   []*types.Expression{},
+		Catches:      []*types.Expression{},
+		Returns:      []*types.Expression{},
+		Trajectories: []*types.Trajectory{},
 	}
 
 	parseErr := parse.Parse(&rootExp, lexemes)
