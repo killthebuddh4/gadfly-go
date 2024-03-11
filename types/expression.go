@@ -1,33 +1,42 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Schema func(value Value) (Value, error)
 
 type Predicate func(lexeme Lexeme) bool
 
+type Block = []*Expression
+
+type Signature struct {
+	Parameters map[string]string
+	Returns    []*Expression
+}
+
 type Expression struct {
 	Parent       *Expression
 	Operator     Operator
-	Parameters   []*Expression
-	Catches      []*Expression
-	Returns      []*Expression
+	Signature    *Signature
+	Arguments    map[string]Block
+	Catches      []Block
 	Trajectories []*Trajectory
 }
 
-func Returnize(parent *Expression, returns []*Expression) {
-	parent.Returns = returns
-}
-
-func Print(expression Expression, depth int) error {
-	for i := 0; i < depth; i++ {
-		fmt.Print("  ")
-	}
-	fmt.Println("<" + expression.Operator.Type + ": " + expression.Operator.Value + ">")
-
-	for _, child := range expression.Parameters {
-		Print(*child, depth+1)
+func Print(expr *Expression, indent int) {
+	if indent == 0 {
+		fmt.Println("PRINTING PARSE TREE")
 	}
 
-	return nil
+	fmt.Println(strings.Repeat(" ", indent), expr.Operator.Value)
+
+	for name, block := range expr.Arguments {
+		fmt.Println(strings.Repeat(" ", indent+2), name)
+
+		for _, exp := range block {
+			Print(exp, indent+4)
+		}
+	}
 }

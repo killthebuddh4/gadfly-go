@@ -6,7 +6,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func GetEndwords(operator types.Operator) ([]string, error) {
+func GetArgs(operator types.Operator) ([]string, error) {
 	switch operator.Type {
 	case "if":
 		return []string{"then"}, nil

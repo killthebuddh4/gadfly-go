@@ -2,12 +2,20 @@ package eval
 
 import (
 	"errors"
+	"fmt"
+	"os"
 
 	"github.com/killthebuddh4/gadflai/types"
 )
 
 // context = caller, scope = the previous child expressions (basically)
 func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expression) (types.Value, error) {
+	_, debug := os.LookupEnv("GADFLY_DEBUG_EXEC")
+
+	if debug {
+		fmt.Println(":: EXEC :: operator :: ", expr.Operator.Value)
+	}
+
 	trajectory := types.NewTrajectory(scope, expr)
 
 	if expr.Operator.Type == "fn" && context == scope {
@@ -20,37 +28,97 @@ func Exec(context *types.Trajectory, scope *types.Trajectory, expr *types.Expres
 		return nil, err
 	}
 
-	args := []types.Value{}
+	switch expr.Operator.Type {
+	case "and", "or":
+		block := expr.Arguments[expr.Operator.Type]
 
-	for _, param := range expr.Parameters {
+		thunks := []types.Value{}
 
-		var arg types.Value
-
-		if false {
-			arg = func() (types.Value, error) {
-				return Exec(scope, scope, expr)
+		for _, exp := range block {
+			var thunk types.Thunk = func() (types.Value, error) {
+				return Exec(&trajectory, &trajectory, exp)
 			}
-		} else {
-			arg, err = Exec(&trajectory, &trajectory, param)
+
+			thunks = append(thunks, thunk)
+		}
+
+		return eval(&trajectory, thunks...)
+	case "if", "when":
+		thunks := map[string]types.Value{}
+
+		for name, block := range expr.Arguments {
+			var thunk types.Thunk = func() (types.Value, error) {
+				var value types.Value
+
+				for _, exp := range block {
+					val, err := Exec(&trajectory, &trajectory, exp)
+
+					if err != nil {
+						return nil, err
+					}
+
+					value = val
+				}
+
+				return value, nil
+			}
+
+			thunks[name] = thunk
+		}
+
+		var args []types.Value = []types.Value{
+			thunks["if"],
+			thunks["then"],
+			thunks["else"],
+		}
+
+		return eval(&trajectory, args...)
+	case "def", "val", "let":
+		args := make(map[string]types.Value)
+
+		for name, block := range expr.Arguments {
+			var value types.Value
+
+			for _, exp := range block {
+				val, err := Exec(&trajectory, &trajectory, exp)
+
+				if err != nil {
+					return nil, err
+				}
+
+				value = val
+			}
+
+			args[name] = value
+		}
+
+		return eval(&trajectory, args[expr.Operator.Value], args["value"])
+	default:
+		block := expr.Arguments[expr.Operator.Type]
+
+		args := []types.Value{}
+
+		for _, exp := range block {
+			val, err := Exec(&trajectory, &trajectory, exp)
 
 			if err != nil {
 				return nil, err
 			}
+
+			args = append(args, val)
 		}
 
-		args = append(args, arg)
+		return eval(&trajectory, args...)
 	}
-
-	return eval(&trajectory, args...)
 }
 
 func close(scope *types.Trajectory, expr *types.Expression) (types.Closure, error) {
 	return func(context *types.Trajectory, arguments ...types.Value) (types.Value, error) {
 		injected := types.NewTrajectory(scope, expr)
 
-		if len(arguments) < len(expr.Parameters) {
-			return nil, errors.New(":: Exec > close :: not enough arguments")
-		}
+		// if len(arguments) < len(expr.Parameters) {
+		// 	return nil, errors.New(":: Exec > close :: not enough arguments")
+		// }
 
 		// for i, arg := range arguments {
 		// 	if i < len(expr.Parameters) {

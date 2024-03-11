@@ -76,21 +76,18 @@ func exec(pathToFile string) {
 	}
 
 	rootExp := types.Expression{
-		Parent:       nil,
-		Operator:     rootOperator,
-		Parameters:   []*types.Expression{},
-		Catches:      []*types.Expression{},
-		Returns:      []*types.Expression{},
+		Parent:   nil,
+		Operator: rootOperator,
+		Signature: &types.Signature{
+			Parameters: make(map[string]string),
+			Returns:    []*types.Expression{},
+		},
+		Arguments:    map[string][]*types.Expression{},
+		Catches:      []types.Block{},
 		Trajectories: []*types.Trajectory{},
 	}
 
 	parseErr := parse.Parse(&rootExp, lexemes)
-
-	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
-
-	if debug {
-		types.Print(rootExp, 0)
-	}
 
 	root := types.NewTrajectory(nil, &rootExp)
 

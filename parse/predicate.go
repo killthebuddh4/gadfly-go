@@ -34,11 +34,17 @@ func (p *Parser) predicate(parent *types.Expression) (*types.Expression, error) 
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{left, right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"left":  types.Block{left},
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -74,11 +80,17 @@ func (p *Parser) equality(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{left, right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"left":  types.Block{left},
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -114,11 +126,17 @@ func (p *Parser) comparison(parent *types.Expression) (*types.Expression, error)
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{left, right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"left":  types.Block{left},
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -154,11 +172,17 @@ func (p *Parser) term(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{left, right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"left":  types.Block{left},
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -194,11 +218,17 @@ func (p *Parser) factor(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{left, right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"left":  types.Block{left},
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -228,11 +258,16 @@ func (p *Parser) unary(parent *types.Expression) (*types.Expression, error) {
 		}
 
 		exp := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{right},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments: map[string][]*types.Expression{
+				"right": types.Block{right},
+			},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
 		}
 
@@ -290,16 +325,17 @@ func (p *Parser) atom(parent *types.Expression) (*types.Expression, error) {
 			return nil, errors.New("expected atom but got <" + p.previous().Text + ">")
 		}
 
-		result := types.Expression{
-			Parent:       nil,
-			Operator:     operator,
-			Parameters:   []*types.Expression{},
-			Catches:      []*types.Expression{},
-			Returns:      []*types.Expression{},
+		return &types.Expression{
+			Parent:   nil,
+			Operator: operator,
+			Signature: &types.Signature{
+				Parameters: make(map[string]string),
+				Returns:    []*types.Expression{},
+			},
+			Arguments:    map[string][]*types.Expression{},
+			Catches:      []types.Block{},
 			Trajectories: []*types.Trajectory{},
-		}
-
-		return &result, nil
+		}, nil
 	}
 
 	return nil, errors.New(":: atom :: expected expression but got <" + p.read().Text + ">")

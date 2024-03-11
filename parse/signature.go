@@ -7,7 +7,7 @@ import (
 	"github.com/killthebuddh4/gadflai/types"
 )
 
-func (p *Parser) signature(parent *types.Expression) ([]*types.Expression, error) {
+func (p *Parser) signature(owner *types.Expression) ([]*types.Expression, error) {
 	_, debug := os.LookupEnv("GADFLY_DEBUG_PARSE")
 
 	if debug {

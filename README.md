@@ -48,6 +48,7 @@ say, please don't hesitate to open an issue or reach out to me directly.  For a
     - [Phase 3, intelligence](#phase-3-intelligence)
     - [Nice to haves (unplanned)](#nice-to-haves-unplanned)
 - [Work in progress](#work-in-progress)
+- [expression](#expression)
 
 # The big idea
 
@@ -719,3 +720,13 @@ _Like an exosuit for language models?_
 - [ ] namespaces
 - [ ] emitters
 - [ ] try to get a rough draft of the interpreter section using notes
+
+# expression
+
+
+An expression is either a function, which means it has the form:
+
+- signature
+- named blocks
+
+or a predicate, which means it's a bunch of operators

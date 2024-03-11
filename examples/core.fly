@@ -1,7 +1,7 @@
 if
-  true
+  10 == 100
 then
-  std.write "it is T" end
+  20
 else
-  std.write "it is F" end
+  30
 end

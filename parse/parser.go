@@ -31,45 +31,21 @@ func accept(p *Parser, predicates ...Predicate) bool {
 	return false
 }
 
-func acc(p *Parser, cur string, words []string) bool {
-	if len(words) == 0 {
+func accepted(p *Parser, predicates ...Predicate) bool {
+	if len(predicates) == 0 {
 		// TODO accept should return an error.
-		panic("accept called with no words")
+		panic("accept called with no predicates")
 	}
 
-	for _, word := range words {
-		if cur == word {
-			p.advance()
+	token := p.read()
+
+	for _, predicate := range predicates {
+		if predicate(token) {
 			return true
 		}
 	}
 
 	return false
-}
-
-func couldAccept(p *Parser, cur string, words []string) bool {
-	if len(words) == 0 {
-		// TODO accept should return an error.
-		panic("accept called with no words")
-	}
-
-	for _, word := range words {
-		if cur == word {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (p *Parser) backup() error {
-	if p.Current == 0 {
-		return errors.New("cannot backup")
-	}
-
-	p.Current--
-
-	return nil
 }
 
 func (p *Parser) advance() error {
