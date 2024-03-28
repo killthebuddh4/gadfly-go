@@ -1,3 +1,11 @@
+__NOTICE: This repo is no longer under active development. All development has been moved to the TypeScript [monorepo](https://github.com/killthebuddh4/gadfly). Please see the [next section](#what-we-learned) for an overview of what we learned developing this version of Gadfly.__
+
+# What we learned
+
+__TODO__
+
+# Overview
+
 __Gadfly__ is an experimental expression-oriented functional programming
 language, treewalk interpreter, and development environment. The ultimate goal
 is to provide a development environment for [autopoietic copilot
